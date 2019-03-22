@@ -1,0 +1,10 @@
+chrome_pgo_phase=0
+ffmpeg_branding="Chrome"
+full_wpo_on_official=false
+is_clang=true
+proprietary_codecs=true
+rtc_use_lto=false
+target_cpu="x64"
+use_gnome_keyring=false
+use_jumbo_build=true
+use_sysroot=false
