@@ -43,6 +43,7 @@ NOTE: The commands below assume the `py` command was installed by Python 3 into 
 Run in `cmd.exe`:
 
 ```cmd
+git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git
 py build.py
 py package.py
 ```

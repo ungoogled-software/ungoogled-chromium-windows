@@ -1,0 +1,3 @@
+[submodule "ungoogled-chromium"]
+	path = ungoogled-chromium
+	url = https://github.com/Eloston/ungoogled-chromium.git
