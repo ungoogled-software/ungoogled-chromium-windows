@@ -6,7 +6,7 @@ Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromi
 
 [Download binaries from the Contributor Binaries website](//ungoogled-software.github.io/ungoogled-chromium-binaries/).
 
-**Source Code**: Use the tags. The branches are for development and may not be stable.
+**Source Code**: Use the tags via `git checkout` (see building instructions below). The branches are for development and may not be stable.
 
 ## Building
 
@@ -44,6 +44,8 @@ Run in `cmd.exe`:
 
 ```cmd
 git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git
+# Replace TAG_OR_BRANCH_HERE with a tag or branch name
+git checkout --recurse-submodules TAG_OR_BRANCH_HERE
 py build.py
 py package.py
 ```
