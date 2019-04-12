@@ -17,11 +17,14 @@ import argparse
 import platform
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import buildkit.filescfg
-from buildkit.common import get_chromium_version, get_release_revision
+sys.path.insert(0, str(Path(__file__).resolve().parent / 'ungoogled-chromium' / 'utils'))
+import filescfg
+from _common import ENCODING, get_chromium_version
 sys.path.pop(0)
 
+def _get_relese_revision():
+    revision_path = Path(__file__).resolve().parent / 'ungoogled-chromium' / 'revision.txt'
+    return revision_path.read_text(encoding=ENCODING).strip()
 
 def main():
     """Entrypoint"""
@@ -37,10 +40,10 @@ def main():
               'Default (from platform.architecture()): %(default)s'))
     args = parser.parse_args()
 
-    build_outputs = Path('out/Default')
-    output = Path('../ungoogled-chromium_{}-{}_windows.zip'.format(get_chromium_version(),
-                                                                   get_release_revision()))
+    build_outputs = Path('build/src/out/Default')
+    output = Path('build/ungoogled-chromium_{}-{}_windows.zip'.format(
+        get_chromium_version(), _get_release_revision()))
 
-    files_generator = buildkit.filescfg.filescfg_generator(
-        Path('chrome/tools/build/win/FILES.cfg'), build_outputs, args.cpu_arch)
-    buildkit.filescfg.create_archive(files_generator, tuple(), build_outputs, output)
+    files_generator = filescfg.filescfg_generator(
+        Path('build/src/chrome/tools/build/win/FILES.cfg'), build_outputs, args.cpu_arch)
+    filescfg.create_archive(files_generator, tuple(), build_outputs, output)

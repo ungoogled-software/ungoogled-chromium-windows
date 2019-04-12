@@ -32,7 +32,7 @@ When installing the SDK, the "Debugging Tools for Windows" feature must be enabl
 
     * 7-zip
     * Python 2.7 (for scripts in the Chromium source tree), with pypiwin32 module (`pip install pypiwin32`)
-    * Python 3.5+ (for build and packaging scripts used below)
+    * Python 3.6+ (for build and packaging scripts used below)
 
 2. Make sure Python 2.7 is set in the user or system environment variable `PATH` as `python`.
 
