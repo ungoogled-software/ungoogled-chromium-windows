@@ -138,10 +138,10 @@ def main():
 
     # Retrieve downloads
     get_logger().info('Downloading required files...')
-    downloads.retrieve_downloads(download_info, args.downloads_cache, True,
+    downloads.retrieve_downloads(download_info, downloads_cache, True,
                                           args.disable_ssl_verification)
     try:
-        downloads.check_downloads(download_info, args.downloads_cache)
+        downloads.check_downloads(download_info, downloads_cache)
     except downloads.HashMismatchError as exc:
         get_logger().error('File checksum does not match: %s', exc)
         exit(1)
@@ -151,7 +151,7 @@ def main():
         ExtractorEnum.SEVENZIP: args.sevenz_path,
     }
     get_logger().info('Unpacking downloads...')
-    downloads.unpack_downloads(download_info, args.downloads_cache, source_tree, extractors)
+    downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
 
     # Prune binaries
     unremovable_files = prune_binaries.prune_dir(
