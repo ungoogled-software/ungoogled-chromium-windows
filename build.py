@@ -23,6 +23,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'ungoogled-chromium' / 'utils'))
 import downloads
+import domain_substitution
 import prune_binaries
 import patches
 from _common import ENCODING, SEVENZIP_USE_REGISTRY, ExtractorEnum, get_logger
