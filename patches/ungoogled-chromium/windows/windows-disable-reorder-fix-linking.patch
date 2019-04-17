@@ -2,7 +2,7 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -49,35 +49,6 @@ if (enable_resource_whitelist_generation
+@@ -56,35 +56,6 @@ if (enable_resource_whitelist_generation
    chrome_resource_whitelist = "$target_gen_dir/chrome_resource_whitelist.txt"
  }
  
@@ -46,8 +46,8 @@
 -      public_deps += [ ":reorder_imports" ]
 -      data_deps += [ ":reorder_imports" ]
 -    }
-     if (use_aura && (is_win || is_linux)) {
-       data_deps += [ "//chrome/app:service_manifests" ]
+     if (is_chromeos) {
+       data_deps += [ "//sandbox/linux:chrome_sandbox" ]
      }
 @@ -341,11 +309,7 @@ if (!is_android && !is_mac) {
    }
