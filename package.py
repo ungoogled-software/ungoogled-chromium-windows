@@ -26,6 +26,10 @@ def _get_relese_revision():
     revision_path = Path(__file__).resolve().parent / 'ungoogled-chromium' / 'revision.txt'
     return revision_path.read_text(encoding=ENCODING).strip()
 
+def _get_packaging_revision():
+    revision_path = Path(__file__).resolve().parent / 'revision.txt'
+    return revision_path.read_text(encoding=ENCODING).strip()
+
 def main():
     """Entrypoint"""
 
@@ -41,8 +45,8 @@ def main():
     args = parser.parse_args()
 
     build_outputs = Path('build/src/out/Default')
-    output = Path('build/ungoogled-chromium_{}-{}_windows.zip'.format(
-        get_chromium_version(), _get_release_revision()))
+    output = Path('build/ungoogled-chromium_{}-{}.{}_windows.zip'.format(
+        get_chromium_version(), _get_release_revision(), _get_packaging_revision()))
 
     files_generator = filescfg.filescfg_generator(
         Path('build/src/chrome/tools/build/win/FILES.cfg'), build_outputs, args.cpu_arch)
