@@ -2,7 +2,7 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -56,35 +56,6 @@ if (enable_resource_whitelist_generation
+@@ -58,35 +58,6 @@ if (enable_resource_whitelist_generation
    chrome_resource_whitelist = "$target_gen_dir/chrome_resource_whitelist.txt"
  }
  
@@ -38,7 +38,7 @@
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
  # on Chrome and the main DLLs it uses, it will transitively assert that those
-@@ -112,10 +83,6 @@ if (!is_android && !is_mac) {
+@@ -121,10 +92,6 @@ if (!is_android && !is_mac) {
      data_deps = [
        ":chrome_initial",
      ]
@@ -49,7 +49,7 @@
      if (is_chromeos) {
        data_deps += [ "//sandbox/linux:chrome_sandbox" ]
      }
-@@ -341,11 +309,7 @@ if (!is_android && !is_mac) {
+@@ -344,11 +311,7 @@ if (!is_android && !is_mac) {
    }
  
    chrome_binary("chrome_initial") {
@@ -64,7 +64,7 @@
      if (!is_win && use_aura) {
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
-@@ -32,10 +32,6 @@ group("telemetry_chrome_test") {
+@@ -36,10 +36,6 @@ group("telemetry_chrome_test") {
      data_deps += [ "//chrome" ]
    }
  
@@ -77,7 +77,7 @@
    }
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -357,11 +357,6 @@ python_library("chromedriver_py_tests")
+@@ -338,11 +338,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }

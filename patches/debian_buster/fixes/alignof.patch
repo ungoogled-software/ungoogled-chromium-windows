@@ -4,7 +4,7 @@ author: Fedora chromium maintainers
 
 --- a/mojo/public/c/system/macros.h
 +++ b/mojo/public/c/system/macros.h
-@@ -27,9 +27,7 @@
+@@ -31,9 +31,7 @@
    (sizeof(void*) == 4 ? 32 : 0)
  
  // Like the C++11 |alignof| operator.

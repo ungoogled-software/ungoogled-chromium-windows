@@ -1,9 +1,9 @@
-description: fix int-in-bool-context gcc warning
+description: fix int-in-bool-context gcc warnings
 author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/third_party/webrtc/modules/video_processing/video_denoiser.cc
 +++ b/third_party/webrtc/modules/video_processing/video_denoiser.cc
-@@ -187,7 +187,7 @@ void VideoDenoiser::CopySrcOnMOB(const u
+@@ -191,7 +191,7 @@ void VideoDenoiser::CopySrcOnMOB(const u
        // artifacts.
        if (mb_filter_decision_[mb_index] != FILTER_BLOCK ||
            IsTrailingBlock(moving_edge_, mb_row, mb_col) ||
@@ -12,3 +12,62 @@ author: Michael Gilbert <mgilbert@debian.org>
             moving_object_[mb_row * mb_cols_ + mb_col])) {
          // Copy y source.
          filter_->CopyMem16x16(mb_src, stride_src, mb_dst, stride_dst);
+--- a/gpu/command_buffer/service/gles2_cmd_decoder.cc
++++ b/gpu/command_buffer/service/gles2_cmd_decoder.cc
+@@ -15979,7 +15979,8 @@ bool GLES2DecoderImpl::GetUniformSetup(G
+   }
+   uint32_t checked_size = 0;
+   if (!SizedResult<T>::ComputeSize(num_elements).AssignIfValid(&checked_size)) {
+-    return error::kOutOfBounds;
++    *error = error::kOutOfBounds;
++    return false;
+   }
+   result = GetSharedMemoryAs<SizedResult<T>*>(shm_id, shm_offset, checked_size);
+   if (!result) {
+--- a/components/download/internal/common/download_item_impl.cc
++++ b/components/download/internal/common/download_item_impl.cc
+@@ -818,7 +818,7 @@ const base::FilePath& DownloadItemImpl::
+ }
+ 
+ base::FilePath DownloadItemImpl::GetTemporaryFilePath() const {
+-  if (state_ == TARGET_PENDING_INTERNAL || INTERRUPTED_TARGET_PENDING_INTERNAL)
++  if (state_ == TARGET_PENDING_INTERNAL || state_ == INTERRUPTED_TARGET_PENDING_INTERNAL)
+     return download_file_ ? download_file_->FullPath() : base::FilePath();
+   return base::FilePath();
+ }
+--- a/content/browser/renderer_host/render_widget_host_view_base.cc
++++ b/content/browser/renderer_host/render_widget_host_view_base.cc
+@@ -316,15 +316,16 @@ void RenderWidgetHostViewBase::SetBackgr
+   if (default_background_color_ == color)
+     return;
+ 
+-  bool opaque = default_background_color_
+-                    ? SkColorGetA(*default_background_color_)
+-                    : SK_AlphaOPAQUE;
++  bool opaque_background = true;
++  if (default_background_color_)
++    opaque_background = (SkColorGetA(*default_background_color_) == SK_AlphaOPAQUE);
+   default_background_color_ = color;
+   UpdateBackgroundColor();
+-  if (opaque != (SkColorGetA(color) == SK_AlphaOPAQUE)) {
++
++  bool opaque_foreground = (SkColorGetA(color) == SK_AlphaOPAQUE);
++  if (opaque_background != opaque_foreground) {
+     if (host()->owner_delegate()) {
+-      host()->owner_delegate()->SetBackgroundOpaque(SkColorGetA(color) ==
+-                                                    SK_AlphaOPAQUE);
++      host()->owner_delegate()->SetBackgroundOpaque(opaque_foreground);
+     }
+   }
+ }
+--- a/third_party/blink/renderer/core/html/parser/html_tree_builder.cc
++++ b/third_party/blink/renderer/core/html/parser/html_tree_builder.cc
+@@ -937,7 +937,7 @@ void HTMLTreeBuilder::ProcessStartTagFor
+   }
+   if (token->GetName() == kColTag) {
+     ProcessFakeStartTag(kColgroupTag);
+-    DCHECK(kInColumnGroupMode);
++    DCHECK_EQ(GetInsertionMode(), kInColumnGroupMode);
+     ProcessStartTag(token);
+     return;
+   }

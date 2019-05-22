@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/chrome/browser/ui/views/passwords/password_generation_popup_view_views.cc
 +++ b/chrome/browser/ui/views/passwords/password_generation_popup_view_views.cc
-@@ -51,11 +51,11 @@ class PasswordGenerationPopupViewViews::
+@@ -50,11 +50,11 @@ class PasswordGenerationPopupViewViews::
      BuildColumnSet(layout);
      layout->StartRow(views::GridLayout::kFixedSize, 0);
  
@@ -21,7 +21,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      password_label_ = autofill::CreateLabelWithColorReadabilityDisabled(
 --- a/components/viz/common/gl_helper.cc
 +++ b/components/viz/common/gl_helper.cc
-@@ -476,7 +476,7 @@ void GLHelper::CopyTextureToImpl::Cancel
+@@ -477,7 +477,7 @@ void GLHelper::CopyTextureToImpl::Cancel
  }
  
  bool GLHelper::CopyTextureToImpl::IsBGRAReadbackSupported() {
@@ -30,3 +30,23 @@ author: Michael Gilbert <mgilbert@debian.org>
      bgra_support_ = BGRA_NOT_SUPPORTED;
      if (auto* extensions = gl_->GetString(GL_EXTENSIONS)) {
        const std::string extensions_string =
+--- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
++++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
+@@ -2064,11 +2064,13 @@ int BookmarkBarView::GetIndexForButton(v
+ 
+ SkColor BookmarkBarView::GetBookmarkBarTextColor() {
+   const ui::ThemeProvider* theme_provider = GetThemeProvider();
+-  int background_color_id =
++
++  SkColor background_color =
+       bookmark_bar_state_ == BookmarkBar::DETACHED
+-          ? ThemeProperties::COLOR_DETACHED_BOOKMARK_BAR_BACKGROUND
+-          : ThemeProperties::COLOR_TOOLBAR;
++          ? theme_provider->GetColor(ThemeProperties::COLOR_DETACHED_BOOKMARK_BAR_BACKGROUND)
++          : theme_provider->GetColor(ThemeProperties::COLOR_TOOLBAR);
++
+   return color_utils::GetColorWithMinimumContrast(
+       theme_provider->GetColor(ThemeProperties::COLOR_BOOKMARK_TEXT),
+-      theme_provider->GetColor(background_color_id));
++      background_color);
+ }

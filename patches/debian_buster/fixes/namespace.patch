@@ -15,3 +15,54 @@ author: Michael Gilbert <mgilbert@debian.org>
 +}
  
  #endif  // CHROME_BROWSER_APPS_PLATFORM_APPS_API_SYNC_FILE_SYSTEM_EXTENSION_SYNC_EVENT_OBSERVER_H_
+--- a/third_party/blink/renderer/platform/instrumentation/tracing/trace_event.h
++++ b/third_party/blink/renderer/platform/instrumentation/tracing/trace_event.h
+@@ -12,14 +12,20 @@
+ #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
+ 
+ // Conversion from CString to TraceValue so that trace arguments can be strings.
++namespace base {
++namespace trace_event {
++
+ template <>
+-struct base::trace_event::TraceValue::Helper<WTF::CString> {
++struct TraceValue::Helper<WTF::CString> {
+   static constexpr unsigned char kType = TRACE_VALUE_TYPE_COPY_STRING;
+   static inline void SetValue(TraceValue* v, const WTF::CString& value) {
+     v->as_string = value.data();
+   }
+ };
+ 
++} // namespace trace_event
++} // namespace base
++
+ namespace blink {
+ namespace trace_event {
+ 
+--- a/gin/v8_platform.cc
++++ b/gin/v8_platform.cc
+@@ -268,10 +268,13 @@ base::LazyInstance<PageAllocator>::Leaky
+ 
+ }  // namespace gin
+ 
++namespace base {
++namespace trace_event {
++
+ // Allow std::unique_ptr<v8::ConvertableToTraceFormat> to be a valid
+ // initialization value for trace macros.
+ template <>
+-struct base::trace_event::TraceValue::Helper<
++struct TraceValue::Helper<
+     std::unique_ptr<v8::ConvertableToTraceFormat>> {
+   static constexpr unsigned char kType = TRACE_VALUE_TYPE_CONVERTABLE;
+   static inline void SetValue(
+@@ -284,6 +287,9 @@ struct base::trace_event::TraceValue::He
+   }
+ };
+ 
++} // namespace trace_event
++} // namespace base
++
+ namespace gin {
+ 
+ class V8Platform::TracingControllerImpl : public v8::TracingController {
