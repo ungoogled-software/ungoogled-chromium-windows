@@ -18,11 +18,13 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 #### Setting up Visual Studio
 
-[Follow the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/72.0.3626.122/docs/windows_build_instructions.md#visual-studio).
+[Follow the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/74.0.3729.108/docs/windows_build_instructions.md#visual-studio).
 
-**IMPORTANT**: You must have the 10.0.17134 SDK (that exact version) downloaded and installed either through Visual Studio 2017 (install the "Desktop development with C++" component) or from the [Windows SDK Archive](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive).
+**IMPORTANT**: You must have the 10.0.17134 SDK or higher downloaded and installed either through Visual Studio (install the "Desktop development with C++" component) or from the [Windows SDK Archive](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive).
 
-When installing the SDK, the "Debugging Tools for Windows" feature must be enabled. Visual Studio 2017 does not enable this by default, so it has to be added in by selecting "Modify" on the SDK entry in "Add or remove programs".
+When installing the SDK, the "Debugging Tools for Windows" feature must be enabled. Visual Studio does not enable this by default, so it has to be added in by selecting "Modify" on the SDK entry in "Add or remove programs".
+
+* NOTE: It does not matter if you install the 2017 or 2019 version of Visual Studio.
 
 #### Other build requirements
 

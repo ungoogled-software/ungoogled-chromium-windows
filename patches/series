@@ -1,6 +1,5 @@
 inox-patchset/chromium-skia-harmony.patch
 inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
-debian_buster/arm/crashpad.patch
 debian_buster/arm/gcc_skcms_ice.patch
 debian_buster/arm/skia-aarch64-buildfix.patch
 debian_buster/fixes/mojo.patch
