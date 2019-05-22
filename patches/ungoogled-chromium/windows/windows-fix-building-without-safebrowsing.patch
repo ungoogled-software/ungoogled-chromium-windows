@@ -12,22 +12,24 @@
      "conflicts/enumerate_input_method_editors_win.cc",
      "conflicts/enumerate_input_method_editors_win.h",
      "conflicts/enumerate_shell_extensions_win.cc",
-@@ -1750,11 +1748,11 @@ jumbo_split_static_library("browser") {
+@@ -1829,13 +1827,13 @@ jumbo_split_static_library("browser") {
      "//chrome/browser/profiling_host",
      "//chrome/browser/push_messaging:budget_proto",
      "//chrome/browser/resource_coordinator:mojo_bindings",
 -    "//chrome/browser/safe_browsing",
+     "//chrome/browser/security_events",
      "//chrome/browser/ssl:proto",
      "//chrome/browser/ui",
      "//chrome/browser/ui/webui/bluetooth_internals",
+     "//chrome/common:channel_info",
      "//chrome/common/net",
-+    "//chrome/common/safe_browsing",
++    "//chrome/browser/safe_browsing",
      "//chrome/installer/util:with_no_strings",
-     "//components/about_handler",
-     "//components/app_modal",
+     "//chrome/services/noop/public/cpp",
+     "//chrome/services/noop/public/mojom",
 --- a/chrome/browser/chrome_browser_main.cc
 +++ b/chrome/browser/chrome_browser_main.cc
-@@ -239,7 +239,6 @@
+@@ -244,7 +244,6 @@
  #include "base/trace_event/trace_event_etw_export_win.h"
  #include "base/win/win_util.h"
  #include "chrome/browser/chrome_browser_main_win.h"
@@ -35,7 +37,7 @@
  #if defined(GOOGLE_CHROME_BUILD)
  #include "chrome/browser/component_updater/third_party_module_list_component_installer_win.h"
  #endif  // defined(GOOGLE_CHROME_BUILD)
-@@ -601,7 +600,6 @@ void RegisterComponentsForUpdate(PrefService* profile_prefs) {
+@@ -511,7 +510,6 @@ void RegisterComponentsForUpdate(PrefSer
    // on chromium build bots, it is always registered here and
    // RegisterSwReporterComponent() has support for running only in official
    // builds or tests.
@@ -45,7 +47,7 @@
  #endif  // defined(GOOGLE_CHROME_BUILD)
 --- a/chrome/browser/chrome_browser_main_win.cc
 +++ b/chrome/browser/chrome_browser_main_win.cc
-@@ -46,9 +46,6 @@
+@@ -47,9 +47,6 @@
  #include "chrome/browser/memory/swap_thrashing_monitor.h"
  #include "chrome/browser/profiles/profile_manager.h"
  #include "chrome/browser/profiles/profile_shortcut_manager.h"
@@ -55,7 +57,7 @@
  #include "chrome/browser/ui/simple_message_box.h"
  #include "chrome/browser/ui/uninstall_browser_prompt.h"
  #include "chrome/browser/win/browser_util.h"
-@@ -398,15 +395,5 @@ void ShowCloseBrowserFirstMessageBox() {
+@@ -403,16 +400,6 @@ void ShowCloseBrowserFirstMessageBox() {
        l10n_util::GetStringUTF16(IDS_UNINSTALL_CLOSE_APP));
  }
  
@@ -71,7 +73,8 @@
 -
  // This error message is not localized because we failed to load the
  // localization data files.
-@@ -564,23 +548,6 @@ void ChromeBrowserMainPartsWin::PostBrowserStart() {
+ const char kMissingLocaleDataTitle[] = "Missing File Error";
+@@ -565,23 +552,6 @@ void ChromeBrowserMainPartsWin::PostBrow
  
    InitializeChromeElf();
  
@@ -97,7 +100,7 @@
    base::PostDelayedTaskWithTraits(FROM_HERE, {content::BrowserThread::UI},
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -808,7 +808,6 @@ jumbo_static_library("extensions") {
+@@ -785,7 +785,6 @@ jumbo_static_library("extensions") {
      "//chrome/browser/media/router",
      "//chrome/browser/media/router/discovery",
      "//chrome/browser/resource_coordinator:mojo_bindings",
@@ -107,7 +110,7 @@
      "//chrome/common",
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -109,7 +109,6 @@
+@@ -114,7 +114,6 @@
  #include "components/prefs/pref_service.h"
  #include "components/proxy_config/pref_proxy_config_tracker_impl.h"
  #include "components/rappor/rappor_service_impl.h"
@@ -115,7 +118,7 @@
  #include "components/search_engines/template_url_prepopulate_data.h"
  #include "components/sessions/core/session_id_generator.h"
  #include "components/startup_metric_utils/browser/startup_metric_utils.h"
-@@ -301,14 +301,11 @@
+@@ -321,14 +320,11 @@
  #endif
  
  #if defined(OS_WIN)
@@ -130,7 +133,7 @@
  #endif
  
  #if defined(OS_WIN) || defined(OS_MACOSX) || \
-@@ -545,7 +541,6 @@ void RegisterLocalState(PrefRegistrySimple* registry) {
+@@ -568,7 +564,6 @@ void RegisterLocalState(PrefRegistrySimp
  #endif
  
  #if defined(OS_WIN)
@@ -138,7 +141,7 @@
  #if defined(GOOGLE_CHROME_BUILD)
    IncompatibleApplicationsUpdater::RegisterLocalStatePrefs(registry);
    ModuleDatabase::RegisterLocalStatePrefs(registry);
-@@ -571,7 +566,6 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -640,7 +635,6 @@ void RegisterProfilePrefs(user_prefs::Pr
    ProtocolHandlerRegistry::RegisterProfilePrefs(registry);
    PushMessagingAppIdentifier::RegisterProfilePrefs(registry);
    RegisterBrowserUserPrefs(registry);
@@ -146,7 +149,7 @@
    secure_origin_whitelist::RegisterProfilePrefs(registry);
    SafeBrowsingTriggeredPopupBlocker::RegisterProfilePrefs(registry);
    SessionStartupPref::RegisterProfilePrefs(registry);
-@@ -753,11 +747,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -795,11 +789,7 @@ void RegisterProfilePrefs(user_prefs::Pr
  #endif
  
  #if defined(OS_WIN)
@@ -160,7 +163,7 @@
  #if defined(OS_WIN) || defined(OS_MACOSX) || \
 --- a/chrome/browser/profiles/off_the_record_profile_io_data.cc
 +++ b/chrome/browser/profiles/off_the_record_profile_io_data.cc
-@@ -167,14 +167,6 @@ void OffTheRecordProfileIOData::Handle::LazyInitialize() const {
+@@ -167,14 +167,6 @@ void OffTheRecordProfileIOData::Handle::
    // Set initialized_ to true at the beginning in case any of the objects
    // below try to get the ResourceContext pointer.
    initialized_ = true;
@@ -177,7 +180,7 @@
        prefs::kPluginsAlwaysOpenPdfExternally, profile_->GetPrefs());
 --- a/chrome/browser/profiles/profile_impl_io_data.cc
 +++ b/chrome/browser/profiles/profile_impl_io_data.cc
-@@ -331,14 +331,6 @@ void ProfileImplIOData::Handle::LazyInitialize() const {
+@@ -347,14 +347,6 @@ void ProfileImplIOData::Handle::LazyInit
    // below try to get the ResourceContext pointer.
    initialized_ = true;
    PrefService* pref_service = profile_->GetPrefs();
@@ -194,16 +197,16 @@
        prefs::kPluginsAlwaysOpenPdfExternally, pref_service);
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -841,7 +841,6 @@ jumbo_split_static_library("ui") {
+@@ -380,7 +380,6 @@ jumbo_split_static_library("ui") {
      "//chrome/browser/engagement:mojo_bindings",
      "//chrome/browser/media:mojo_bindings",
      "//chrome/browser/profiling_host",
 -    "//chrome/browser/safe_browsing",
      "//chrome/browser/ssl:proto",
      "//chrome/browser/ui/webui/bluetooth_internals",
-     "//chrome/browser/ui/webui/interventions_internals:mojo_bindings",
-@@ -2567,10 +2566,6 @@ jumbo_split_static_library("ui") {
-       "network_profile_bubble.h",
+     "//chrome/browser/ui/webui/downloads:mojo_bindings",
+@@ -2164,10 +2163,6 @@ jumbo_split_static_library("ui") {
+       "startup/credential_provider_signin_info_fetcher_win.h",
        "startup/default_browser_prompt_win.cc",
        "views/certificate_viewer_win.cc",
 -      "views/chrome_cleaner_dialog_win.cc",
@@ -215,20 +218,20 @@
        "views/color_chooser_win.cc",
 --- a/chrome/browser/ui/browser_dialogs.h
 +++ b/chrome/browser/ui/browser_dialogs.h
-@@ -50,9 +50,6 @@ class PaymentRequestDialog;
- }
-
+@@ -49,9 +49,6 @@ class PaymentRequestDialog;
+ }  // namespace payments
+ 
  namespace safe_browsing {
 -class ChromeCleanerController;
 -class ChromeCleanerDialogController;
 -class ChromeCleanerRebootDialogController;
  class SettingsResetPromptController;
- }
-
-@@ -294,21 +291,6 @@ void ShowSettingsResetPrompt(
+ }  // namespace safe_browsing
+ 
+@@ -282,21 +279,6 @@ void ShowSettingsResetPrompt(
      Browser* browser,
      safe_browsing::SettingsResetPromptController* controller);
-
+ 
 -// Shows the Chrome Cleanup dialog asking the user if they want to clean their
 -// system from unwanted software. This is called when unwanted software has been
 -// detected on the system.
@@ -245,24 +248,24 @@
 -    safe_browsing::ChromeCleanerRebootDialogController* dialog_controller);
 -
  #endif  // OS_WIN
-
+ 
  }  // namespace chrome
 --- a/chrome/browser/ui/webui/settings/chrome_cleanup_handler.cc
 +++ b/chrome/browser/ui/webui/settings/chrome_cleanup_handler.cc
-@@ -275,8 +275,6 @@ void ChromeCleanupHandler::HandleStartCleanup(const base::ListValue* args) {
+@@ -239,8 +239,6 @@ void ChromeCleanupHandler::HandleStartCl
    // The state is propagated to all open tabs and should be consistent.
-   DCHECK_EQ(controller_->logs_enabled(), allow_logs_upload);
-
+   DCHECK_EQ(controller_->logs_enabled(profile_), allow_logs_upload);
+ 
 -  safe_browsing::RecordCleanupStartedHistogram(
 -      safe_browsing::CLEANUP_STARTED_FROM_PROMPT_IN_SETTINGS);
    base::RecordAction(
        base::UserMetricsAction("SoftwareReporter.CleanupWebui_StartCleanup"));
-
+ 
 --- a/chrome/browser/ui/webui/settings/md_settings_ui.cc
 +++ b/chrome/browser/ui/webui/settings/md_settings_ui.cc
-@@ -54,9 +54,6 @@
+@@ -60,9 +60,6 @@
  #include "printing/buildflags/buildflags.h"
-
+ 
  #if defined(OS_WIN)
 -#include "chrome/browser/safe_browsing/chrome_cleaner/chrome_cleaner_controller_win.h"
 -#include "chrome/browser/safe_browsing/chrome_cleaner/srt_field_trial_win.h"
@@ -270,7 +273,7 @@
  #if defined(GOOGLE_CHROME_BUILD)
  #include "chrome/browser/conflicts/incompatible_applications_updater_win.h"
  #include "chrome/browser/conflicts/token_util_win.h"
-@@ -244,7 +241,6 @@ MdSettingsUI::MdSettingsUI(content::WebUI* web_ui)
+@@ -251,7 +248,6 @@ MdSettingsUI::MdSettingsUI(content::WebU
        content::WebUIDataSource::Create(chrome::kChromeUISettingsHost);
  
  #if defined(OS_WIN)
@@ -280,7 +283,7 @@
  #if defined(OS_WIN) && defined(GOOGLE_CHROME_BUILD)
 --- a/chrome/common/safe_browsing/BUILD.gn
 +++ b/chrome/common/safe_browsing/BUILD.gn
-@@ -76,24 +76,9 @@ if (safe_browsing_mode == 1) {
+@@ -77,24 +77,9 @@ if (safe_browsing_mode == 1) {
  
    source_set("binary_feature_extractor") {
      sources = [
@@ -307,20 +310,20 @@
    source_set("mock_binary_feature_extractor") {
 --- a/chrome/renderer/url_loader_throttle_provider_impl.cc
 +++ b/chrome/renderer/url_loader_throttle_provider_impl.cc
-@@ -110,8 +110,7 @@ URLLoaderThrottleProviderImpl::URLLoaderThrottleProviderImpl(
+@@ -118,8 +118,7 @@ URLLoaderThrottleProviderImpl::URLLoader
        chrome_content_renderer_client_(chrome_content_renderer_client) {
    DETACH_FROM_THREAD(thread_checker_);
-
+ 
 -  if (base::FeatureList::IsEnabled(network::features::kNetworkService) ||
 -      base::FeatureList::IsEnabled(safe_browsing::kCheckByURLLoaderThrottle)) {
 +  if (base::FeatureList::IsEnabled(network::features::kNetworkService)) {
      content::RenderThread::Get()->GetConnector()->BindInterface(
          content::mojom::kBrowserServiceName,
          mojo::MakeRequest(&safe_browsing_info_));
-@@ -158,10 +157,7 @@ URLLoaderThrottleProviderImpl::CreateThrottles(
-   DCHECK(!is_frame_resource ||
-          type_ == content::URLLoaderThrottleProviderType::kFrame);
-
+@@ -188,10 +187,7 @@ URLLoaderThrottleProviderImpl::CreateThr
+             net::HttpRequestHeaders(), data_reduction_proxy_manager_.get()));
+   }
+ 
 -  if ((network_service_enabled ||
 -       base::FeatureList::IsEnabled(
 -           safe_browsing::kCheckByURLLoaderThrottle)) &&

@@ -2,7 +2,7 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -430,22 +430,6 @@ if (is_win) {
+@@ -432,22 +432,6 @@ if (is_win) {
          "//content/public/app:both",
        ]
      }
@@ -25,7 +25,7 @@
    }
  
    if (is_multi_dll_chrome) {
-@@ -492,22 +476,6 @@ if (is_win) {
+@@ -494,22 +478,6 @@ if (is_win) {
          "/DELAYLOAD:wininet.dll",
        ]
  

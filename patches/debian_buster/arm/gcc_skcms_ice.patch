@@ -2,16 +2,24 @@ description: GCC ICE with optimized version
 author: Riku Voipio
 bug-debian: http://bugs.debian.org/901290
 
---- a/third_party/skia/third_party/skcms/skcms.gni
-+++ b/third_party/skia/third_party/skcms/skcms.gni
-@@ -3,6 +3,10 @@
- # Use of this source code is governed by a BSD-style license that can be
- # found in the LICENSE file.
+--- a/skia/BUILD.gn
++++ b/skia/BUILD.gn
+@@ -57,6 +57,10 @@ config("skia_config") {
+     "SK_HAS_WEBP_LIBRARY",
+   ]
  
-+if ((current_cpu == "arm64" || current_cpu == "arm") && !is_clang) {
-+    defines = [ "SKCMS_PORTABLE=1" ]
-+}
++  if ((current_cpu == "arm64" || current_cpu == "arm") && !is_clang) {
++    defines += [ "SKCMS_PORTABLE=1" ]
++  }
 +
- skcms_sources = [
-   "skcms.cc",
-   "skcms.h",
+   if (!is_ios) {
+     defines += [ "SK_HAS_JPEG_LIBRARY" ]
+   }
+@@ -238,6 +242,7 @@ config("skia_library_config") {
+ 
+ source_set("skcms") {
+   cflags = []
++  defines = [ "SKCMS_PORTABLE=1" ]
+   if (!is_win || is_clang) {
+     cflags += [
+       "-w",

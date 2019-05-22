@@ -4,10 +4,10 @@ author: Michael Gilbert <mgilbert@debian.org>
 --- a/third_party/webrtc/modules/desktop_capture/linux/window_capturer_x11.cc
 +++ b/third_party/webrtc/modules/desktop_capture/linux/window_capturer_x11.cc
 @@ -16,6 +16,7 @@
- 
+ #include <string.h>
  #include <memory>
  #include <string>
 +#include <cstring>
  #include <utility>
  
- #include "modules/desktop_capture/desktop_frame.h"
+ #include "api/scoped_refptr.h"
