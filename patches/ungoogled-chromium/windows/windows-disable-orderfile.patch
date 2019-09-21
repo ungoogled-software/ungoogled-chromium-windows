@@ -1,31 +1,10 @@
 # Disable use of orderfiles which are difficult to generate and normally require downloading from Google storage
 
---- a/chrome/BUILD.gn
-+++ b/chrome/BUILD.gn
-@@ -432,22 +432,6 @@ if (is_win) {
-         "//content/public/app:both",
-       ]
-     }
--
--    if (is_clang && is_official_build) {
--      orderfile = "build/chrome.$target_cpu.orderfile"
--      rebased_orderfile = rebase_path(orderfile, root_build_dir)
--      inputs = [
--        orderfile,
--      ]
--      ldflags += [
--        "/order:@$rebased_orderfile",
--
--        # Ignore warnings about missing functions or functions not in their
--        # own section.
--        "/ignore:4037",
--        "/ignore:4065",
--      ]
--    }
-   }
- 
-   if (is_multi_dll_chrome) {
-@@ -494,22 +478,6 @@ if (is_win) {
+Index: src/chrome/BUILD.gn
+===================================================================
+--- src.orig/chrome/BUILD.gn
++++ src/chrome/BUILD.gn
+@@ -551,22 +551,6 @@ if (is_win) {
          "/DELAYLOAD:wininet.dll",
        ]
  
@@ -48,3 +27,16 @@
        if (symbol_level == 2) {
          # Incremental linking doesn't work on this target in debug mode with
          # full symbols, but does work in other cases, including minimal
+Index: src/build/config/compiler/BUILD.gn
+===================================================================
+--- src.orig/build/config/compiler/BUILD.gn
++++ src/build/config/compiler/BUILD.gn
+@@ -191,8 +191,6 @@ if (is_win || is_android || is_chromeos)
+       # Allow downstream tools to set orderfile path with
+       # another variable.
+       chrome_orderfile_path = default_chrome_orderfile
+-    } else if (is_win && is_clang && is_official_build) {
+-      chrome_orderfile_path = "//chrome/build/chrome.$target_cpu.orderfile"
+     } else if (is_chromeos) {
+       # FIXME(tcwang): update this with autoroller.
+       chrome_orderfile_path = ""

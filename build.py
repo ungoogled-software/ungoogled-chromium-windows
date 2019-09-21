@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2018 The ungoogled-chromium Authors. All rights reserved.
+# Copyright (c) 2019 The ungoogled-chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 """
 ungoogled-chromium build script for Microsoft Windows
 """
 
-# NOTE: THIS SCRIPT MUST BE RUN WITH PYTHON 3, NOT 2
 import sys
 if sys.version_info.major < 3 or sys.version_info.minor < 6:
     raise RuntimeError('Python 3.6+ is required for this script. You have: {}.{}'.format(
@@ -67,30 +66,33 @@ def _run_build_process(*args, **kwargs):
                    **kwargs)
 
 
-def _test_python2(error_exit):
+def _test_python(error_exit):
     """
-    Tests if Python 2 is setup with the proper requirements
+    Tests if Python 3 is setup with the proper requirements
     """
-    python2_exe = shutil.which('python')
-    if not python2_exe:
+    python3_exe = shutil.which('python')
+    if not python3_exe:
         error_exit('Could not find "python" in PATH')
 
-    # Check Python version is at least 2.7.9 to avoid exec issues
-    result = subprocess.run((python2_exe, '--version'),
+    # Check Python version is at least 3.6
+    result = subprocess.run((python3_exe, '--version'),
                             stderr=subprocess.PIPE,
                             check=True,
                             universal_newlines=True)
-    match = re.fullmatch(r'Python 2\.7\.([0-9]+)', result.stderr.strip())
+    match = re.fullmatch(r'Python 3\.([0-9])\.([0-9]+)', result.stderr.strip())
     if not match:
-        error_exit('Could not detect Python 2 version from output: {}'.format(
+        error_exit('Could not detect Python 3 version from output: {}'.format(
             result.stderr.strip()))
-    if int(match.group(1)) < 9:
-        error_exit('At least Python 2.7.9 is required; found 2.7.{}'.format(match.group(1)))
+    if int(match.group(1)) < 6:
+        error_exit('At least Python 3.6 is required; found 3.{}.{}'.format(
+            match.group(1),
+            match.group(2),
+        ))
 
     # Check for pypiwin32 module
-    result = subprocess.run((python2_exe, '-c', 'import win32api'))
+    result = subprocess.run((python3_exe, '-c', 'import win32api'))
     if result.returncode:
-        error_exit('Unable to find pypiwin32 in Python 2 installation.')
+        error_exit('Unable to find pypiwin32 module.')
 
 
 def _make_tmp_paths():
@@ -124,7 +126,7 @@ def main():
     domsubcache = _ROOT_DIR / 'build' / 'domsubcache.tar.gz'
 
     # Test environment
-    _test_python2(parser.error)
+    _test_python(parser.error)
 
     # Setup environment
     source_tree.mkdir(parents=True, exist_ok=True)

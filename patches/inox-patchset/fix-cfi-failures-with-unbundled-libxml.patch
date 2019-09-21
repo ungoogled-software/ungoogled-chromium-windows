@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
 +++ b/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
-@@ -137,11 +137,11 @@ class PendingStartElementNSCallback fina
+@@ -138,11 +138,11 @@ class PendingStartElementNSCallback fina
          attribute_count_(attribute_count),
          defaulted_count_(defaulted_count) {
      namespaces_ = static_cast<xmlChar**>(
@@ -14,7 +14,7 @@
      for (int i = 0; i < attribute_count; ++i) {
        // Each attribute has 5 elements in the array:
        // name, prefix, uri, value and an end pointer.
-@@ -156,12 +156,12 @@ class PendingStartElementNSCallback fina
+@@ -157,12 +157,12 @@ class PendingStartElementNSCallback fina
  
    ~PendingStartElementNSCallback() override {
      for (int i = 0; i < namespace_count_ * 2; ++i)
@@ -31,7 +31,7 @@
    }
  
    void Call(XMLDocumentParser* parser) override {
-@@ -203,7 +203,7 @@ class PendingCharactersCallback final
+@@ -204,7 +204,7 @@ class PendingCharactersCallback final
    PendingCharactersCallback(const xmlChar* chars, int length)
        : chars_(xmlStrndup(chars, length)), length_(length) {}
  
@@ -40,7 +40,7 @@
  
    void Call(XMLDocumentParser* parser) override {
      parser->Characters(chars_, length_);
-@@ -279,7 +279,7 @@ class PendingErrorCallback final : publi
+@@ -280,7 +280,7 @@ class PendingErrorCallback final : publi
          line_number_(line_number),
          column_number_(column_number) {}
  
@@ -51,7 +51,7 @@
      parser->HandleError(type_, reinterpret_cast<char*>(message_),
 --- a/third_party/blink/renderer/core/xml/xsl_style_sheet_libxslt.cc
 +++ b/third_party/blink/renderer/core/xml/xsl_style_sheet_libxslt.cc
-@@ -189,7 +189,7 @@ void XSLStyleSheet::LoadChildSheets() {
+@@ -188,7 +188,7 @@ void XSLStyleSheet::LoadChildSheets() {
          xmlChar* uri_ref =
              xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);
          LoadChildSheet(String::FromUTF8((const char*)uri_ref));
@@ -60,7 +60,7 @@
        } else {
          break;
        }
-@@ -203,7 +203,7 @@ void XSLStyleSheet::LoadChildSheets() {
+@@ -202,7 +202,7 @@ void XSLStyleSheet::LoadChildSheets() {
          xmlChar* uri_ref =
              xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);
          LoadChildSheet(String::FromUTF8((const char*)uri_ref));
@@ -69,9 +69,9 @@
        }
        curr = curr->next;
      }
-@@ -292,8 +292,8 @@ xmlDocPtr XSLStyleSheet::LocateStyleshee
+@@ -291,8 +291,8 @@ xmlDocPtr XSLStyleSheet::LocateStyleshee
        xmlChar* child_uri =
-           xmlBuildURI((const xmlChar*)import_href.data(), base);
+           xmlBuildURI((const xmlChar*)import_href.c_str(), base);
        bool equal_ur_is = xmlStrEqual(uri, child_uri);
 -      xmlFree(base);
 -      xmlFree(child_uri);
@@ -93,7 +93,7 @@
  }
 --- a/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
-@@ -104,7 +104,7 @@ static xmlDocPtr DocLoaderFunc(const xml
+@@ -103,7 +103,7 @@ static xmlDocPtr DocLoaderFunc(const xml
        xmlChar* base = xmlNodeGetBase(context->document->doc, context->node);
        KURL url(KURL(reinterpret_cast<const char*>(base)),
                 reinterpret_cast<const char*>(uri));
@@ -104,7 +104,7 @@
        fetch_options.initiator_info.name = fetch_initiator_type_names::kXml;
 --- a/third_party/blink/renderer/core/xml/xslt_unicode_sort.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_unicode_sort.cc
-@@ -273,18 +273,18 @@ void XsltUnicodeSortFunction(xsltTransfo
+@@ -327,18 +327,18 @@ void XsltUnicodeSortFunction(xsltTransfo
      comp = static_cast<xsltStylePreComp*>(sorts[j]->psvi);
      if (tempstype[j] == 1) {
        // The data-type needs to be recomputed each time.
@@ -125,7 +125,7 @@
 +      free(results_tab[j]);
      }
    }
- }
+ 
 --- a/third_party/libxml/chromium/libxml_utils.cc
 +++ b/third_party/libxml/chromium/libxml_utils.cc
 @@ -23,7 +23,7 @@ std::string XmlStringToStdString(const x

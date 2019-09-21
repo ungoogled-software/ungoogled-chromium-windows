@@ -49,7 +49,7 @@
      if (is_chromeos) {
        data_deps += [ "//sandbox/linux:chrome_sandbox" ]
      }
-@@ -344,11 +311,7 @@ if (!is_android && !is_mac) {
+@@ -366,11 +333,7 @@ if (!is_android && !is_mac) {
    }
  
    chrome_binary("chrome_initial") {
@@ -64,7 +64,7 @@
      if (!is_win && use_aura) {
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
-@@ -36,10 +36,6 @@ group("telemetry_chrome_test") {
+@@ -39,10 +39,6 @@ group("telemetry_chrome_test") {
      data_deps += [ "//chrome" ]
    }
  
@@ -77,7 +77,7 @@
    }
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -338,11 +338,6 @@ python_library("chromedriver_py_tests")
+@@ -349,11 +349,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }
