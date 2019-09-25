@@ -70,19 +70,19 @@ def _test_python(error_exit):
     """
     Tests if Python 3 is setup with the proper requirements
     """
-    python3_exe = shutil.which('python')
+    python3_exe = shutil.which('py')
     if not python3_exe:
-        error_exit('Could not find "python" in PATH')
+        error_exit('Could not find "py" in PATH')
 
     # Check Python version is at least 3.6
     result = subprocess.run((python3_exe, '--version'),
-                            stderr=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
                             check=True,
                             universal_newlines=True)
-    match = re.fullmatch(r'Python 3\.([0-9])\.([0-9]+)', result.stderr.strip())
+    match = re.fullmatch(r'Python 3\.([0-9])\.([0-9]+)', result.stdout.strip())
     if not match:
         error_exit('Could not detect Python 3 version from output: {}'.format(
-            result.stderr.strip()))
+            result.stdout.strip()))
     if int(match.group(1)) < 6:
         error_exit('At least Python 3.6 is required; found 3.{}.{}'.format(
             match.group(1),
