@@ -16,6 +16,8 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 ### Setting up the build environment
 
+**IMPORTANT**: Please setup only what is referenced below. Do NOT setup other Chromium compilation tools like `depot_tools`, since we have a custom build process which avoids using Google's pre-built binaries.
+
 #### Setting up Visual Studio
 
 [Follow the "Visual Studio" section of the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/refs/tags/77.0.3865.90/docs/windows_build_instructions.md#visual-studio).
@@ -24,16 +26,17 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 #### Other build requirements
 
-**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in order for buildkit to function properly. One such setup that works is Windows 10 (which added this option since Anniversary) with Python 3.6 or newer from the official installer (which contains the manifest files that allow use of long file paths). Other possible setups are being discussed in [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345).
+**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (Anniversary or newer) with the official installer for Python 3.6 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for other Windows versions.
 
 1. Setup the following:
 
     * 7-zip
     * Python 3.6+ with pypiwin32 module (`pip install pypiwin32`)
+	    * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
 
 2. Make sure Python 3.6+ is set in the user or system environment variable `PATH` as `python`.
 
-### Setup and build
+### Building
 
 NOTE: The commands below assume the `py` command was installed by Python 3 into `PATH`. If this is not the case, then substitute it with `python`.
 
