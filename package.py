@@ -50,3 +50,6 @@ def main():
     files_generator = filescfg.filescfg_generator(
         Path('build/src/chrome/tools/build/win/FILES.cfg'), build_outputs, args.cpu_arch)
     filescfg.create_archive(files_generator, tuple(), build_outputs, output)
+
+if __name__ == '__main__':
+    main()
