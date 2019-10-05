@@ -1182,7 +1182,22 @@
  #include "chrome/services/file_util/public/mojom/constants.mojom.h"
  #endif
  
-@@ -2419,10 +2402,6 @@ bool ChromeContentBrowserClient::AllowSi
+@@ -2127,14 +2110,6 @@ void ChromeContentBrowserClient::AppendE
+         }
+       }
+ 
+-      // Disable client-side phishing detection in the renderer if it is
+-      // disabled in the Profile preferences or the browser process.
+-      if (!prefs->GetBoolean(prefs::kSafeBrowsingEnabled) ||
+-          true) {
+-        command_line->AppendSwitch(
+-            switches::kDisableClientSidePhishingDetection);
+-      }
+-
+       if (prefs->GetBoolean(prefs::kPrintPreviewDisabled))
+         command_line->AppendSwitch(switches::kDisablePrintPreview);
+ 
+@@ -2419,10 +2394,6 @@ bool ChromeContentBrowserClient::AllowSi
      content::ResourceContext* resource_context) {
    DCHECK_CURRENTLY_ON(BrowserThread::IO);
    DCHECK(!base::FeatureList::IsEnabled(features::kNavigationLoaderOnUI));
@@ -1193,7 +1208,7 @@
    ProfileIOData* io_data = ProfileIOData::FromResourceContext(resource_context);
    return io_data->signed_exchange_enabled()->GetValue();
  }
-@@ -3722,21 +3701,6 @@ void ChromeContentBrowserClient::ExposeI
+@@ -3722,21 +3693,6 @@ void ChromeContentBrowserClient::ExposeI
          ui_task_runner);
    }
  
@@ -1215,7 +1230,7 @@
    if (data_reduction_proxy::params::IsEnabledWithNetworkService()) {
      registry->AddInterface(base::BindRepeating(
          &AddDataReductionProxyBinding,
-@@ -4196,15 +4160,6 @@ ChromeContentBrowserClient::CreateThrott
+@@ -4196,15 +4152,6 @@ ChromeContentBrowserClient::CreateThrott
      throttles.push_back(std::move(background_tab_navigation_throttle));
  #endif
  
@@ -1231,7 +1246,7 @@
    std::unique_ptr<content::NavigationThrottle>
        lookalike_url_navigation_throttle = lookalikes::
            LookalikeUrlNavigationThrottle::MaybeCreateNavigationThrottle(handle);
-@@ -4552,8 +4507,7 @@ ChromeContentBrowserClient::CreateURLLoa
+@@ -4552,8 +4499,7 @@ ChromeContentBrowserClient::CreateURLLoa
    ProfileIOData* io_data = nullptr;
    // Only set |io_data| if needed, as in unit tests |resource_context| is a
    // MockResourceContext and the cast doesn't work.
@@ -1241,7 +1256,7 @@
      io_data = ProfileIOData::FromResourceContext(resource_context);
    }
  
-@@ -4586,20 +4540,6 @@ ChromeContentBrowserClient::CreateURLLoa
+@@ -4586,20 +4532,6 @@ ChromeContentBrowserClient::CreateURLLoa
          headers, data_reduction_proxy_throttle_manager_.get()));
    }
  
@@ -1262,7 +1277,7 @@
    if (chrome_navigation_ui_data &&
        chrome_navigation_ui_data->prerender_mode() != prerender::NO_PRERENDER) {
      result.push_back(std::make_unique<prerender::PrerenderURLLoaderThrottle>(
-@@ -4688,18 +4628,6 @@ ChromeContentBrowserClient::CreateURLLoa
+@@ -4688,18 +4620,6 @@ ChromeContentBrowserClient::CreateURLLoa
          headers, data_reduction_proxy_throttle_manager_.get()));
    }
  
@@ -1281,7 +1296,7 @@
    if (chrome_navigation_ui_data &&
        chrome_navigation_ui_data->prerender_mode() != prerender::NO_PRERENDER) {
      result.push_back(std::make_unique<prerender::PrerenderURLLoaderThrottle>(
-@@ -5389,14 +5317,6 @@ void ChromeContentBrowserClient::SetDefa
+@@ -5389,14 +5309,6 @@ void ChromeContentBrowserClient::SetDefa
    g_default_quota_settings = settings;
  }
  
@@ -2603,7 +2618,7 @@
      }
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE: {
        if (IsExtensionDownload()) {
-@@ -270,19 +268,11 @@ base::string16 DownloadUIModel::GetWarni
+@@ -270,20 +268,10 @@ base::string16 DownloadUIModel::GetWarni
      }
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT:
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_HOST: {
@@ -2617,15 +2632,16 @@
 -      request_ap_verdicts = safe_browsing::AdvancedProtectionStatusManager::
 -          RequestsAdvancedProtectionVerdicts(profile());
 -#endif
-       return l10n_util::GetStringFUTF16(
+-      return l10n_util::GetStringFUTF16(
 -          request_ap_verdicts
 -              ? IDS_PROMPT_UNCOMMON_DOWNLOAD_CONTENT_IN_ADVANCED_PROTECTION
 -              : IDS_PROMPT_UNCOMMON_DOWNLOAD_CONTENT,
-+          IDS_PROMPT_UNCOMMON_DOWNLOAD_CONTENT,
-           elided_filename);
+-          elided_filename);
++      break;
      }
      case download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED: {
-@@ -386,13 +376,6 @@ bool DownloadUIModel::ShouldPreferOpenin
+       return l10n_util::GetStringFUTF16(IDS_PROMPT_DOWNLOAD_CHANGES_SETTINGS,
+@@ -386,13 +374,6 @@ bool DownloadUIModel::ShouldPreferOpenin
  
  void DownloadUIModel::SetShouldPreferOpeningInBrowser(bool preference) {}
  
@@ -5873,3 +5889,14 @@
  
    ScheduleTask(base::BindRepeating(&PasswordStore::SaveEnterprisePasswordURLs,
                                     this, base::Passed(&enterprise_login_urls),
+--- a/components/search_engines/search_terms_data.cc
++++ b/components/search_engines/search_terms_data.cc
+@@ -21,7 +21,7 @@ std::string SearchTermsData::GoogleBaseU
+ std::string SearchTermsData::GoogleBaseSuggestURLValue() const {
+   // Start with the Google base URL.
+   const GURL base_url(GoogleBaseURLValue());
+-  DCHECK(base_url.is_valid());
++  //DCHECK(base_url.is_valid());
+ 
+   GURL::Replacements repl;
+ 
