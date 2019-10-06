@@ -21,7 +21,7 @@ import filescfg
 from _common import ENCODING, get_chromium_version
 sys.path.pop(0)
 
-def _get_relese_revision():
+def _get_release_revision():
     revision_path = Path(__file__).resolve().parent / 'ungoogled-chromium' / 'revision.txt'
     return revision_path.read_text(encoding=ENCODING).strip()
 
