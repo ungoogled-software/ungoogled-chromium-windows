@@ -23,6 +23,10 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 [Follow the "Visual Studio" section of the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/refs/tags/77.0.3865.90/docs/windows_build_instructions.md#visual-studio).
 
 * Make sure to read through the entire section and install/configure all the required components.
+* If your Visual Studio is installed in a directory other than the default, you'll need to set a few environment variables to point the toolchains to your installation path. (Copied from [instructions for Electron](https://electronjs.org/docs/development/build-instructions-windows))
+	* `vs2019_install = DRIVE:\path\to\Microsoft Visual Studio\2019\Community` (replace `2019` and `Community` with your installed versions)
+	* `WINDOWSSDKDIR = DRIVE:\path\to\Windows Kits\10`
+
 
 #### Other build requirements
 
