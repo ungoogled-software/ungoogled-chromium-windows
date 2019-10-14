@@ -4,7 +4,7 @@
 
 --- a/build/toolchain/win/midl.py
 +++ b/build/toolchain/win/midl.py
-@@ -213,23 +213,11 @@ def main(arch, gendir, outdir, dynamic_guid, tlb, h, dlldata, iid, proxy, idl,
+@@ -213,23 +213,11 @@ def main(arch, gendir, outdir, dynamic_g
      for f in os.listdir(tmp_dir):
        ZapTimestamp(os.path.join(tmp_dir, f))
  

@@ -1,10 +1,8 @@
 # Disable use of rc.py, which requires Google's rc.exe executable
 # This patch uses Microsoft's rc.exe to generate the resource files, and does not do any verifiation
 
-Index: src/build/toolchain/win/tool_wrapper.py
-===================================================================
---- src.orig/build/toolchain/win/tool_wrapper.py
-+++ src/build/toolchain/win/tool_wrapper.py
+--- a/build/toolchain/win/tool_wrapper.py
++++ b/build/toolchain/win/tool_wrapper.py
 @@ -197,35 +197,13 @@ class WinTool(object):
      # 1. Run our rc.py.
      # Also pass /showIncludes to track dependencies of .rc files.

@@ -1,9 +1,7 @@
 # Disable use of orderfiles which are difficult to generate and normally require downloading from Google storage
 
-Index: src/chrome/BUILD.gn
-===================================================================
---- src.orig/chrome/BUILD.gn
-+++ src/chrome/BUILD.gn
+--- a/chrome/BUILD.gn
++++ b/chrome/BUILD.gn
 @@ -551,22 +551,6 @@ if (is_win) {
          "/DELAYLOAD:wininet.dll",
        ]
@@ -27,10 +25,8 @@ Index: src/chrome/BUILD.gn
        if (symbol_level == 2) {
          # Incremental linking doesn't work on this target in debug mode with
          # full symbols, but does work in other cases, including minimal
-Index: src/build/config/compiler/BUILD.gn
-===================================================================
---- src.orig/build/config/compiler/BUILD.gn
-+++ src/build/config/compiler/BUILD.gn
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
 @@ -191,8 +191,6 @@ if (is_win || is_android || is_chromeos)
        # Allow downstream tools to set orderfile path with
        # another variable.
