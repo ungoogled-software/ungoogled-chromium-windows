@@ -1,0 +1,22 @@
+# To compile the mini-installer, a 7z archive of the browser has to be made.
+# Google's 7z executable gets purged, so we have to use the system's 7z executable.
+
+--- a/chrome/tools/build/win/create_installer_archive.py
++++ b/chrome/tools/build/win/create_installer_archive.py
+@@ -144,8 +144,14 @@ def GenerateDiffPatch(options, orig_file
+ 
+ def GetLZMAExec(build_dir):
+   if sys.platform == 'win32':
+-    lzma_exec = os.path.join(build_dir, "..", "..", "third_party",
+-                             "lzma_sdk", "Executable", "7za.exe")
++    # Taken from ungoogled-chromium's _extraction.py file, modified for Python 2
++    import _winreg
++    sub_key_7zfm = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\7zFM.exe'
++
++    with _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, sub_key_7zfm) as key_handle:
++      sevenzipfm_dir = _winreg.QueryValueEx(key_handle, 'Path')[0]
++
++    lzma_exec = os.path.join(sevenzipfm_dir, "7z.exe")
+   else:
+     lzma_exec = '7zr'  # Use system 7zr.
+   return lzma_exec

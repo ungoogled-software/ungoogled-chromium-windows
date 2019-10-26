@@ -205,7 +205,7 @@ def main():
 
     # Run ninja
     _run_build_process('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
-                       'chromedriver')
+                       'chromedriver', 'mini_installer')
 
 
 if __name__ == '__main__':
