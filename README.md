@@ -35,14 +35,15 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 1. Setup the following:
 
     * 7-zip
-    * Python 3.6+ with pypiwin32 module (`pip install pypiwin32`)
+    * Python 3.6+ (for build and packaging scripts used below)
 	    * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
+    * Python 2.7 (for scripts in the Chromium source tree), with pypiwin32 module (`pip install pypiwin32`)
 
-2. Make sure Python 3.6+ is set in the user or system environment variable `PATH` as `python`.
+2. Make sure Python 2.7 is set in the user or system environment variable `PATH` as `python`.
 
 ### Building
 
-NOTE: The commands below assume the `py` command was installed by Python 3 into `PATH`. If this is not the case, then substitute it with `python`.
+NOTE: The commands below assume the `py` command was installed by Python 3 into `PATH`. If this is not the case, then substitute it with `python3`.
 
 Run in `cmd.exe`:
 
