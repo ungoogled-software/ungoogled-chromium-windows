@@ -57,6 +57,7 @@ def _run_build_process(*args, **kwargs):
     """
     # Add call to set VC variables
     cmd_input = ['call "%s" >nul' % _get_vcvars_path()]
+    cmd_input.append('set DEPOT_TOOLS_WIN_TOOLCHAIN=0')
     cmd_input.append(' '.join(map('"{}"'.format, args)))
     cmd_input.append('exit\n')
     subprocess.run(('cmd.exe', '/k'),
@@ -191,9 +192,6 @@ def main():
 
     # Enter source tree to run build commands
     os.chdir(source_tree)
-
-    # Set "DEPOT_TOOLS_WIN_TOOLCHAIN" variable so gn gen doesn't return errors.
-    os.environ['DEPOT_TOOLS_WIN_TOOLCHAIN'] = "0"
 
     # Run GN bootstrap
     _run_build_process(
