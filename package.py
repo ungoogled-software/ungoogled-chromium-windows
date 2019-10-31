@@ -49,6 +49,7 @@ def main():
         'build/ungoogled-chromium_{}-{}.{}_installer.exe'.format(
             get_chromium_version(), _get_release_revision(), _get_packaging_revision()))
 
+    # We need to remove these files, or they'll end up in the zip files that will be generated.
     os.remove('build/src/out/Default/mini_installer.exe')
     os.remove('build/src/out/Default/mini_installer_exe_version.rc')
     os.remove('build/src/out/Default/setup.exe')
