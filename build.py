@@ -57,6 +57,7 @@ def _run_build_process(*args, **kwargs):
     """
     # Add call to set VC variables
     cmd_input = ['call "%s" >nul' % _get_vcvars_path()]
+    cmd_input.append('set DEPOT_TOOLS_WIN_TOOLCHAIN=0')
     cmd_input.append(' '.join(map('"{}"'.format, args)))
     cmd_input.append('exit\n')
     subprocess.run(('cmd.exe', '/k'),
@@ -202,7 +203,7 @@ def main():
 
     # Run ninja
     _run_build_process('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
-                       'chromedriver')
+                       'chromedriver', 'mini_installer')
 
 
 if __name__ == '__main__':

@@ -13,8 +13,10 @@ if sys.version_info.major < 3:
     raise RuntimeError('Python 3 is required for this script.')
 
 import argparse
+import os
 import platform
 from pathlib import Path
+import shutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'ungoogled-chromium' / 'utils'))
 import filescfg
@@ -42,6 +44,15 @@ def main():
               'This is the same as the "arch" key in FILES.cfg. '
               'Default (from platform.architecture()): %(default)s'))
     args = parser.parse_args()
+
+    shutil.copyfile('build/src/out/Default/mini_installer.exe',
+        'build/ungoogled-chromium_{}-{}.{}_installer.exe'.format(
+            get_chromium_version(), _get_release_revision(), _get_packaging_revision()))
+
+    # We need to remove these files, or they'll end up in the zip files that will be generated.
+    os.remove('build/src/out/Default/mini_installer.exe')
+    os.remove('build/src/out/Default/mini_installer_exe_version.rc')
+    os.remove('build/src/out/Default/setup.exe')
 
     build_outputs = Path('build/src/out/Default')
     output = Path('build/ungoogled-chromium_{}-{}.{}_windows.zip'.format(
