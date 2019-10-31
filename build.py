@@ -192,6 +192,9 @@ def main():
     # Enter source tree to run build commands
     os.chdir(source_tree)
 
+    # Set "DEPOT_TOOLS_WIN_TOOLCHAIN" variable so gn gen doesn't return errors.
+    os.environ['DEPOT_TOOLS_WIN_TOOLCHAIN'] = "0"
+
     # Run GN bootstrap
     _run_build_process(
         shutil.which('python'), 'tools\\gn\\bootstrap\\bootstrap.py', '-o', 'out\\Default\\gn.exe',
