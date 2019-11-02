@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
 +++ b/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
-@@ -138,11 +138,11 @@ class PendingStartElementNSCallback fina
+@@ -139,11 +139,11 @@ class PendingStartElementNSCallback fina
          attribute_count_(attribute_count),
          defaulted_count_(defaulted_count) {
      namespaces_ = static_cast<xmlChar**>(
@@ -14,7 +14,7 @@
      for (int i = 0; i < attribute_count; ++i) {
        // Each attribute has 5 elements in the array:
        // name, prefix, uri, value and an end pointer.
-@@ -157,12 +157,12 @@ class PendingStartElementNSCallback fina
+@@ -158,12 +158,12 @@ class PendingStartElementNSCallback fina
  
    ~PendingStartElementNSCallback() override {
      for (int i = 0; i < namespace_count_ * 2; ++i)
@@ -31,7 +31,7 @@
    }
  
    void Call(XMLDocumentParser* parser) override {
-@@ -204,7 +204,7 @@ class PendingCharactersCallback final
+@@ -205,7 +205,7 @@ class PendingCharactersCallback final
    PendingCharactersCallback(const xmlChar* chars, int length)
        : chars_(xmlStrndup(chars, length)), length_(length) {}
  
@@ -40,7 +40,7 @@
  
    void Call(XMLDocumentParser* parser) override {
      parser->Characters(chars_, length_);
-@@ -280,7 +280,7 @@ class PendingErrorCallback final : publi
+@@ -281,7 +281,7 @@ class PendingErrorCallback final : publi
          line_number_(line_number),
          column_number_(column_number) {}
  
