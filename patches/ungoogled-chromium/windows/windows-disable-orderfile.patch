@@ -2,9 +2,9 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -551,22 +551,6 @@ if (is_win) {
-         "/DELAYLOAD:wininet.dll",
-       ]
+@@ -453,22 +453,6 @@ if (is_win) {
+ 
+       configs += [ "//build/config/win:delayloads" ]
  
 -      if (is_clang && is_official_build) {
 -        orderfile = "build/chrome_child.$target_cpu.orderfile"
@@ -12,7 +12,7 @@
 -        inputs = [
 -          orderfile,
 -        ]
--        ldflags += [
+-        ldflags = [
 -          "/order:@$rebased_orderfile",
 -
 -          # Ignore warnings about missing functions or functions not in their
@@ -27,12 +27,12 @@
          # full symbols, but does work in other cases, including minimal
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -191,8 +191,6 @@ if (is_win || is_android || is_chromeos)
+@@ -183,8 +183,6 @@ if (is_win || is_android || is_chromeos)
        # Allow downstream tools to set orderfile path with
        # another variable.
        chrome_orderfile_path = default_chrome_orderfile
 -    } else if (is_win && is_clang && is_official_build) {
 -      chrome_orderfile_path = "//chrome/build/chrome.$target_cpu.orderfile"
      } else if (is_chromeos) {
-       # FIXME(tcwang): update this with autoroller.
-       chrome_orderfile_path = ""
+       chrome_orderfile_path = "//chromeos/profiles/chromeos.orderfile.txt"
+     }

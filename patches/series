@@ -13,3 +13,4 @@ ungoogled-chromium/windows/windows-disable-encryption.patch
 ungoogled-chromium/windows/windows-disable-machine-id.patch
 ungoogled-chromium/windows/windows-fix-fingerprinting.patch
 ungoogled-chromium/windows/windows-compile-mini-installer.patch
+ungoogled-chromium/windows/windows-no-unknown-warnings.patch
