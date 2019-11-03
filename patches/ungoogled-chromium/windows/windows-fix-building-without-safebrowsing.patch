@@ -1089,7 +1089,7 @@
  #include "components/security_interstitials/content/origin_policy_ui.h"
  #include "components/signin/public/base/signin_pref_names.h"
  #include "components/spellcheck/spellcheck_buildflags.h"
-@@ -2093,14 +2080,6 @@ void ChromeContentBrowserClient::AppendE
+@@ -2094,14 +2081,6 @@ void ChromeContentBrowserClient::AppendE
          }
        }
  
@@ -1104,7 +1104,7 @@
        if (prefs->GetBoolean(prefs::kPrintPreviewDisabled))
          command_line->AppendSwitch(switches::kDisablePrintPreview);
  
-@@ -5214,14 +5193,6 @@ void ChromeContentBrowserClient::SetDefa
+@@ -5215,14 +5194,6 @@ void ChromeContentBrowserClient::SetDefa
    g_default_quota_settings = settings;
  }
  
