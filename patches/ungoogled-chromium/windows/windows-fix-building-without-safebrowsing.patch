@@ -56,6 +56,15 @@
  
      all_dependent_configs = [ ":browser_win_linker_flags" ]
  
+@@ -4142,7 +4131,7 @@ jumbo_split_static_library("browser") {
+     ]
+   }
+ 
+-  if (is_win || is_mac || (is_linux && !is_chromeos)) {
++  if (false) {
+     sources += [
+       "password_manager/password_store_signin_notifier_impl.cc",
+       "password_manager/password_store_signin_notifier_impl.h",
 @@ -5392,15 +5381,6 @@ grit("resources") {
        ]
      }
@@ -303,7 +312,15 @@
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    IncompatibleApplicationsUpdater::RegisterLocalStatePrefs(registry);
    ModuleDatabase::RegisterLocalStatePrefs(registry);
-@@ -940,11 +935,7 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -786,7 +781,6 @@ void RegisterProfilePrefs(user_prefs::Pr
+   ProtocolHandlerRegistry::RegisterProfilePrefs(registry);
+   PushMessagingAppIdentifier::RegisterProfilePrefs(registry);
+   RegisterBrowserUserPrefs(registry);
+-  SafeBrowsingTriggeredPopupBlocker::RegisterProfilePrefs(registry);
+   SessionStartupPref::RegisterProfilePrefs(registry);
+   SharingSyncPreference::RegisterProfilePrefs(registry);
+   sync_sessions::SessionSyncPrefs::RegisterProfilePrefs(registry);
+@@ -940,11 +934,7 @@ void RegisterProfilePrefs(user_prefs::Pr
  #endif
  
  #if defined(OS_WIN)
