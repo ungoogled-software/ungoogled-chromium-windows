@@ -4,7 +4,7 @@
 
 --- a/build/toolchain/win/midl.py
 +++ b/build/toolchain/win/midl.py
-@@ -213,23 +213,11 @@ def main(arch, gendir, outdir, dynamic_g
+@@ -233,23 +233,11 @@ def main(arch, gendir, outdir, dynamic_g
      for f in os.listdir(tmp_dir):
        ZapTimestamp(os.path.join(tmp_dir, f))
  
@@ -20,11 +20,11 @@
 -        tofile = os.path.join(tmp_dir, f)
 -        print(''.join(
 -            difflib.unified_diff(
--                open(fromfile, 'U').readlines(),
--                open(tofile, 'U').readlines(), fromfile, tofile)))
+-                io.open(fromfile).readlines(),
+-                io.open(tofile).readlines(), fromfile, tofile)))
 -      delete_tmp_dir = False
 -      print('To rebaseline:')
--      print('  copy /y %s\* %s' % (tmp_dir, source))
+-      print(r'  copy /y %s\* %s' % (tmp_dir, source))
 -      sys.exit(1)
 +    if diff.left_only:
 +      for f in diff.left_only:

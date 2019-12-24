@@ -3,43 +3,160 @@
 
 --- a/build/toolchain/win/tool_wrapper.py
 +++ b/build/toolchain/win/tool_wrapper.py
-@@ -223,35 +223,13 @@ class WinTool(object):
-     # 1. Run our rc.py.
-     # Also pass /showIncludes to track dependencies of .rc files.
+@@ -213,10 +213,12 @@ class WinTool(object):
+     """Converts .rc files to .res files."""
+     env = self._GetEnv(arch)
      args = list(args)
 -    rcpy_args = args[:]
 -    rcpy_args[0:1] = [sys.executable, os.path.join(BASE_DIR, 'rc', 'rc.py')]
--    rcpy_res_output = rcpy_args[-2]
--    assert rcpy_res_output.startswith('/fo')
--    assert rcpy_res_output.endswith('.res')
--    rc_res_output = rcpy_res_output + '_ms_rc'
--    args[-2] = rc_res_output
 -    rcpy_args.append('/showIncludes')
--    rc_exe_exit_code = subprocess.call(rcpy_args, env=env)
--    if rc_exe_exit_code == 0:
--      # Since tool("rc") can't have deps, add deps on this script and on rc.py
--      # and its deps here, so that rc edges become dirty if rc.py changes.
--      print('Note: including file: ../../build/toolchain/win/tool_wrapper.py')
--      print('Note: including file: ../../build/toolchain/win/rc/rc.py')
--      print(
--          'Note: including file: ../../build/toolchain/win/rc/linux64/rc.sha1')
--      print('Note: including file: ../../build/toolchain/win/rc/mac/rc.sha1')
--      print(
--          'Note: including file: ../../build/toolchain/win/rc/win/rc.exe.sha1')
- 
-     # 2. Run Microsoft rc.exe.
--    if sys.platform == 'win32' and rc_exe_exit_code == 0:
+-    return subprocess.call(rcpy_args, env=env)
++
 +    if sys.platform == 'win32':
-       rc_exe_exit_code = subprocess.call(args, shell=True, env=env)
--      # Assert Microsoft rc.exe and rc.py produced identical .res files.
--      if rc_exe_exit_code == 0:
--        import filecmp
--        # Strip "/fo" prefix.
--        assert filecmp.cmp(rc_res_output[3:], rcpy_res_output[3:])
--    return rc_exe_exit_code
++      rc_exe_exit_code = subprocess.call(args, shell=True, env=env)
 +      return rc_exe_exit_code
 +    else:
 +      raise RuntimeError('Must run on Windows.')
  
    def ExecActionWrapper(self, arch, rspfile, *dirname):
      """Runs an action command line from a response file using the environment
+--- a/chrome/app/chrome_dll.rc
++++ b/chrome/app/chrome_dll.rc
+@@ -37,9 +37,7 @@ IDR_MAINFRAME ACCELERATORS
+ BEGIN
+     VK_BACK,        IDC_BACK,                   VIRTKEY
+     VK_LEFT,        IDC_BACK,                   VIRTKEY, ALT
+-#if BUILDFLAG(ENABLE_PRINTING)
+     "P",            IDC_BASIC_PRINT,            VIRTKEY, CONTROL, SHIFT
+-#endif  // ENABLE_PRINTING_FOR_RC
+     "D",            IDC_BOOKMARK_ALL_TABS,      VIRTKEY, CONTROL, SHIFT
+     "D",            IDC_BOOKMARK_THIS_TAB,      VIRTKEY, CONTROL
+     VK_DELETE,      IDC_CLEAR_BROWSING_DATA,    VIRTKEY, CONTROL, SHIFT
+@@ -163,14 +161,7 @@ END
+ // the icon from the current module). We can perhaps work around this in the
+ // future to get the icon from the .exe, which would save a copy.
+ 
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-IDR_MAINFRAME       ICON                        "theme\google_chrome\win\chrome.ico"
+-IDR_SXS             ICON                        "theme\google_chrome\win\chrome_sxs.ico"
+-IDR_X004_DEV        ICON                        "theme\google_chrome\win\chrome_dev.ico"
+-IDR_X005_BETA       ICON                        "theme\google_chrome\win\chrome_beta.ico"
+-#else
+ IDR_MAINFRAME       ICON                        "theme\chromium\win\chromium.ico"
+-#endif
+ 
+ // We include these resources because all ICON types need to be in the
+ // same .rc file.  See:
+--- a/chrome/app/chrome_exe.rc
++++ b/chrome/app/chrome_exe.rc
+@@ -36,35 +36,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_U
+ // Note: chrome/installer/util/shell_util.cc depends on the order and number of
+ // icons.  To avoid breaking existing shortcuts, add new icons at the end
+ // (following the ordering described above).
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-IDR_MAINFRAME           ICON       "theme\\google_chrome\\win\\chrome.ico"
+-// These three are no longer used, but remain as placeholders. (They cannot be
+-// removed, or existing shortcuts to the later resources will break.)
+-IDR_MAINFRAME_2         ICON       "theme\\google_chrome\\win\\placeholder.ico"
+-IDR_MAINFRAME_3         ICON       "theme\\google_chrome\\win\\placeholder.ico"
+-IDR_MAINFRAME_4         ICON       "theme\\google_chrome\\win\\placeholder.ico"
+-// The SXS icon must have an index of 4, the constant is used in Chrome code to
+-// identify it.
+-IDR_SXS                 ICON       "theme\\google_chrome\\win\\chrome_sxs.ico"
+-#else
+ IDR_MAINFRAME           ICON       "theme\\chromium\\win\\chromium.ico"
+-#endif
+ 
+ // Start a naming scheme to keep icons in order. A leading X is used to keep
+ // the name alphabetically after IDR_SXS. The maximum of the number that follows
+ // should be incremented when a new icon is added. The icon indices in
+ // chrome_icon_resources_win.h should also be updated.
+ 
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-IDR_X001_APP_LIST       ICON       "theme\\google_chrome\\win\\app_list.ico"
+-IDR_X002_APP_LIST_SXS   ICON       "theme\\google_chrome\\win\\app_list_sxs.ico"
+-IDR_X003_INCOGNITO      ICON       "theme\\google_chrome\\win\\incognito.ico"
+-IDR_X004_DEV            ICON       "theme\\google_chrome\\win\\chrome_dev.ico"
+-IDR_X005_BETA           ICON       "theme\\google_chrome\\win\\chrome_beta.ico"
+-#else
+ IDR_X001_APP_LIST       ICON       "theme\\chromium\\win\\app_list.ico"
+ IDR_X003_INCOGNITO      ICON       "theme\\chromium\\win\\incognito.ico"
+-#endif
+ 
+ 
+ /////////////////////////////////////////////////////////////////////////////
+--- a/chrome/installer/setup/setup.rc
++++ b/chrome/installer/setup/setup.rc
+@@ -59,64 +59,6 @@ IDI_SETUP               ICON
+ #endif    // English (U.S.) resources
+ /////////////////////////////////////////////////////////////////////////////
+ 
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-
+-/////////////////////////////////////////////////////////////////////////////
+-//
+-// EULA
+-//
+-IDR_EULA_ICO.PNG      EULA   "..\\..\\app\\theme\\google_chrome\\eula_icon.png"
+-
+-/////////////////////////////////////////////////////////////////////////////
+-//
+-// HTML
+-//
+-
+-IDR_EULA_CSS.CSS        HTML    "eula\\oem.css"
+-IDR_EULA_JSC.JS         HTML   "eula\\oem.js"
+-
+-IDR_OEMPG_AR.HTML       HTML   "eula\\oem_ar.html"
+-IDR_OEMPG_BG.HTML       HTML   "eula\\oem_bg.html"
+-IDR_OEMPG_CA.HTML       HTML   "eula\\oem_ca.html"
+-IDR_OEMPG_CS.HTML       HTML   "eula\\oem_cs.html"
+-IDR_OEMPG_DA.HTML       HTML   "eula\\oem_da.html"
+-IDR_OEMPG_DE.HTML       HTML   "eula\\oem_de.html"
+-IDR_OEMPG_EL.HTML       HTML   "eula\\oem_el.html"
+-IDR_OEMPG_EN.HTML       HTML   "eula\\oem_en.html"
+-IDR_OEMPG_EN_GB.HTML    HTML   "eula\\oem_en-GB.html"
+-IDR_OEMPG_ES.HTML       HTML   "eula\\oem_es.html"
+-IDR_OEMPG_ES_419.HTML   HTML   "eula\\oem_es-419.html"
+-IDR_OEMPG_ET.HTML       HTML   "eula\\oem_et.html"
+-IDR_OEMPG_FI.HTML       HTML   "eula\\oem_fi.html"
+-IDR_OEMPG_FIL.HTML      HTML   "eula\\oem_fil.html"
+-IDR_OEMPG_FR.HTML       HTML   "eula\\oem_fr.html"
+-IDR_OEMPG_HI.HTML       HTML   "eula\\oem_hi.html"
+-IDR_OEMPG_HR.HTML       HTML   "eula\\oem_hr.html"
+-IDR_OEMPG_HU.HTML       HTML   "eula\\oem_hu.html"
+-IDR_OEMPG_ID.HTML       HTML   "eula\\oem_id.html"
+-IDR_OEMPG_IT.HTML       HTML   "eula\\oem_it.html"
+-IDR_OEMPG_JA.HTML       HTML   "eula\\oem_ja.html"
+-IDR_OEMPG_KO.HTML       HTML   "eula\\oem_ko.html"
+-IDR_OEMPG_LT.HTML       HTML   "eula\\oem_lt.html"
+-IDR_OEMPG_LV.HTML       HTML   "eula\\oem_lv.html"
+-IDR_OEMPG_NL.HTML       HTML   "eula\\oem_nl.html"
+-IDR_OEMPG_PL.HTML       HTML   "eula\\oem_pl.html"
+-IDR_OEMPG_PT_BR.HTML    HTML   "eula\\oem_pt-BR.html"
+-IDR_OEMPG_PT_PT.HTML    HTML   "eula\\oem_pt-PT.html"
+-IDR_OEMPG_RO.HTML       HTML   "eula\\oem_ro.html"
+-IDR_OEMPG_RU.HTML       HTML   "eula\\oem_ru.html"
+-IDR_OEMPG_SK.HTML       HTML   "eula\\oem_sk.html"
+-IDR_OEMPG_SL.HTML       HTML   "eula\\oem_sl.html"
+-IDR_OEMPG_SR.HTML       HTML   "eula\\oem_sr.html"
+-IDR_OEMPG_SV.HTML       HTML   "eula\\oem_sv.html"
+-IDR_OEMPG_TH.HTML       HTML   "eula\\oem_th.html"
+-IDR_OEMPG_TR.HTML       HTML   "eula\\oem_tr.html"
+-IDR_OEMPG_UK.HTML       HTML   "eula\\oem_uk.html"
+-IDR_OEMPG_VI.HTML       HTML   "eula\\oem_vi.html"
+-IDR_OEMPG_ZH_CN.HTML    HTML   "eula\\oem_zh-CN.html"
+-IDR_OEMPG_ZH_TW.HTML    HTML   "eula\\oem_zh-TW.html"
+-
+-#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ 
+ #ifndef APSTUDIO_INVOKED
+ /////////////////////////////////////////////////////////////////////////////
+@@ -141,7 +83,4 @@ IDR_GOOGLE_UPDATE_APP_COMMANDS_MARKUP GO
+ #define IDR_PATCHER_TYPE_ZUCCHINI 2
+ 
+ IDR_PATCHER_TYPE_COURGETTE PATCHERTYPE { 0L }
+-#if BUILDFLAG(ZUCCHINI)
+-IDR_PATCHER_TYPE_ZUCCHINI PATCHERTYPE { 0L }
+-#endif  // BUILDFLAG(ZUCCHINI)
+ 
