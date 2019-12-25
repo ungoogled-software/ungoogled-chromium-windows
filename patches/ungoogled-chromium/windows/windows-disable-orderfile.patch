@@ -2,7 +2,7 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -453,22 +453,6 @@ if (is_win) {
+@@ -440,22 +440,6 @@ if (is_win) {
  
        configs += [ "//build/config/win:delayloads" ]
  
@@ -27,7 +27,7 @@
          # full symbols, but does work in other cases, including minimal
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -183,8 +183,6 @@ if (is_win || is_android || is_chromeos)
+@@ -198,8 +198,6 @@ if (is_win || is_android || is_chromeos)
        # Allow downstream tools to set orderfile path with
        # another variable.
        chrome_orderfile_path = default_chrome_orderfile
