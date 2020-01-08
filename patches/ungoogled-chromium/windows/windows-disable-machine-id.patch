@@ -1,24 +1,6 @@
 # Disable machine ID generation on Windows.
 # See https://github.com/Eloston/ungoogled-chromium/issues/444
 
---- a/services/preferences/tracked/device_id_win.cc
-+++ b/services/preferences/tracked/device_id_win.cc
-@@ -10,11 +10,15 @@
- 
- #include <memory>
- 
-+#include "base/command_line.h"
- #include "base/logging.h"
- #include "base/stl_util.h"
- 
- MachineIdStatus GetDeterministicMachineSpecificId(std::string* machine_id) {
-   DCHECK(machine_id);
-+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
-+    return MachineIdStatus::NOT_IMPLEMENTED;
-+  }
- 
-   wchar_t computer_name[MAX_COMPUTERNAME_LENGTH + 1] = {};
-   DWORD computer_name_size = base::size(computer_name);
 --- a/components/metrics/machine_id_provider_win.cc
 +++ b/components/metrics/machine_id_provider_win.cc
 @@ -9,6 +9,7 @@
@@ -50,3 +32,21 @@
    base::ScopedBlockingCall scoped_blocking_call(FROM_HERE,
                                                  base::BlockingType::MAY_BLOCK);
  
+--- a/services/preferences/tracked/device_id_win.cc
++++ b/services/preferences/tracked/device_id_win.cc
+@@ -10,11 +10,15 @@
+ 
+ #include <memory>
+ 
++#include "base/command_line.h"
+ #include "base/logging.h"
+ #include "base/stl_util.h"
+ 
+ MachineIdStatus GetDeterministicMachineSpecificId(std::string* machine_id) {
+   DCHECK(machine_id);
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
++    return MachineIdStatus::NOT_IMPLEMENTED;
++  }
+ 
+   wchar_t computer_name[MAX_COMPUTERNAME_LENGTH + 1] = {};
+   DWORD computer_name_size = base::size(computer_name);
