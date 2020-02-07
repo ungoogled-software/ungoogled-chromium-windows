@@ -4,28 +4,28 @@
 
 --- a/components/os_crypt/os_crypt_win.cc
 +++ b/components/os_crypt/os_crypt_win.cc
-@@ -6,6 +6,7 @@
- 
+@@ -4,6 +4,7 @@
+
  #include <windows.h>
- 
+
 +#include "base/command_line.h"
- #include "base/strings/utf_string_conversions.h"
- #include "base/win/wincrypt_shim.h"
- 
-@@ -26,6 +27,10 @@ bool OSCrypt::DecryptString16(const std:
- 
- bool OSCrypt::EncryptString(const std::string& plaintext,
+ #include "base/base64.h"
+ #include "base/metrics/histogram_functions.h"
+ #include "base/no_destructor.h"
+@@ -57,6 +58,10 @@ std::string& GetMockEncryptionKeyFactory() {
+
+ bool EncryptStringWithDPAPI(const std::string& plaintext,
                              std::string* ciphertext) {
 +  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption")) {
 +    *ciphertext = plaintext;
 +    return true;
 +  }
    DATA_BLOB input;
-   input.pbData = const_cast<BYTE*>(
-       reinterpret_cast<const BYTE*>(plaintext.data()));
-@@ -49,6 +54,11 @@ bool OSCrypt::EncryptString(const std::s
- 
- bool OSCrypt::DecryptString(const std::string& ciphertext,
+   input.pbData =
+       const_cast<BYTE*>(reinterpret_cast<const BYTE*>(plaintext.data()));
+@@ -80,6 +85,11 @@ bool EncryptStringWithDPAPI(const std::string& plaintext,
+
+ bool DecryptStringWithDPAPI(const std::string& ciphertext,
                              std::string* plaintext) {
 +  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption")) {
 +    *plaintext = ciphertext;
@@ -33,5 +33,5 @@
 +  }
 +
    DATA_BLOB input;
-   input.pbData = const_cast<BYTE*>(
-       reinterpret_cast<const BYTE*>(ciphertext.data()));
+   input.pbData =
+       const_cast<BYTE*>(reinterpret_cast<const BYTE*>(ciphertext.data()));
