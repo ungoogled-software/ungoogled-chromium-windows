@@ -8,5 +8,4 @@ is_debug=false
 proprietary_codecs=true
 target_cpu="x64"
 use_gnome_keyring=false
-use_jumbo_build=true
 use_sysroot=false

@@ -3,7 +3,7 @@
 
 --- a/.gn
 +++ b/.gn
-@@ -528,7 +528,6 @@ check_targets = [
+@@ -523,7 +523,6 @@ check_targets = [
    "//third_party/rnnoise/*",
    "//third_party/robolectric/*",
    "//third_party/s2cellid/*",
@@ -23,7 +23,7 @@
    X("service_manager")                                                   \
 --- a/base/trace_event/memory_infra_background_whitelist.cc
 +++ b/base/trace_event/memory_infra_background_whitelist.cc
-@@ -216,18 +216,7 @@ const char* const kAllocatorDumpNameWhit
+@@ -233,18 +233,7 @@ const char* const kAllocatorDumpNameWhit
      "net/url_request_context/proxy/0x?/http_cache/memory_backend",
      "net/url_request_context/proxy/0x?/http_cache/simple_backend",
      "net/url_request_context/proxy/0x?/http_network_session",
@@ -44,7 +44,7 @@
      "net/url_request_context/system/0x?/cookie_monster",
 --- a/chrome/app/BUILD.gn
 +++ b/chrome/app/BUILD.gn
-@@ -425,7 +425,6 @@ source_set("chrome_content_browser_overl
+@@ -380,7 +380,6 @@ source_set("chrome_content_browser_overl
      "//components/metrics/public/mojom:call_stack_mojo_bindings",
      "//components/page_load_metrics/common:page_load_metrics_mojom",
      "//components/rappor/public/mojom",
@@ -52,25 +52,17 @@
      "//components/services/heap_profiling/public/mojom",
      "//components/translate/content/common",
      "//extensions/buildflags",
-@@ -510,7 +509,6 @@ source_set("chrome_content_renderer_over
-     "//components/metrics/public/mojom:call_stack_mojo_bindings",
-     "//components/rappor/public/mojom",
-     "//components/safe_browsing:buildflags",
--    "//components/safe_browsing/common:interfaces",
-     "//components/services/heap_profiling/public/mojom",
-     "//components/subresource_filter/content/mojom",
-     "//extensions/buildflags",
 --- a/chrome/app/chrome_content_browser_overlay_manifest.cc
 +++ b/chrome/app/chrome_content_browser_overlay_manifest.cc
-@@ -32,7 +32,6 @@
+@@ -27,7 +27,6 @@
  #include "components/metrics/public/mojom/call_stack_profile_collector.mojom.h"
  #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
  #include "components/rappor/public/mojom/rappor_recorder.mojom.h"
 -#include "components/safe_browsing/common/safe_browsing.mojom.h"
  #include "components/translate/content/common/translate.mojom.h"
  #include "extensions/buildflags/buildflags.h"
- #include "services/image_annotation/public/cpp/manifest.h"
-@@ -96,8 +95,7 @@ const service_manager::Manifest& GetChro
+ #include "services/service_manager/public/cpp/manifest_builder.h"
+@@ -81,8 +80,7 @@ const service_manager::Manifest& GetChro
  #if defined(OS_WIN)
                                mojom::ModuleEventSink,
  #endif
@@ -80,27 +72,9 @@
          .RequireCapability("ash", "system_ui")
          .RequireCapability("ash", "test")
          .RequireCapability("ash", "display")
---- a/chrome/app/chrome_content_renderer_overlay_manifest.cc
-+++ b/chrome/app/chrome_content_renderer_overlay_manifest.cc
-@@ -14,7 +14,6 @@
- #include "components/autofill/content/common/mojom/autofill_agent.mojom.h"
- #include "components/dom_distiller/content/common/mojom/distiller_page_notifier_service.mojom.h"
- #include "components/safe_browsing/buildflags.h"
--#include "components/safe_browsing/common/safe_browsing.mojom.h"
- #include "components/subresource_filter/content/mojom/subresource_filter_agent.mojom.h"
- #include "extensions/buildflags/buildflags.h"
- #include "services/service_manager/public/cpp/manifest_builder.h"
-@@ -70,7 +69,6 @@ const service_manager::Manifest& GetChro
-                 extensions::mojom::AppWindow,
-                 extensions::mojom::MimeHandlerViewContainerManager,
- #endif  // TODO: need gated include back
--                safe_browsing::mojom::ThreatReporter,
- #if BUILDFLAG(FULL_SAFE_BROWSING)
-                 safe_browsing::mojom::PhishingDetector,
- #endif
 --- a/chrome/app/chromium_strings.grd
 +++ b/chrome/app/chromium_strings.grd
-@@ -415,14 +415,6 @@ Chromium is unable to recover your setti
+@@ -439,14 +439,6 @@ Chromium is unable to recover your setti
          <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> may be dangerous, so Chromium has blocked it.
        </message>
  
@@ -117,7 +91,7 @@
          This file is dangerous, so Chromium has blocked it.
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -1559,14 +1559,6 @@ are declared in tools/grit/grit_rule.gni
+@@ -1607,14 +1607,6 @@ are declared in tools/grit/grit_rule.gni
            Extensions, apps, and themes can harm your computer. Are you sure you want to continue?
          </message>
        </if>
@@ -132,7 +106,7 @@
        <message name="IDS_PROMPT_DEEP_SCANNING_DOWNLOAD"
          desc="Message shown in the download shelf when a download is being scanned">
          <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> is being scanned.
-@@ -2028,17 +2020,6 @@ are declared in tools/grit/grit_rule.gni
+@@ -2124,17 +2116,6 @@ are declared in tools/grit/grit_rule.gni
          </message>
        </if>
  
@@ -152,7 +126,7 @@
          <message name="IDS_AMBIENT_BADGE_INSTALL" desc="String for the ambient badge promoting an app installation">
 --- a/chrome/app/google_chrome_strings.grd
 +++ b/chrome/app/google_chrome_strings.grd
-@@ -426,14 +426,6 @@ Google Chrome is unable to recover your
+@@ -450,14 +450,6 @@ Google Chrome is unable to recover your
          <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> may be dangerous, so Chrome has blocked it.
        </message>
  
@@ -169,7 +143,7 @@
          This file is dangerous, so Chrome has blocked it.
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -327,10 +327,6 @@ jumbo_static_library("browser") {
+@@ -337,10 +337,6 @@ jumbo_static_library("browser") {
      "component_updater/ssl_error_assistant_component_installer.h",
      "component_updater/sth_set_component_remover.cc",
      "component_updater/sth_set_component_remover.h",
@@ -180,7 +154,7 @@
      "consent_auditor/consent_auditor_factory.cc",
      "consent_auditor/consent_auditor_factory.h",
      "content_index/content_index_metrics.cc",
-@@ -1850,7 +1846,6 @@ jumbo_static_library("browser") {
+@@ -1927,7 +1923,6 @@ jumbo_static_library("browser") {
    allow_circular_includes_from = [
      "//chrome/browser/ui",
      "//chrome/browser/ui/webui/bluetooth_internals",
@@ -188,15 +162,15 @@
    ]
  
    public_deps = [
-@@ -1900,7 +1895,6 @@ jumbo_static_library("browser") {
-     "//chrome/browser/push_messaging:budget_proto",
+@@ -1981,7 +1976,6 @@ jumbo_static_library("browser") {
+     "//chrome/browser/reputation:proto",
      "//chrome/browser/resource_coordinator:mojo_bindings",
      "//chrome/browser/resource_coordinator:tab_manager_features",
 -    "//chrome/browser/safe_browsing",
-     "//chrome/browser/sharing/proto",
      "//chrome/browser/ssl:proto",
      "//chrome/browser/touch_to_fill",
-@@ -2008,7 +2002,6 @@ jumbo_static_library("browser") {
+     "//chrome/browser/ui",
+@@ -2090,7 +2084,6 @@ jumbo_static_library("browser") {
      "//components/rappor:rappor_recorder",
      "//components/renderer_context_menu",
      "//components/resources",
@@ -204,7 +178,7 @@
      "//components/safe_search_api",
      "//components/safe_search_api:safe_search_client",
      "//components/search",
-@@ -3744,8 +3737,6 @@ jumbo_static_library("browser") {
+@@ -3880,8 +3873,6 @@ jumbo_static_library("browser") {
      ]
      deps += [
        ":chrome_process_finder",
@@ -213,7 +187,7 @@
        "//chrome/browser/win/conflicts:module_info",
        "//chrome/chrome_elf:constants",
        "//chrome/chrome_elf:dll_hash",
-@@ -3769,8 +3760,6 @@ jumbo_static_library("browser") {
+@@ -3904,8 +3895,6 @@ jumbo_static_library("browser") {
        "//ui/aura_extra",
        "//ui/base:fullscreen_win",
      ]
@@ -222,7 +196,7 @@
  
      all_dependent_configs = [ ":browser_win_linker_flags" ]
  
-@@ -4085,7 +4074,7 @@ jumbo_static_library("browser") {
+@@ -4223,7 +4212,7 @@ jumbo_static_library("browser") {
      ]
    }
  
@@ -231,9 +205,9 @@
      sources += [
        "password_manager/password_store_signin_notifier_impl.cc",
        "password_manager/password_store_signin_notifier_impl.h",
-@@ -5351,15 +5340,6 @@ grit("resources") {
-       ]
-     }
+@@ -5479,15 +5468,6 @@ grit("resources") {
+       "//chrome/browser/resources/chromeos/internet_detail_dialog:build",
+     ]
    }
 -
 -  if (safe_browsing_mode > 0) {
@@ -247,7 +221,7 @@
  }
  
  if (is_chrome_branded) {
-@@ -5496,7 +5476,6 @@ static_library("test_support") {
+@@ -5629,7 +5609,6 @@ static_library("test_support") {
  
    public_deps = [
      ":browser",
@@ -255,7 +229,7 @@
      "//chrome/browser/ui:test_support",
    ]
    deps = [
-@@ -5504,14 +5483,12 @@ static_library("test_support") {
+@@ -5637,14 +5616,12 @@ static_library("test_support") {
      "//chrome/browser",
      "//chrome/browser/subresource_filter:test_support",
      "//chrome/common",
@@ -270,7 +244,7 @@
      "//components/search_engines:test_support",
      "//components/services/unzip/content",
      "//components/sessions:test_support",
-@@ -5698,26 +5675,6 @@ static_library("test_support") {
+@@ -5827,26 +5804,6 @@ static_library("test_support") {
      ]
    }
  
@@ -299,7 +273,7 @@
        "spellchecker/test/spellcheck_mock_panel_host.cc",
 --- a/chrome/browser/DEPS
 +++ b/chrome/browser/DEPS
-@@ -192,7 +192,6 @@ include_rules = [
+@@ -194,7 +194,6 @@ include_rules = [
    "+components/remote_cocoa/common",
    "+components/renderer_context_menu",
    "+components/rlz",
@@ -309,7 +283,7 @@
    "+components/search_engines",
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -98,7 +98,6 @@
+@@ -100,7 +100,6 @@
  #include "components/previews/core/previews_features.h"
  #include "components/previews/core/previews_switches.h"
  #include "components/printing/browser/features.h"
@@ -317,7 +291,7 @@
  #include "components/security_interstitials/core/features.h"
  #include "components/security_state/core/features.h"
  #include "components/security_state/core/security_state.h"
-@@ -3819,10 +3818,6 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -3867,10 +3866,6 @@ const FeatureEntry kFeatureEntries[] = {
      {"overlay-new-layout", flag_descriptions::kOverlayNewLayoutName,
       flag_descriptions::kOverlayNewLayoutDescription, kOsAndroid,
       FEATURE_VALUE_TYPE(chrome::android::kOverlayNewLayout)},
@@ -328,18 +302,6 @@
  #endif  // defined(OS_ANDROID)
  
  #if defined(OS_CHROMEOS)
-@@ -3986,11 +3981,6 @@ const FeatureEntry kFeatureEntries[] = {
-      flag_descriptions::kEnableMediaSessionServiceName,
-      flag_descriptions::kEnableMediaSessionServiceDescription, kOsDesktop,
-      FEATURE_VALUE_TYPE(media_session::features::kMediaSessionService)},
--    {"enable-safe-browsing-ap-download-verdicts",
--     flag_descriptions::kSafeBrowsingUseAPDownloadVerdictsName,
--     flag_descriptions::kSafeBrowsingUseAPDownloadVerdictsDescription,
--     kOsDesktop,
--     FEATURE_VALUE_TYPE(safe_browsing::kForceUseAPDownloadProtection)},
-     {"enable-gpu-service-logging",
-      flag_descriptions::kEnableGpuServiceLoggingName,
-      flag_descriptions::kEnableGpuServiceLoggingDescription, kOsAll,
 --- a/chrome/browser/browser_process.h
 +++ b/chrome/browser/browser_process.h
 @@ -202,11 +202,6 @@ class BrowserProcess {
@@ -364,7 +326,7 @@
  #include "components/sessions/core/session_id_generator.h"
  #include "components/subresource_filter/content/browser/ruleset_service.h"
  #include "components/subresource_filter/core/browser/subresource_filter_constants.h"
-@@ -963,14 +962,6 @@ StatusTray* BrowserProcessImpl::status_t
+@@ -965,14 +964,6 @@ StatusTray* BrowserProcessImpl::status_t
    return status_tray_.get();
  }
  
@@ -379,7 +341,7 @@
  optimization_guide::OptimizationGuideService*
  BrowserProcessImpl::optimization_guide_service() {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
-@@ -1218,40 +1209,6 @@ void BrowserProcessImpl::CreateBackgroun
+@@ -1220,40 +1211,6 @@ void BrowserProcessImpl::CreateBackgroun
  #endif
  }
  
@@ -442,7 +404,7 @@
    void CreateBackgroundModeManager();
 --- a/chrome/browser/browser_resources.grd
 +++ b/chrome/browser/browser_resources.grd
-@@ -152,9 +152,6 @@
+@@ -94,9 +94,6 @@
        <include name="IDR_DOMAIN_RELIABILITY_INTERNALS_HTML" file="resources\domain_reliability_internals\domain_reliability_internals.html" compress="gzip" type="BINDATA" />
        <include name="IDR_DOMAIN_RELIABILITY_INTERNALS_CSS" file="resources\domain_reliability_internals\domain_reliability_internals.css" compress="gzip" type="BINDATA" />
        <include name="IDR_DOMAIN_RELIABILITY_INTERNALS_JS" file="resources\domain_reliability_internals\domain_reliability_internals.js" compress="gzip" type="BINDATA" />
@@ -452,7 +414,7 @@
        <include name="IDR_DOWNLOAD_INTERNALS_HTML" file="resources\download_internals\download_internals.html" flattenhtml="true" allowexternalscript="true" type="BINDATA" compress="gzip" />
        <include name="IDR_DOWNLOAD_INTERNALS_CSS" file="resources\download_internals\download_internals.css" type="BINDATA" compress="gzip" />
        <include name="IDR_DOWNLOAD_INTERNALS_JS" file="resources\download_internals\download_internals.js" type="BINDATA" compress="gzip" />
-@@ -590,11 +587,6 @@
+@@ -497,11 +494,6 @@
          <include name="IDR_ASSISTANT_LOGO_PNG" file="resources\chromeos\assistant_optin\assistant_logo.png" type="BINDATA" />
          <include name="IDR_SUPERVISION_ICON_PNG" file="resources\chromeos\supervision\supervision_icon.png" type="BINDATA" />
        </if>
@@ -466,23 +428,23 @@
          <include name="IDR_TAB_RANKER_PAIRWISE_EXAMPLE_PREPROCESSOR_CONFIG_PB" file="resource_coordinator\tab_ranker\pairwise_preprocessor_config.pb" type="BINDATA" />
 --- a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate_unittest.cc
 +++ b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate_unittest.cc
-@@ -45,7 +45,6 @@
- #include "chrome/browser/language/url_language_histogram_factory.h"
- #include "chrome/browser/password_manager/password_store_factory.h"
+@@ -49,7 +49,6 @@
+ #include "chrome/browser/permissions/adaptive_quiet_notification_permission_ui_enabler.h"
  #include "chrome/browser/permissions/permission_decision_auto_blocker.h"
+ #include "chrome/browser/permissions/permission_util.h"
 -#include "chrome/browser/safe_browsing/safe_browsing_service.h"
  #include "chrome/browser/ssl/chrome_ssl_host_state_delegate.h"
  #include "chrome/browser/ssl/chrome_ssl_host_state_delegate_factory.h"
  #include "chrome/browser/storage/durable_storage_permission_context.h"
-@@ -84,7 +83,6 @@
- #include "components/password_manager/core/browser/password_manager_test_utils.h"
+@@ -89,7 +88,6 @@
  #include "components/password_manager/core/browser/password_store_consumer.h"
+ #include "components/password_manager/core/common/password_manager_features.h"
  #include "components/prefs/testing_pref_service.h"
 -#include "components/safe_browsing/verdict_cache_manager.h"
  #include "content/public/browser/browser_task_traits.h"
  #include "content/public/browser/browsing_data_filter_builder.h"
  #include "content/public/browser/browsing_data_remover.h"
-@@ -310,46 +308,6 @@ class RemoveCookieTester {
+@@ -318,46 +316,6 @@ class RemoveCookieTester {
    DISALLOW_COPY_AND_ASSIGN(RemoveCookieTester);
  };
  
@@ -531,7 +493,7 @@
    RemoveHistoryTester() {}
 --- a/chrome/browser/chrome_browser_main.cc
 +++ b/chrome/browser/chrome_browser_main.cc
-@@ -246,7 +246,6 @@
+@@ -249,7 +249,6 @@
  #include "base/trace_event/trace_event_etw_export_win.h"
  #include "base/win/win_util.h"
  #include "chrome/browser/chrome_browser_main_win.h"
@@ -539,15 +501,15 @@
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
  #include "chrome/browser/component_updater/third_party_module_list_component_installer_win.h"
  #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -486,7 +485,6 @@ void RegisterComponentsForUpdate(PrefSer
+@@ -495,7 +494,6 @@ void RegisterComponentsForUpdate(bool is
    whitelist_installer->RegisterComponents();
  #endif
  
 -  RegisterSubresourceFilterComponent(cus);
    RegisterOnDeviceHeadSuggestComponent(
        cus, g_browser_process->GetApplicationLocale());
-   RegisterOptimizationHintsComponent(cus, profile_prefs);
-@@ -527,7 +525,6 @@ void RegisterComponentsForUpdate(PrefSer
+   RegisterOptimizationHintsComponent(cus, is_off_the_record_profile,
+@@ -536,7 +534,6 @@ void RegisterComponentsForUpdate(bool is
    // on chromium build bots, it is always registered here and
    // RegisterSwReporterComponent() has support for running only in official
    // builds or tests.
@@ -580,7 +542,7 @@
  #include "chrome/browser/ui/simple_message_box.h"
  #include "chrome/browser/ui/uninstall_browser_prompt.h"
  #include "chrome/browser/win/browser_util.h"
-@@ -425,15 +422,6 @@ void ShowCloseBrowserFirstMessageBox() {
+@@ -426,15 +423,6 @@ void ShowCloseBrowserFirstMessageBox() {
        l10n_util::GetStringUTF16(IDS_UNINSTALL_CLOSE_APP));
  }
  
@@ -596,7 +558,7 @@
  // This error message is not localized because we failed to load the
  // localization data files.
  const char kMissingLocaleDataTitle[] = "Missing File Error";
-@@ -586,23 +574,6 @@ void ChromeBrowserMainPartsWin::PostBrow
+@@ -593,23 +581,6 @@ void ChromeBrowserMainPartsWin::PostBrow
  
    InitializeChromeElf();
  
@@ -622,7 +584,7 @@
    base::PostDelayedTask(FROM_HERE, {content::BrowserThread::UI},
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -111,12 +111,6 @@
+@@ -112,12 +112,6 @@
  #include "chrome/browser/renderer_host/pepper/chrome_browser_pepper_host_factory.h"
  #include "chrome/browser/renderer_preferences_util.h"
  #include "chrome/browser/resource_coordinator/background_tab_navigation_throttle.h"
@@ -634,8 +596,8 @@
 -#include "chrome/browser/safe_browsing/url_checker_delegate_impl.h"
  #include "chrome/browser/search/search.h"
  #include "chrome/browser/sessions/session_tab_helper.h"
- #include "chrome/browser/signin/chrome_signin_proxying_url_loader_factory.h"
-@@ -229,12 +223,7 @@
+ #include "chrome/browser/sharing/sms/sms_remote_fetcher.h"
+@@ -230,12 +224,7 @@
  #include "components/previews/core/previews_switches.h"
  #include "components/rappor/public/rappor_utils.h"
  #include "components/rappor/rappor_service_impl.h"
@@ -648,7 +610,7 @@
  #include "components/security_interstitials/content/origin_policy_ui.h"
  #include "components/security_interstitials/content/ssl_cert_reporter.h"
  #include "components/security_interstitials/content/ssl_error_navigation_throttle.h"
-@@ -4889,14 +4878,6 @@ void ChromeContentBrowserClient::SetDefa
+@@ -4890,14 +4879,6 @@ void ChromeContentBrowserClient::SetDefa
    g_default_quota_settings = settings;
  }
  
@@ -665,7 +627,7 @@
      network::OriginPolicyState error_reason,
 --- a/chrome/browser/chrome_content_browser_client.h
 +++ b/chrome/browser/chrome_content_browser_client.h
-@@ -62,11 +62,6 @@ class PreviewsDecider;
+@@ -63,11 +63,6 @@ class PreviewsDecider;
  class PreviewsUserData;
  }  // namespace previews
  
@@ -677,7 +639,7 @@
  namespace ui {
  class NativeTheme;
  }
-@@ -685,9 +680,6 @@ class ChromeContentBrowserClient : publi
+@@ -701,9 +696,6 @@ class ChromeContentBrowserClient : publi
    static void SetDefaultQuotaSettingsForTesting(
        const storage::QuotaSettings *settings);
  
@@ -687,7 +649,7 @@
  #if BUILDFLAG(ENABLE_PLUGINS)
    // Set of origins that can use TCP/UDP private APIs from NaCl.
    std::set<std::string> allowed_socket_origins_;
-@@ -702,10 +694,6 @@ class ChromeContentBrowserClient : publi
+@@ -718,10 +710,6 @@ class ChromeContentBrowserClient : publi
    // Parts are deleted in the reverse order they are added.
    std::vector<ChromeContentBrowserClientParts*> extra_parts_;
  
@@ -700,7 +662,7 @@
  
 --- a/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
 +++ b/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
-@@ -27,7 +27,6 @@
+@@ -29,7 +29,6 @@
  #include "components/rappor/public/rappor_utils.h"
  #include "components/rappor/rappor_recorder_impl.h"
  #include "components/rappor/rappor_service_impl.h"
@@ -724,21 +686,21 @@
  #include "chrome/browser/download/save_package_file_picker.h"
  #include "chrome/browser/platform_util.h"
  #include "chrome/browser/profiles/profile.h"
--#include "chrome/browser/safe_browsing/download_protection/binary_upload_service.h"
+-#include "chrome/browser/safe_browsing/cloud_content_scanning/binary_upload_service.h"
 -#include "chrome/browser/safe_browsing/download_protection/download_protection_util.h"
 -#include "chrome/browser/safe_browsing/safe_browsing_service.h"
  #include "chrome/browser/ui/chrome_pages.h"
  #include "chrome/browser/ui/scoped_tabbed_browser_displayer.h"
  #include "chrome/common/buildflags.h"
-@@ -50,7 +47,6 @@
- #include "chrome/common/chrome_paths.h"
+@@ -51,7 +48,6 @@
+ #include "chrome/common/net/safe_search_util.h"
  #include "chrome/common/pdf_util.h"
  #include "chrome/common/pref_names.h"
 -#include "chrome/common/safe_browsing/file_type_policies.h"
  #include "chrome/grit/generated_resources.h"
  #include "components/download/public/common/download_danger_type.h"
  #include "components/download/public/common/download_features.h"
-@@ -115,8 +111,6 @@ using content::DownloadManager;
+@@ -116,8 +112,6 @@ using content::DownloadManager;
  using download::DownloadItem;
  using download::DownloadPathReservationTracker;
  using download::PathValidationResult;
@@ -747,7 +709,7 @@
  
  namespace {
  
-@@ -754,20 +748,6 @@ ChromeDownloadManagerDelegate::Applicati
+@@ -745,20 +739,6 @@ ChromeDownloadManagerDelegate::Applicati
    return std::string(chrome::kApplicationClientIDStringForAVScanning);
  }
  
@@ -788,7 +750,7 @@
  #include "components/download/public/common/download_danger_type.h"
  #include "components/download/public/common/download_item.h"
  #include "components/download/public/common/download_path_reservation_tracker.h"
-@@ -134,26 +132,7 @@ class ChromeDownloadManagerDelegate
+@@ -130,26 +128,7 @@ class ChromeDownloadManagerDelegate
  
    DownloadPrefs* download_prefs() { return download_prefs_.get(); }
  
@@ -815,7 +777,7 @@
    // Show file picker for |download|.
    virtual void ShowFilePickerForDownload(
        download::DownloadItem* download,
-@@ -222,8 +201,7 @@ class ChromeDownloadManagerDelegate
+@@ -218,8 +197,7 @@ class ChromeDownloadManagerDelegate
                 const content::NotificationDetails& details) override;
  
    // Callback function after the DownloadProtectionService completes.
@@ -835,7 +797,7 @@
  #include "chrome/common/buildflags.h"
  #include "chrome/common/chrome_features.h"
  #include "chrome/common/chrome_paths.h"
-@@ -72,7 +71,6 @@
+@@ -74,7 +73,6 @@
  using download::DownloadItem;
  using download::DownloadPathReservationTracker;
  using download::PathValidationResult;
@@ -843,7 +805,7 @@
  using ::testing::_;
  using ::testing::AnyNumber;
  using ::testing::AtMost;
-@@ -206,9 +204,6 @@ class TestChromeDownloadManagerDelegate
+@@ -208,9 +206,6 @@ class TestChromeDownloadManagerDelegate
                 download::DownloadDangerType(DownloadItem*,
                                              const base::FilePath&));
  
@@ -853,7 +815,7 @@
    // The concrete implementation on desktop just invokes a file picker. Android
    // has a non-trivial implementation. The former is tested via browser tests,
    // and the latter is exercised in this unit test.
-@@ -626,8 +621,6 @@ TEST_F(ChromeDownloadManagerDelegateTest
+@@ -624,8 +619,6 @@ TEST_F(ChromeDownloadManagerDelegateTest
      DetermineDownloadTargetResult result;
      DetermineDownloadTarget(download_item.get(), &result);
  
@@ -862,7 +824,7 @@
      EXPECT_EQ(download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
                result.danger_type);
    }
-@@ -639,8 +632,6 @@ TEST_F(ChromeDownloadManagerDelegateTest
+@@ -637,8 +630,6 @@ TEST_F(ChromeDownloadManagerDelegateTest
          .WillRepeatedly(Return(kSafeContentDisposition));
      DetermineDownloadTargetResult result;
      DetermineDownloadTarget(download_item.get(), &result);
@@ -871,7 +833,7 @@
      EXPECT_EQ(download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
                result.danger_type);
    }
-@@ -652,8 +643,6 @@ TEST_F(ChromeDownloadManagerDelegateTest
+@@ -650,8 +641,6 @@ TEST_F(ChromeDownloadManagerDelegateTest
          .WillRepeatedly(Return(kModerateContentDisposition));
      DetermineDownloadTargetResult result;
      DetermineDownloadTarget(download_item.get(), &result);
@@ -880,7 +842,7 @@
      EXPECT_EQ(download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
                result.danger_type);
    }
-@@ -1060,7 +1049,6 @@ namespace {
+@@ -1116,7 +1105,6 @@ namespace {
  
  struct SafeBrowsingTestParameters {
    download::DownloadDangerType initial_danger_type;
@@ -888,7 +850,7 @@
    safe_browsing::DownloadCheckResult verdict;
    DownloadPrefs::DownloadRestriction download_restriction;
  
-@@ -1112,7 +1100,6 @@ void ChromeDownloadManagerDelegateTestWi
+@@ -1168,7 +1156,6 @@ void ChromeDownloadManagerDelegateTestWi
  const SafeBrowsingTestParameters kSafeBrowsingTestCases[] = {
      // SAFE verdict for a safe file.
      {download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
@@ -896,7 +858,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
-@@ -1120,8 +1107,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1176,8 +1163,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNKNOWN verdict for a safe file.
      {download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
@@ -905,7 +867,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
-@@ -1129,8 +1114,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1185,8 +1170,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // DANGEROUS verdict for a safe file.
      {download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
@@ -914,7 +876,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT,
-@@ -1138,8 +1121,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1194,8 +1177,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNCOMMON verdict for a safe file.
      {download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
@@ -923,7 +885,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_UNCOMMON_CONTENT,
-@@ -1147,8 +1128,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1203,8 +1184,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // POTENTIALLY_UNWANTED verdict for a safe file.
      {download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
@@ -932,7 +894,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED,
-@@ -1156,8 +1135,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1212,8 +1191,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // SAFE verdict for a potentially dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -941,7 +903,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
-@@ -1165,8 +1142,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1221,8 +1198,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNKNOWN verdict for a potentially dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -950,7 +912,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE,
-@@ -1174,8 +1149,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1230,8 +1205,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNKNOWN verdict for a potentially dangerous file blocked by policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -959,7 +921,7 @@
       DownloadPrefs::DownloadRestriction::DANGEROUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE,
-@@ -1183,8 +1156,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1239,8 +1212,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNKNOWN verdict for a potentially dangerous file not blocked by policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -968,7 +930,7 @@
       DownloadPrefs::DownloadRestriction::MALICIOUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE,
-@@ -1192,8 +1163,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1248,8 +1219,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // DANGEROUS verdict for a potentially dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -977,7 +939,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT,
-@@ -1201,8 +1170,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1257,8 +1226,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // DANGEROUS verdict for a potentially dangerous file block by policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -986,7 +948,7 @@
       DownloadPrefs::DownloadRestriction::MALICIOUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT,
-@@ -1210,8 +1177,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1266,8 +1233,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // DANGEROUS verdict for a potentially dangerous file block by policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -995,7 +957,7 @@
       DownloadPrefs::DownloadRestriction::MALICIOUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_HOST,
-@@ -1219,8 +1184,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1275,8 +1240,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // DANGEROUS verdict for a potentially dangerous file block by policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1004,7 +966,7 @@
       DownloadPrefs::DownloadRestriction::MALICIOUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_URL,
-@@ -1228,8 +1191,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1284,8 +1247,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNCOMMON verdict for a potentially dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1013,7 +975,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_UNCOMMON_CONTENT,
-@@ -1237,8 +1198,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1293,8 +1254,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // POTENTIALLY_UNWANTED verdict for a potentially dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1022,7 +984,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED,
-@@ -1247,8 +1206,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1303,8 +1262,6 @@ const SafeBrowsingTestParameters kSafeBr
      // POTENTIALLY_UNWANTED verdict for a potentially dangerous file, blocked by
      // policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1031,7 +993,7 @@
       DownloadPrefs::DownloadRestriction::POTENTIALLY_DANGEROUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED,
-@@ -1257,8 +1214,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1313,8 +1270,6 @@ const SafeBrowsingTestParameters kSafeBr
      // POTENTIALLY_UNWANTED verdict for a potentially dangerous file, not
      // blocked by policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1040,7 +1002,7 @@
       DownloadPrefs::DownloadRestriction::DANGEROUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED,
-@@ -1267,8 +1222,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1323,8 +1278,6 @@ const SafeBrowsingTestParameters kSafeBr
      // POTENTIALLY_UNWANTED verdict for a potentially dangerous file, not
      // blocked by policy.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1049,7 +1011,7 @@
       DownloadPrefs::DownloadRestriction::MALICIOUS_FILES,
  
       download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED,
-@@ -1276,7 +1229,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1332,7 +1285,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // SAFE verdict for a dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1057,7 +1019,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE,
-@@ -1284,7 +1236,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1340,7 +1292,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNKNOWN verdict for a dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1065,7 +1027,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE,
-@@ -1292,7 +1243,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1348,7 +1299,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // DANGEROUS verdict for a dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1073,7 +1035,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT,
-@@ -1300,7 +1250,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1356,7 +1306,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // UNCOMMON verdict for a dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1081,7 +1043,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_UNCOMMON_CONTENT,
-@@ -1308,8 +1257,6 @@ const SafeBrowsingTestParameters kSafeBr
+@@ -1364,8 +1313,6 @@ const SafeBrowsingTestParameters kSafeBr
  
      // POTENTIALLY_UNWANTED verdict for a dangerous file.
      {download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
@@ -1090,7 +1052,7 @@
       DownloadPrefs::DownloadRestriction::NONE,
  
       download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED,
-@@ -1333,11 +1280,6 @@ TEST_P(ChromeDownloadManagerDelegateTest
+@@ -1389,11 +1336,6 @@ TEST_P(ChromeDownloadManagerDelegateTest
    EXPECT_CALL(*download_item, GetDangerType())
        .WillRepeatedly(Return(kParameters.initial_danger_type));
  
@@ -1105,9 +1067,9 @@
 --- a/chrome/browser/download/download_browsertest.cc
 +++ b/chrome/browser/download/download_browsertest.cc
 @@ -67,7 +67,6 @@
- #include "chrome/browser/profiles/profile_key.h"
  #include "chrome/browser/renderer_context_menu/render_view_context_menu_browsertest_util.h"
  #include "chrome/browser/renderer_context_menu/render_view_context_menu_test_util.h"
+ #include "chrome/browser/reputation/safety_tip_test_utils.h"
 -#include "chrome/browser/safe_browsing/download_protection/download_protection_util.h"
  #include "chrome/browser/ui/browser.h"
  #include "chrome/browser/ui/browser_commands.h"
@@ -1129,7 +1091,7 @@
  #include "components/security_state/core/features.h"
  #include "components/security_state/core/security_state.h"
  #include "components/services/quarantine/test_support.h"
-@@ -1229,6 +1225,7 @@ INSTANTIATE_TEST_SUITE_P(
+@@ -1252,6 +1248,7 @@ INSTANTIATE_TEST_SUITE_P(
  
  namespace {
  
@@ -1137,7 +1099,7 @@
  class FakeDownloadProtectionService
      : public safe_browsing::DownloadProtectionService {
   public:
-@@ -1301,6 +1298,7 @@ class DownloadTestWithFakeSafeBrowsing :
+@@ -1324,6 +1321,7 @@ class DownloadTestWithFakeSafeBrowsing :
   protected:
    std::unique_ptr<TestSafeBrowsingServiceFactory> test_safe_browsing_factory_;
  };
@@ -1145,7 +1107,7 @@
  
  class DownloadWakeLockTest : public DownloadTest {
   public:
-@@ -4232,8 +4230,6 @@ class DisableSafeBrowsingOnInProgressDow
+@@ -4363,8 +4361,6 @@ class DisableSafeBrowsingOnInProgressDow
      EXPECT_EQ(download::DOWNLOAD_DANGER_TYPE_MAYBE_DANGEROUS_CONTENT,
                download->GetDangerType());
      EXPECT_FALSE(download->IsDangerous());
@@ -1154,7 +1116,7 @@
      return true;
    }
  
-@@ -4338,7 +4334,6 @@ IN_PROC_BROWSER_TEST_F(DownloadTest, Saf
+@@ -4469,7 +4465,6 @@ IN_PROC_BROWSER_TEST_F(DownloadTest, Saf
  IN_PROC_BROWSER_TEST_F(DownloadTest, FeedbackServiceDiscardDownload) {
    PrefService* prefs = browser()->profile()->GetPrefs();
    prefs->SetBoolean(prefs::kSafeBrowsingEnabled, true);
@@ -1162,7 +1124,7 @@
  
    // Make a dangerous file.
    embedded_test_server()->ServeFilesFromDirectory(GetTestDataDirectory());
-@@ -4359,40 +4354,11 @@ IN_PROC_BROWSER_TEST_F(DownloadTest, Fee
+@@ -4490,40 +4485,11 @@ IN_PROC_BROWSER_TEST_F(DownloadTest, Fee
    DownloadManagerForBrowser(browser())->GetAllDownloads(&downloads);
    ASSERT_EQ(1u, downloads.size());
    EXPECT_TRUE(downloads[0]->IsDangerous());
@@ -1203,7 +1165,7 @@
  
    // Make a dangerous file.
    embedded_test_server()->ServeFilesFromDirectory(GetTestDataDirectory());
-@@ -4419,30 +4385,7 @@ IN_PROC_BROWSER_TEST_F(DownloadTest, Fee
+@@ -4550,30 +4516,7 @@ IN_PROC_BROWSER_TEST_F(DownloadTest, Fee
    ASSERT_EQ(1u, downloads.size());
    EXPECT_TRUE(downloads[0]->IsDangerous());
  
@@ -1234,7 +1196,7 @@
    completion_observer->WaitForFinished();
  
    std::vector<DownloadItem*> updated_downloads;
-@@ -4477,18 +4420,6 @@ IN_PROC_BROWSER_TEST_F(DownloadTestWithF
+@@ -4608,18 +4551,6 @@ IN_PROC_BROWSER_TEST_F(DownloadTestWithF
    DownloadItemModel model(download);
    DownloadCommands(&model).ExecuteCommand(DownloadCommands::KEEP);
  
@@ -1253,7 +1215,7 @@
    download->Cancel(true);
  }
  
-@@ -4514,10 +4445,6 @@ IN_PROC_BROWSER_TEST_F(
+@@ -4645,10 +4576,6 @@ IN_PROC_BROWSER_TEST_F(
    DownloadItem* download = downloads[0];
    DownloadItemModel model(download);
    DownloadCommands(&model).ExecuteCommand(DownloadCommands::DISCARD);
@@ -1333,7 +1295,7 @@
  using ::testing::Mock;
  using ::testing::NiceMock;
  using ::testing::Return;
-@@ -395,12 +394,6 @@ TEST_F(DownloadItemModelTest, ShouldShow
+@@ -394,12 +393,6 @@ TEST_F(DownloadItemModelTest, ShouldShow
  
  TEST_F(DownloadItemModelTest, DangerLevel) {
    SetupDownloadItemDefaults();
@@ -1676,7 +1638,7 @@
  using offline_items_collection::FailState;
  
  namespace {
-@@ -259,7 +256,7 @@ base::string16 DownloadUIModel::GetWarni
+@@ -258,7 +255,7 @@ base::string16 DownloadUIModel::GetWarni
  
    switch (GetDangerType()) {
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_URL: {
@@ -1685,7 +1647,7 @@
      }
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE: {
        if (IsExtensionDownload()) {
-@@ -272,22 +269,16 @@ base::string16 DownloadUIModel::GetWarni
+@@ -271,22 +268,16 @@ base::string16 DownloadUIModel::GetWarni
      }
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT:
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_HOST: {
@@ -1710,7 +1672,7 @@
      }
      case download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED: {
        return l10n_util::GetStringFUTF16(IDS_PROMPT_DOWNLOAD_CHANGES_SETTINGS,
-@@ -401,13 +392,6 @@ bool DownloadUIModel::ShouldPreferOpenin
+@@ -406,13 +397,6 @@ bool DownloadUIModel::ShouldPreferOpenin
  
  void DownloadUIModel::SetShouldPreferOpeningInBrowser(bool preference) {}
  
@@ -1820,7 +1782,7 @@
      "api/sessions/session_id.cc",
      "api/sessions/session_id.h",
      "api/sessions/sessions_api.cc",
-@@ -747,9 +739,6 @@ jumbo_static_library("extensions") {
+@@ -752,9 +744,6 @@ jumbo_static_library("extensions") {
  
      # TODO(loyso): Remove this circular dependency. http://crbug.com/876576.
      "//chrome/browser/web_applications/extensions",
@@ -1830,7 +1792,7 @@
    ]
  
    # Since browser and browser_extensions actually depend on each other,
-@@ -761,9 +750,6 @@ jumbo_static_library("extensions") {
+@@ -766,9 +755,6 @@ jumbo_static_library("extensions") {
      "//chrome/browser/extensions/api:api_registration",
      "//chrome/common",
      "//chrome/common/extensions/api",
@@ -1840,7 +1802,7 @@
      "//components/signin/core/browser",
      "//content/public/browser",
      "//mojo/public/cpp/bindings",
-@@ -785,11 +771,9 @@ jumbo_static_library("extensions") {
+@@ -791,11 +777,9 @@ jumbo_static_library("extensions") {
      "//chrome/browser/media/router",
      "//chrome/browser/media/router/discovery",
      "//chrome/browser/resource_coordinator:mojo_bindings",
@@ -1852,7 +1814,7 @@
      "//chrome/services/removable_storage_writer/public/mojom",
      "//components/app_modal",
      "//components/autofill/content/browser",
-@@ -832,10 +816,6 @@ jumbo_static_library("extensions") {
+@@ -838,10 +822,6 @@ jumbo_static_library("extensions") {
      "//components/rappor",
      "//components/resources",
      "//components/safe_browsing:buildflags",
@@ -1865,7 +1827,7 @@
      "//components/services/unzip/content",
 --- a/chrome/browser/extensions/api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc
 +++ b/chrome/browser/extensions/api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc
-@@ -197,22 +197,6 @@ GenerateChromeUserProfileReportRequest(c
+@@ -210,22 +210,6 @@ GenerateChromeUserProfileReportRequest(c
      }
    }
  
@@ -1936,7 +1898,7 @@
  }  // namespace enterprise_reporting
 --- a/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc
 +++ b/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc
-@@ -26,8 +26,6 @@
+@@ -29,8 +29,6 @@
  #include "chrome/browser/extensions/install_tracker.h"
  #include "chrome/browser/extensions/scoped_active_install.h"
  #include "chrome/browser/profiles/profile.h"
@@ -1945,7 +1907,7 @@
  #include "chrome/browser/signin/identity_manager_factory.h"
  #include "chrome/browser/ui/app_list/app_list_util.h"
  #include "chrome/common/extensions/extension_constants.h"
-@@ -51,8 +49,6 @@
+@@ -56,8 +54,6 @@
  #include "chrome/browser/supervised_user/supervised_user_service_factory.h"
  #endif
  
@@ -2477,7 +2439,7 @@
  #endif  // CHROME_BROWSER_INTERSTITIALS_ENTERPRISE_UTIL_H_
 --- a/chrome/browser/metrics/chrome_metrics_service_accessor.h
 +++ b/chrome/browser/metrics/chrome_metrics_service_accessor.h
-@@ -56,15 +56,6 @@ namespace welcome {
+@@ -54,18 +54,6 @@ namespace welcome {
  void JoinOnboardingGroup(Profile* profile);
  }
  
@@ -2485,22 +2447,25 @@
 -class ChromeCleanerControllerDelegate;
 -class DownloadUrlSBClient;
 -class IncidentReportingService;
--class ReporterRunner;
 -class SafeBrowsingService;
 -class SafeBrowsingUIManager;
--}
+-
+-namespace internal {
+-class ReporterRunner;
+-}  // namespace internal
+-}  // namespace safe_browsing
 -
  namespace settings {
  class MetricsReportingHandler;
  }
-@@ -104,12 +95,6 @@ class ChromeMetricsServiceAccessor : pub
+@@ -102,12 +90,6 @@ class ChromeMetricsServiceAccessor : pub
    friend class heap_profiling::BackgroundProfilingTriggers;
    friend class settings::MetricsReportingHandler;
    friend class UmaSessionStats;
 -  friend class safe_browsing::ChromeCleanerControllerDelegate;
 -  friend class safe_browsing::DownloadUrlSBClient;
 -  friend class safe_browsing::IncidentReportingService;
--  friend class safe_browsing::ReporterRunner;
+-  friend class safe_browsing::internal::ReporterRunner;
 -  friend class safe_browsing::SafeBrowsingService;
 -  friend class safe_browsing::SafeBrowsingUIManager;
    friend class ChromeMetricsServiceClient;
@@ -2556,9 +2521,9 @@
  #include "chrome/browser/profiles/profile_manager.h"
 -#include "chrome/browser/safe_browsing/certificate_reporting_service.h"
 -#include "chrome/browser/safe_browsing/certificate_reporting_service_factory.h"
- #include "chrome/browser/ssl/certificate_error_report.h"
  #include "chrome/common/channel_info.h"
  #include "chrome/common/chrome_features.h"
+ #include "components/security_interstitials/content/certificate_error_report.h"
 --- a/chrome/browser/net/trial_comparison_cert_verifier_controller_unittest.cc
 +++ b/chrome/browser/net/trial_comparison_cert_verifier_controller_unittest.cc
 @@ -13,9 +13,6 @@
@@ -2568,12 +2533,12 @@
 -#include "chrome/browser/safe_browsing/certificate_reporting_service_factory.h"
 -#include "chrome/browser/safe_browsing/certificate_reporting_service_test_utils.h"
 -#include "chrome/browser/safe_browsing/test_safe_browsing_service.h"
- #include "chrome/browser/ssl/cert_logger.pb.h"
  #include "chrome/common/chrome_features.h"
  #include "chrome/common/chrome_paths.h"
-@@ -135,12 +132,6 @@ class TrialComparisonCertVerifierControl
+ #include "chrome/test/base/testing_browser_process.h"
+@@ -132,12 +129,6 @@ class TrialComparisonCertVerifierControl
+     ASSERT_TRUE(profile_manager_->SetUp());
      ASSERT_TRUE(g_browser_process->profile_manager());
-     profile_ = profile_manager_->CreateTestingProfile("profile1");
  
 -    sb_service_ =
 -        base::MakeRefCounted<safe_browsing::TestSafeBrowsingService>();
@@ -2581,10 +2546,10 @@
 -        sb_service_.get());
 -    g_browser_process->safe_browsing_service()->Initialize();
 -
-     // Initialize CertificateReportingService for |profile_|.
-     ASSERT_TRUE(reporting_service());
-     base::RunLoop().RunUntilIdle();
-@@ -171,11 +162,6 @@ class TrialComparisonCertVerifierControl
+     // SafeBrowsingService expects to be initialized before any profiles are
+     // created.
+     profile_ = profile_manager_->CreateTestingProfile("profile1");
+@@ -172,11 +163,6 @@ class TrialComparisonCertVerifierControl
      // Ensure mock expectations are checked.
      mock_config_client_ = nullptr;
  
@@ -2596,7 +2561,7 @@
      TrialComparisonCertVerifierController::SetFakeOfficialBuildForTesting(
          false);
    }
-@@ -213,7 +199,6 @@ class TrialComparisonCertVerifierControl
+@@ -214,7 +200,6 @@ class TrialComparisonCertVerifierControl
    scoped_refptr<CertificateReportingServiceTestHelper>
        reporting_service_test_helper_;
    content::BrowserTaskEnvironment task_environment_;
@@ -2604,7 +2569,7 @@
    std::unique_ptr<TestingProfileManager> profile_manager_;
    TestingProfile* profile_;
  
-@@ -230,10 +215,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -231,10 +216,6 @@ TEST_F(TrialComparisonCertVerifierContro
    // Trial should not be allowed.
    EXPECT_FALSE(trial_controller().IsAllowed());
  
@@ -2615,7 +2580,7 @@
    // Trial still not allowed, and OnTrialConfigUpdated should not be called
    // either.
    EXPECT_FALSE(trial_controller().IsAllowed());
-@@ -254,7 +235,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -255,7 +236,6 @@ TEST_F(TrialComparisonCertVerifierContro
    CreateController();
  
    EXPECT_FALSE(trial_controller().IsAllowed());
@@ -2623,7 +2588,7 @@
  
    // Trial still not allowed, and OnTrialConfigUpdated should not be called
    // either.
-@@ -284,7 +264,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -285,7 +265,6 @@ TEST_F(TrialComparisonCertVerifierContro
    // In a real official build, expect the trial config to be updated.
    EXPECT_CALL(mock_config_client(), OnTrialConfigUpdated(true)).Times(1);
  #endif
@@ -2631,7 +2596,7 @@
  
  #if defined(OFFICIAL_BUILD) && BUILDFLAG(GOOGLE_CHROME_BRANDING)
    // In a real official build, expect the trial to be allowed now.  (Don't
-@@ -321,7 +300,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -322,7 +301,6 @@ TEST_F(TrialComparisonCertVerifierContro
    // Enable the SBER pref, which should trigger the OnTrialConfigUpdated
    // callback.
    EXPECT_CALL(mock_config_client(), OnTrialConfigUpdated(true)).Times(1);
@@ -2639,7 +2604,7 @@
  
    // Trial should now be allowed.
    EXPECT_TRUE(trial_controller().IsAllowed());
-@@ -368,7 +346,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -369,7 +347,6 @@ TEST_F(TrialComparisonCertVerifierContro
    // Disable the SBER pref again, which should trigger the OnTrialConfigUpdated
    // callback.
    EXPECT_CALL(mock_config_client(), OnTrialConfigUpdated(false)).Times(1);
@@ -2647,7 +2612,7 @@
  
    // Not allowed now.
    EXPECT_FALSE(trial_controller().IsAllowed());
-@@ -411,7 +388,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -412,7 +389,6 @@ TEST_F(TrialComparisonCertVerifierContro
    // callback.
    EXPECT_CALL(mock_config_client(), OnTrialConfigUpdated(true)).Times(1);
    EXPECT_CALL(mock_config_client_2, OnTrialConfigUpdated(true)).Times(1);
@@ -2655,7 +2620,7 @@
  
    // Trial should now be allowed.
    EXPECT_TRUE(trial_controller().IsAllowed());
-@@ -466,7 +442,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -467,7 +443,6 @@ TEST_F(TrialComparisonCertVerifierContro
    // callback.
    EXPECT_CALL(mock_config_client(), OnTrialConfigUpdated(false)).Times(1);
    EXPECT_CALL(mock_config_client_2, OnTrialConfigUpdated(false)).Times(1);
@@ -2663,7 +2628,7 @@
  
    // Not allowed now.
    EXPECT_FALSE(trial_controller().IsAllowed());
-@@ -497,7 +472,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -498,7 +473,6 @@ TEST_F(TrialComparisonCertVerifierContro
    // Enable the SBER pref, which should trigger the OnTrialConfigUpdated
    // callback.
    EXPECT_CALL(mock_config_client(), OnTrialConfigUpdated(true)).Times(1);
@@ -2671,7 +2636,7 @@
  
    // Trial should now be allowed.
    EXPECT_TRUE(trial_controller().IsAllowed());
-@@ -529,9 +503,6 @@ TEST_F(TrialComparisonCertVerifierContro
+@@ -530,9 +504,6 @@ TEST_F(TrialComparisonCertVerifierContro
  
    EXPECT_FALSE(trial_controller().IsAllowed());
  
@@ -2683,7 +2648,7 @@
    EXPECT_FALSE(trial_controller().IsAllowed());
 --- a/chrome/browser/password_manager/chrome_password_manager_client.cc
 +++ b/chrome/browser/password_manager/chrome_password_manager_client.cc
-@@ -561,7 +561,6 @@ void ChromePasswordManagerClient::CheckS
+@@ -565,7 +565,6 @@ void ChromePasswordManagerClient::CheckS
    }
  }
  #endif  // defined(ON_FOCUS_PING_ENABLED)
@@ -2691,7 +2656,7 @@
  
  #if defined(SYNC_PASSWORD_REUSE_DETECTION_ENABLED)
  void ChromePasswordManagerClient::CheckProtectedPasswordEntry(
-@@ -571,6 +570,7 @@ void ChromePasswordManagerClient::CheckP
+@@ -575,6 +574,7 @@ void ChromePasswordManagerClient::CheckP
      bool password_field_exists) {
  }
  #endif  // defined(SYNC_PASSWORD_REUSE_DETECTION_ENABLED)
@@ -2701,7 +2666,7 @@
  void ChromePasswordManagerClient::LogPasswordReuseDetectedEvent() {
 --- a/chrome/browser/password_manager/chrome_password_manager_client.h
 +++ b/chrome/browser/password_manager/chrome_password_manager_client.h
-@@ -188,7 +188,7 @@ class ChromePasswordManagerClient
+@@ -191,7 +191,7 @@ class ChromePasswordManagerClient
        const override;
  #endif
  
@@ -2712,7 +2677,7 @@
        const std::string& username,
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -423,7 +423,6 @@ const PolicyToPreferenceMapEntry kSimple
+@@ -436,7 +436,6 @@ const PolicyToPreferenceMapEntry kSimple
    { key::kImportAutofillFormData,
      prefs::kImportDialogAutofillFormData,
      base::Value::Type::BOOLEAN },
@@ -2720,7 +2685,7 @@
    { key::kMaxConnectionsPerProxy,
      prefs::kMaxConnectionsPerProxy,
      base::Value::Type::INTEGER },
-@@ -877,9 +876,6 @@ const PolicyToPreferenceMapEntry kSimple
+@@ -893,9 +892,6 @@ const PolicyToPreferenceMapEntry kSimple
    { key::kReportExtensionsAndPluginsData,
      extensions::enterprise_reporting::kReportExtensionsAndPluginsData,
      base::Value::Type::BOOLEAN },
@@ -2730,7 +2695,7 @@
  #endif  // !defined(OS_CHROMEOS) && BUILDFLAG(ENABLE_EXTENSIONS)
  
  #if !defined(OS_MACOSX) && !defined(OS_CHROMEOS)
-@@ -1219,11 +1215,6 @@ std::unique_ptr<ConfigurationPolicyHandl
+@@ -1248,11 +1244,6 @@ std::unique_ptr<ConfigurationPolicyHandl
        new ConfigurationPolicyHandlerList(
            base::Bind(&PopulatePolicyHandlerParameters),
            base::Bind(&GetChromePolicyDetails)));
@@ -2744,7 +2709,7 @@
        std::make_unique<autofill::AutofillAddressPolicyHandler>());
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -68,7 +68,6 @@
+@@ -70,7 +70,6 @@
  #include "chrome/browser/ssl/ssl_config_service_manager.h"
  #include "chrome/browser/task_manager/task_manager_interface.h"
  #include "chrome/browser/tracing/chrome_tracing_delegate.h"
@@ -2752,7 +2717,7 @@
  #include "chrome/browser/ui/browser_ui_prefs.h"
  #include "chrome/browser/ui/hats/hats_service.h"
  #include "chrome/browser/ui/navigation_correction_tab_observer.h"
-@@ -334,14 +333,11 @@
+@@ -336,14 +335,11 @@
  #endif
  
  #if defined(OS_WIN)
@@ -2766,8 +2731,8 @@
 -#include "chrome/browser/safe_browsing/settings_reset_prompt/settings_reset_prompt_prefs_manager.h"
  #endif
  
- #if defined(OS_WIN) || defined(OS_MACOSX) || \
-@@ -734,7 +730,6 @@ void RegisterLocalState(PrefRegistrySimp
+ #if defined(OS_WIN) || defined(OS_MACOSX)
+@@ -756,7 +752,6 @@ void RegisterLocalState(PrefRegistrySimp
  
  #if defined(OS_WIN)
    registry->RegisterBooleanPref(prefs::kRendererCodeIntegrityEnabled, true);
@@ -2775,15 +2740,15 @@
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    IncompatibleApplicationsUpdater::RegisterLocalStatePrefs(registry);
    ModuleDatabase::RegisterLocalStatePrefs(registry);
-@@ -814,7 +809,6 @@ void RegisterProfilePrefs(user_prefs::Pr
-   ProtocolHandlerRegistry::RegisterProfilePrefs(registry);
+@@ -838,7 +833,6 @@ void RegisterProfilePrefs(user_prefs::Pr
    PushMessagingAppIdentifier::RegisterProfilePrefs(registry);
+   QuietNotificationPermissionUiState::RegisterProfilePrefs(registry);
    RegisterBrowserUserPrefs(registry);
 -  SafeBrowsingTriggeredPopupBlocker::RegisterProfilePrefs(registry);
+   security_state::RegisterProfilePrefs(registry);
    SessionStartupPref::RegisterProfilePrefs(registry);
    SharingSyncPreference::RegisterProfilePrefs(registry);
-   sync_sessions::SessionSyncPrefs::RegisterProfilePrefs(registry);
-@@ -967,11 +961,7 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -994,11 +988,7 @@ void RegisterProfilePrefs(user_prefs::Pr
  #endif
  
  #if defined(OS_WIN)
@@ -2797,7 +2762,7 @@
  #if defined(OS_WIN) || defined(OS_MACOSX) || \
 --- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 +++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
-@@ -56,7 +56,6 @@
+@@ -57,7 +57,6 @@
  #include "chrome/browser/prerender/prerender_message_filter.h"
  #include "chrome/browser/profiles/gaia_info_update_service_factory.h"
  #include "chrome/browser/profiles/renderer_updater_factory.h"
@@ -2807,62 +2772,34 @@
  #include "chrome/browser/search_engines/template_url_service_factory.h"
 --- a/chrome/browser/profiles/pref_service_builder_utils.cc
 +++ b/chrome/browser/profiles/pref_service_builder_utils.cc
-@@ -19,7 +19,6 @@
+@@ -18,7 +18,6 @@
+ #include "chrome/browser/prefs/browser_prefs.h"
  #include "chrome/browser/prefs/chrome_pref_service_factory.h"
- #include "chrome/browser/prefs/in_process_service_factory_factory.h"
  #include "chrome/browser/prefs/profile_pref_store_manager.h"
 -#include "chrome/browser/safe_browsing/safe_browsing_service.h"
  #include "chrome/common/buildflags.h"
  #include "chrome/common/chrome_constants.h"
  #include "chrome/grit/chromium_strings.h"
---- a/chrome/browser/resources/settings/privacy_page/privacy_page.html
-+++ b/chrome/browser/resources/settings/privacy_page/privacy_page.html
-@@ -488,25 +488,6 @@
-           </category-setting-exceptions>
-         </settings-subpage>
-       </template>
--      <template is="dom-if" if="[[enableSafeBrowsingSubresourceFilter_]]"
--          no-search>
--        <template is="dom-if" route-path="/content/ads" no-search>
--          <settings-subpage page-title="$i18n{siteSettingsAds}"
--              search-label="$i18n{siteSettingsAllSitesSearch}"
--              search-term="{{searchFilter_}}">
--            <category-default-setting
--                category="{{ContentSettingsTypes.ADS}}"
--                toggle-off-label="$i18n{siteSettingsAdsBlockRecommended}"
--                toggle-on-label="$i18n{siteSettingsAllowed}">
--            </category-default-setting>
--            <category-setting-exceptions
--                category="{{ContentSettingsTypes.ADS}}"
--                read-only-list
--                block-header="$i18n{siteSettingsBlock}"
--                search-filter="[[searchFilter_]]">
--            </category-setting-exceptions>
--          </settings-subpage>
--       </template>
-      </template>
-      <template is="dom-if" route-path="/content/unsandboxedPlugins" no-search>
-         <settings-subpage page-title="$i18n{siteSettingsUnsandboxedPlugins}"
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page.js
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page.js
-@@ -87,14 +87,6 @@ Polymer({
+@@ -110,14 +110,6 @@ Polymer({
      },
  
      /** @private */
 -    enableSafeBrowsingSubresourceFilter_: {
 -      type: Boolean,
 -      value: function() {
--        return loadTimeData.getBoolean('enableSafeBrowsingSubresourceFilter');
+-        return false;
 -      }
 -    },
 -
 -    /** @private */
-     enableBlockAutoplayContentSetting_: {
+     privacySettingsRedesignEnabled_: {
        type: Boolean,
        value: function() {
 --- a/chrome/browser/resources/settings/site_settings/site_settings_behavior.js
 +++ b/chrome/browser/resources/settings/site_settings/site_settings_behavior.js
-@@ -199,9 +199,6 @@ const SiteSettingsBehaviorImpl = {
+@@ -196,9 +196,6 @@ const SiteSettingsBehaviorImpl = {
          settings.ContentSettingsTypes.BLUETOOTH_SCANNING,
          'enableExperimentalWebPlatformFeatures');
      addOrRemoveSettingWithFlag(
@@ -2874,9 +2811,9 @@
      addOrRemoveSettingWithFlag(
 --- a/chrome/browser/resources/settings/site_settings_page/site_settings_page.html
 +++ b/chrome/browser/resources/settings/site_settings_page/site_settings_page.html
-@@ -114,16 +114,6 @@
-             '$i18nPolymer{siteSettingsAllowed}',
-             '$i18nPolymer{siteSettingsBlocked}')]]"></cr-link-row>
+@@ -125,17 +125,6 @@
+             '$i18nPolymer{siteSettingsBlocked}')]]"
+         role-description="$i18n{subpageArrowRoleDescription}"></cr-link-row>
  
 -    <template is="dom-if" if="[[enableSafeBrowsingSubresourceFilter_]]">
 -      <cr-link-row class="hr two-line" data-route="SITE_SETTINGS_ADS" id="ads"
@@ -2885,7 +2822,8 @@
 -          sub-label="[[defaultSettingLabel_(
 -              default_.ads,
 -              '$i18nPolymer{siteSettingsAllowed}',
--              '$i18nPolymer{siteSettingsAdsBlock}')]]"></cr-link-row>
+-              '$i18nPolymer{siteSettingsAdsBlock}')]]"
+-          role-description="$i18n{subpageArrowRoleDescription}"></cr-link-row>
 -    </template>
 -
      <cr-link-row class="hr two-line" data-route="SITE_SETTINGS_BACKGROUND_SYNC"
@@ -2900,7 +2838,7 @@
 -    enableSafeBrowsingSubresourceFilter_: {
 -      type: Boolean,
 -      value: function() {
--        return loadTimeData.getBoolean('enableSafeBrowsingSubresourceFilter');
+-        return false;
 -      }
 -    },
 -
@@ -2910,7 +2848,7 @@
        value: function() {
 --- a/chrome/browser/safe_browsing/chrome_cleaner/BUILD.gn
 +++ b/chrome/browser/safe_browsing/chrome_cleaner/BUILD.gn
-@@ -58,7 +58,6 @@ jumbo_static_library("chrome_cleaner") {
+@@ -57,7 +57,6 @@ jumbo_static_library("chrome_cleaner") {
      # TODO(crbug.com/920223): Break dependency cycles with //chrome/browser
      ":public",
      "//chrome/browser/extensions",
@@ -2918,7 +2856,7 @@
      "//chrome/browser/ui",
      "//chrome/common",
      "//chrome/installer/util:with_no_strings",
-@@ -69,7 +68,6 @@ jumbo_static_library("chrome_cleaner") {
+@@ -67,7 +66,6 @@ jumbo_static_library("chrome_cleaner") {
      "//components/crx_file",
      "//components/pref_registry",
      "//components/prefs",
@@ -2930,22 +2868,22 @@
 +++ b/chrome/browser/ssl/security_state_tab_helper.cc
 @@ -16,8 +16,6 @@
  #include "chrome/browser/browser_process.h"
- #include "chrome/browser/lookalikes/safety_tips/reputation_web_contents_observer.h"
  #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/reputation/reputation_web_contents_observer.h"
 -#include "chrome/browser/safe_browsing/safe_browsing_service.h"
 -#include "chrome/browser/safe_browsing/ui_manager.h"
+ #include "chrome/browser/ssl/known_interception_disclosure_infobar_delegate.h"
  #include "chrome/browser/ssl/tls_deprecation_config.h"
  #include "chrome/common/chrome_features.h"
- #include "chrome/common/chrome_switches.h"
-@@ -27,7 +25,6 @@
+@@ -28,7 +26,6 @@
  #include "components/omnibox/common/omnibox_features.h"
  #include "components/password_manager/core/browser/password_manager_metrics_util.h"
  #include "components/prefs/pref_service.h"
 -#include "components/safe_browsing/buildflags.h"
  #include "components/security_state/content/content_utils.h"
+ #include "components/security_state/core/security_state_pref_names.h"
  #include "content/public/browser/browser_context.h"
- #include "content/public/browser/navigation_entry.h"
-@@ -50,10 +47,6 @@
+@@ -52,10 +49,6 @@
  #include "chrome/browser/chromeos/policy/policy_cert_service_factory.h"
  #endif  // defined(OS_CHROMEOS)
  
@@ -2956,7 +2894,7 @@
  namespace {
  
  void RecordSecurityLevel(
-@@ -114,7 +107,6 @@ bool IsLegacyTLS(GURL url, int connectio
+@@ -119,7 +112,6 @@ bool IsLegacyTLS(GURL url, int connectio
  }  // namespace
  
  using password_manager::metrics_util::PasswordType;
@@ -3006,7 +2944,7 @@
      "blocked_content/tab_under_navigation_throttle.cc",
      "blocked_content/tab_under_navigation_throttle.h",
      "blocked_content/url_list_manager.cc",
-@@ -341,15 +339,8 @@ jumbo_static_library("ui") {
+@@ -338,15 +336,8 @@ jumbo_static_library("ui") {
      }
    }
  
@@ -3023,15 +2961,15 @@
    defines = []
    libs = []
  
-@@ -395,7 +386,6 @@ jumbo_static_library("ui") {
-     "//chrome/browser/profiling_host",
+@@ -397,7 +388,6 @@ jumbo_static_library("ui") {
      "//chrome/browser/resources/omnibox:resources",
+     "//chrome/browser/resources/quota_internals:quota_internals_resources",
      "//chrome/browser/resources/usb_internals:resources",
 -    "//chrome/browser/safe_browsing",
      "//chrome/browser/ssl:proto",
      "//chrome/browser/ui/webui/bluetooth_internals",
      "//chrome/browser/ui/webui/downloads:mojo_bindings",
-@@ -474,17 +464,6 @@ jumbo_static_library("ui") {
+@@ -478,17 +468,6 @@ jumbo_static_library("ui") {
      "//components/rappor",
      "//components/renderer_context_menu",
      "//components/resources",
@@ -3049,7 +2987,7 @@
      "//components/search",
      "//components/search_engines",
      "//components/security_interstitials/content:security_interstitial_page",
-@@ -1273,8 +1252,6 @@ jumbo_static_library("ui") {
+@@ -1302,8 +1281,6 @@ jumbo_static_library("ui") {
        "webui/settings/appearance_handler.h",
        "webui/settings/browser_lifetime_handler.cc",
        "webui/settings/browser_lifetime_handler.h",
@@ -3058,7 +2996,7 @@
        "webui/settings/custom_home_pages_table_model.cc",
        "webui/settings/custom_home_pages_table_model.h",
        "webui/settings/downloads_handler.cc",
-@@ -1362,7 +1339,6 @@ jumbo_static_library("ui") {
+@@ -1393,7 +1370,6 @@ jumbo_static_library("ui") {
        "//chrome/browser/profile_resetter:profile_reset_report_proto",
        "//chrome/browser/resource_coordinator:tab_metrics_event_proto",
        "//chrome/browser/resource_coordinator/tab_ranker",
@@ -3066,7 +3004,7 @@
        "//chrome/browser/ui/webui/app_management:mojo_bindings",
        "//chrome/common:buildflags",
        "//chrome/common:search_mojom",
-@@ -2349,10 +2325,6 @@ jumbo_static_library("ui") {
+@@ -2398,10 +2374,6 @@ jumbo_static_library("ui") {
        "startup/credential_provider_signin_info_fetcher_win.cc",
        "startup/credential_provider_signin_info_fetcher_win.h",
        "views/certificate_viewer_win.cc",
@@ -3077,7 +3015,7 @@
        "views/color_chooser_dialog.cc",
        "views/color_chooser_dialog.h",
        "views/color_chooser_win.cc",
-@@ -2373,8 +2345,6 @@ jumbo_static_library("ui") {
+@@ -2422,8 +2394,6 @@ jumbo_static_library("ui") {
        "views/frame/windows_10_caption_button.cc",
        "views/frame/windows_10_caption_button.h",
        "views/network_profile_bubble_view.cc",
@@ -3086,7 +3024,7 @@
        "views/status_icons/status_icon_win.cc",
        "views/status_icons/status_icon_win.h",
        "views/status_icons/status_tray_state_changer_win.cc",
-@@ -2396,8 +2366,6 @@ jumbo_static_library("ui") {
+@@ -2445,8 +2415,6 @@ jumbo_static_library("ui") {
        "webui/conflicts/conflicts_handler.h",
        "webui/conflicts/conflicts_ui.cc",
        "webui/conflicts/conflicts_ui.h",
@@ -3095,7 +3033,7 @@
        "webui/settings_utils_win.cc",
        "webui/version_handler_win.cc",
        "webui/version_handler_win.h",
-@@ -2409,7 +2377,6 @@ jumbo_static_library("ui") {
+@@ -2458,7 +2426,6 @@ jumbo_static_library("ui") {
        "//ui/views/controls/webview",
      ]
      deps += [
@@ -3103,7 +3041,7 @@
        "//chrome/browser/ui/startup:buildflags",
        "//chrome/browser/win/conflicts:module_info",
        "//chrome/credential_provider/common:common_constants",
-@@ -3076,10 +3043,6 @@ jumbo_static_library("ui") {
+@@ -3137,10 +3104,6 @@ jumbo_static_library("ui") {
        "views/relaunch_notification/wall_clock_timer.h",
        "views/sad_tab_view.cc",
        "views/sad_tab_view.h",
@@ -3114,7 +3052,7 @@
        "views/send_tab_to_self/send_tab_to_self_bubble_device_button.cc",
        "views/send_tab_to_self/send_tab_to_self_bubble_device_button.h",
        "views/send_tab_to_self/send_tab_to_self_bubble_view_impl.cc",
-@@ -3986,15 +3949,6 @@ jumbo_static_library("ui") {
+@@ -4022,15 +3985,6 @@ jumbo_static_library("ui") {
      }
    }
  
@@ -3191,15 +3129,15 @@
  PopupBlockerTabHelper::~PopupBlockerTabHelper() {
 --- a/chrome/browser/ui/browser.cc
 +++ b/chrome/browser/ui/browser.cc
-@@ -173,7 +173,6 @@
- #include "components/omnibox/browser/location_bar_model_impl.h"
+@@ -177,7 +177,6 @@
  #include "components/page_load_metrics/browser/metrics_web_contents_observer.h"
+ #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
  #include "components/prefs/pref_service.h"
 -#include "components/safe_browsing/triggers/ad_redirect_trigger.h"
  #include "components/search/search.h"
  #include "components/security_state/content/content_utils.h"
  #include "components/security_state/core/security_state.h"
-@@ -1327,10 +1326,6 @@ void Browser::OnDidBlockNavigation(conte
+@@ -1355,10 +1354,6 @@ void Browser::OnDidBlockNavigation(conte
        framebust_helper->AddBlockedUrl(blocked_url, base::BindOnce(on_click));
      }
    }
@@ -3222,7 +3160,7 @@
  class SettingsResetPromptController;
  }  // namespace safe_browsing
  
-@@ -268,21 +265,6 @@ void ShowSettingsResetPrompt(
+@@ -271,21 +268,6 @@ void ShowSettingsResetPrompt(
      Browser* browser,
      safe_browsing::SettingsResetPromptController* controller);
  
@@ -3254,16 +3192,16 @@
  #include "chrome/browser/ssl/chrome_ssl_host_state_delegate.h"
  #include "chrome/browser/ssl/chrome_ssl_host_state_delegate_factory.h"
  #include "chrome/browser/ui/page_info/page_info_ui.h"
-@@ -61,8 +60,6 @@
- #include "components/rappor/public/rappor_utils.h"
- #include "components/rappor/rappor_service_impl.h"
+@@ -59,8 +58,6 @@
+ #include "components/content_settings/core/common/content_settings_utils.h"
+ #include "components/password_manager/core/browser/password_manager_metrics_util.h"
  #include "components/safe_browsing/buildflags.h"
 -#include "components/safe_browsing/password_protection/metrics_util.h"
 -#include "components/safe_browsing/proto/csd.pb.h"
  #include "components/security_state/core/features.h"
  #include "components/signin/public/identity_manager/account_info.h"
  #include "components/ssl_errors/error_info.h"
-@@ -103,8 +100,6 @@ using base::ASCIIToUTF16;
+@@ -104,8 +101,6 @@ using base::ASCIIToUTF16;
  using base::UTF16ToUTF8;
  using base::UTF8ToUTF16;
  using content::BrowserThread;
@@ -3272,7 +3210,7 @@
  
  namespace {
  
-@@ -332,7 +327,6 @@ PageInfo::PageInfo(
+@@ -338,7 +333,6 @@ PageInfo::PageInfo(
        show_info_bar_(false),
        site_url_(url),
        site_identity_status_(SITE_IDENTITY_STATUS_UNKNOWN),
@@ -3280,18 +3218,22 @@
        safety_tip_info_({security_state::SafetyTipStatus::kUnknown, GURL()}),
        site_connection_status_(SITE_CONNECTION_STATUS_UNKNOWN),
        show_ssl_decision_revoke_button_(false),
-@@ -761,10 +755,6 @@ void PageInfo::ComputeUIInputs(
+@@ -782,14 +776,6 @@ __attribute__((optnone)) void PageInfo::
  
    if (visible_security_state.malicious_content_status !=
        security_state::MALICIOUS_CONTENT_STATUS_NONE) {
 -    // The site has been flagged by Safe Browsing. Takes precedence over TLS.
+-    base::string16 safe_browsing_details;
 -    GetSafeBrowsingStatusByMaliciousContentStatus(
 -        visible_security_state.malicious_content_status, &safe_browsing_status_,
--        &site_details_message_);
+-        &safe_browsing_details);
+-#if defined(OS_ANDROID)
+-    identity_status_description_android_ = safe_browsing_details;
+-#endif
+ 
  #if BUILDFLAG(FULL_SAFE_BROWSING)
      bool old_show_change_pw_buttons = show_change_password_buttons_;
- #endif
-@@ -1008,7 +998,6 @@ void PageInfo::PresentSiteIdentity() {
+@@ -1042,7 +1028,6 @@ void PageInfo::PresentSiteIdentity() {
    info.connection_status = site_connection_status_;
    info.connection_status_description = UTF16ToUTF8(site_connection_details_);
    info.identity_status = site_identity_status_;
@@ -3301,11 +3243,12 @@
    }
 --- a/chrome/browser/ui/tab_contents/chrome_web_contents_view_handle_drop.cc
 +++ b/chrome/browser/ui/tab_contents/chrome_web_contents_view_handle_drop.cc
-@@ -6,30 +6,11 @@
+@@ -6,31 +6,11 @@
  
  #include "base/strings/utf_string_conversions.h"
  #include "chrome/browser/profiles/profile.h"
 -#include "chrome/browser/safe_browsing/cloud_content_scanning/deep_scanning_dialog_delegate.h"
+-#include "chrome/browser/safe_browsing/cloud_content_scanning/deep_scanning_utils.h"
  #include "content/public/browser/web_contents.h"
  #include "content/public/browser/web_contents_view_delegate.h"
  #include "content/public/common/drop_data.h"
@@ -3334,16 +3277,16 @@
  void HandleOnPerformDrop(
 --- a/chrome/browser/ui/tab_helpers.cc
 +++ b/chrome/browser/ui/tab_helpers.cc
-@@ -49,8 +49,6 @@
- #include "chrome/browser/profiles/profile.h"
+@@ -51,8 +51,6 @@
  #include "chrome/browser/profiles/profile_key.h"
+ #include "chrome/browser/reputation/reputation_web_contents_observer.h"
  #include "chrome/browser/resource_coordinator/tab_helper.h"
 -#include "chrome/browser/safe_browsing/safe_browsing_navigation_observer.h"
 -#include "chrome/browser/safe_browsing/trigger_creator.h"
  #include "chrome/browser/sessions/session_tab_helper.h"
  #include "chrome/browser/ssl/connection_help_tab_helper.h"
  #include "chrome/browser/ssl/security_state_tab_helper.h"
-@@ -203,10 +201,6 @@ void TabHelpers::AttachTabHelpers(WebCon
+@@ -210,10 +208,6 @@ void TabHelpers::AttachTabHelpers(WebCon
    ChromePasswordManagerClient::CreateForWebContentsWithAutofillClient(
        web_contents,
        autofill::ChromeAutofillClient::FromWebContents(web_contents));
@@ -3352,7 +3295,7 @@
 -    ChromeSubresourceFilterClient::CreateForWebContents(web_contents);
 -  }
    ChromeTranslateClient::CreateForWebContents(web_contents);
-   ClientHintsObserver::CreateForWebContents(web_contents);
+   client_hints::ClientHints::CreateForWebContents(web_contents);
    ConnectionHelpTabHelper::CreateForWebContents(web_contents);
 --- a/chrome/browser/ui/views/accessibility/invert_bubble_view.cc
 +++ b/chrome/browser/ui/views/accessibility/invert_bubble_view.cc
@@ -3380,7 +3323,7 @@
    views::SetImageFromVectorIcon(learn_more.get(),
                                  vector_icons::kHelpOutlineIcon);
 @@ -95,7 +95,7 @@ InvertBubbleView::InvertBubbleView(Brows
-       dark_theme_(nullptr) {
+   DialogDelegate::set_buttons(ui::DIALOG_BUTTON_OK);
    DialogDelegate::set_button_label(ui::DIALOG_BUTTON_OK,
                                     l10n_util::GetStringUTF16(IDS_DONE));
 -  DialogDelegate::SetExtraView(::CreateExtraView(this));
@@ -3390,9 +3333,9 @@
  }
 --- a/chrome/browser/ui/views/download/download_item_view.cc
 +++ b/chrome/browser/ui/views/download/download_item_view.cc
-@@ -29,11 +29,6 @@
- #include "chrome/browser/download/download_stats.h"
+@@ -32,11 +32,6 @@
  #include "chrome/browser/download/drag_download_item.h"
+ #include "chrome/browser/icon_loader.h"
  #include "chrome/browser/profiles/profile.h"
 -#include "chrome/browser/safe_browsing/advanced_protection_status_manager.h"
 -#include "chrome/browser/safe_browsing/advanced_protection_status_manager_factory.h"
@@ -3401,8 +3344,8 @@
 -#include "chrome/browser/safe_browsing/safe_browsing_service.h"
  #include "chrome/browser/themes/theme_properties.h"
  #include "chrome/browser/ui/tab_modal_confirm_dialog.h"
- #include "chrome/browser/ui/views/download/download_shelf_context_menu_view.h"
-@@ -624,12 +619,6 @@ void DownloadItemView::ButtonPressed(vie
+ #include "chrome/browser/ui/views/chrome_typography.h"
+@@ -659,12 +654,6 @@ void DownloadItemView::ButtonPressed(vie
    if (IsShowingDeepScanning() && sender == open_button_) {
      content::WebContents* current_web_contents =
          shelf_->browser()->tab_strip_model()->GetActiveWebContents();
@@ -3415,7 +3358,7 @@
      return;
    }
  
-@@ -999,15 +988,10 @@ void DownloadItemView::ShowWarningDialog
+@@ -1062,15 +1051,10 @@ void DownloadItemView::ShowWarningDialog
  gfx::ImageSkia DownloadItemView::GetWarningIcon() {
    switch (model_->GetDangerType()) {
      case download::DOWNLOAD_DANGER_TYPE_UNCOMMON_CONTENT:
@@ -3423,13 +3366,13 @@
 -              model()->profile())
 -              ->RequestsAdvancedProtectionVerdicts()) {
 -        return gfx::CreateVectorIcon(
--            vector_icons::kErrorIcon, kErrorIconSize,
+-            vector_icons::kErrorIcon, GetErrorIconSize(),
 -            GetNativeTheme()->GetSystemColor(
 -                ui::NativeTheme::kColorId_AlertSeverityMedium));
 -      }
 -      FALLTHROUGH;
 +      return gfx::CreateVectorIcon(
-+          vector_icons::kErrorIcon, kErrorIconSize,
++          vector_icons::kErrorIcon, GetErrorIconSize(),
 +          GetNativeTheme()->GetSystemColor(
 +              ui::NativeTheme::kColorId_AlertSeverityMedium));
  
@@ -3437,7 +3380,7 @@
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT:
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -135,7 +135,6 @@
+@@ -137,7 +137,6 @@
  #include "components/omnibox/browser/omnibox_popup_view.h"
  #include "components/omnibox/browser/omnibox_view.h"
  #include "components/prefs/pref_service.h"
@@ -3465,10 +3408,10 @@
 -#include "chrome/browser/safe_browsing/advanced_protection_status_manager_factory.h"
  #include "chrome/browser/ui/webui/downloads/downloads.mojom.h"
  #include "chrome/browser/ui/webui/downloads/downloads_dom_handler.h"
- #include "chrome/browser/ui/webui/localized_string.h"
-@@ -56,12 +54,6 @@ content::WebUIDataSource* CreateDownload
-   content::WebUIDataSource* source =
-       content::WebUIDataSource::Create(chrome::kChromeUIDownloadsHost);
+ #include "chrome/browser/ui/webui/managed_ui_handler.h"
+@@ -70,12 +68,6 @@ content::WebUIDataSource* CreateDownload
+       kGeneratedPath, IDR_DOWNLOADS_DOWNLOADS_HTML);
+ #endif
  
 -  bool requests_ap_verdicts =
 -      safe_browsing::AdvancedProtectionStatusManagerFactory::GetForProfile(
@@ -3476,10 +3419,10 @@
 -          ->RequestsAdvancedProtectionVerdicts();
 -  source->AddBoolean("requestsApVerdicts", requests_ap_verdicts);
 -
-   static constexpr LocalizedString kStrings[] = {
+   static constexpr webui::LocalizedString kStrings[] = {
        {"title", IDS_DOWNLOAD_TITLE},
        {"searchResultsPlural", IDS_SEARCH_RESULTS_PLURAL},
-@@ -104,11 +96,8 @@ content::WebUIDataSource* CreateDownload
+@@ -130,11 +122,8 @@ content::WebUIDataSource* CreateDownload
  
    source->AddLocalizedString("dangerDownloadDesc",
                               IDS_BLOCK_REASON_DANGEROUS_DOWNLOAD);
@@ -3495,7 +3438,7 @@
  
 --- a/chrome/browser/ui/webui/interstitials/interstitial_ui.cc
 +++ b/chrome/browser/ui/webui/interstitials/interstitial_ui.cc
-@@ -14,17 +14,12 @@
+@@ -14,10 +14,6 @@
  #include "chrome/browser/lookalikes/lookalike_url_controller_client.h"
  #include "chrome/browser/lookalikes/lookalike_url_interstitial_page.h"
  #include "chrome/browser/profiles/profile.h"
@@ -3504,8 +3447,9 @@
 -#include "chrome/browser/safe_browsing/test_safe_browsing_blocking_page_quiet.h"
 -#include "chrome/browser/safe_browsing/ui_manager.h"
  #include "chrome/browser/ssl/bad_clock_blocking_page.h"
- #include "chrome/browser/ssl/mitm_software_blocking_page.h"
- #include "chrome/browser/ssl/ssl_blocking_page.h"
+ #include "chrome/browser/ssl/blocked_interception_blocking_page.h"
+ #include "chrome/browser/ssl/chrome_security_blocking_page_factory.h"
+@@ -25,7 +21,6 @@
  #include "chrome/common/buildflags.h"
  #include "chrome/common/url_constants.h"
  #include "components/grit/components_resources.h"
@@ -3513,7 +3457,7 @@
  #include "components/security_interstitials/content/origin_policy_ui.h"
  #include "components/security_interstitials/core/ssl_error_options_mask.h"
  #include "components/security_interstitials/core/ssl_error_ui.h"
-@@ -55,8 +50,6 @@
+@@ -56,8 +51,6 @@
  #include "chrome/browser/supervised_user/supervised_user_interstitial.h"
  #endif
  
@@ -3524,7 +3468,7 @@
  // NSS requires that serial numbers be unique even for the same issuer;
 --- a/chrome/browser/ui/webui/management_ui.cc
 +++ b/chrome/browser/ui/webui/management_ui.cc
-@@ -17,7 +17,6 @@
+@@ -16,7 +16,6 @@
  #include "chrome/grit/browser_resources.h"
  #include "chrome/grit/generated_resources.h"
  #include "chrome/grit/theme_resources.h"
@@ -3532,9 +3476,9 @@
  #include "components/strings/grit/components_strings.h"
  #include "extensions/buildflags/buildflags.h"
  #include "ui/base/l10n/l10n_util.h"
-@@ -104,10 +103,6 @@ content::WebUIDataSource* CreateManageme
-   AddLocalizedStringsBulk(source, kLocalizedStrings,
-                           base::size(kLocalizedStrings));
+@@ -102,10 +101,6 @@ content::WebUIDataSource* CreateManageme
+ 
+   AddLocalizedStringsBulk(source, kLocalizedStrings);
  
 -  source->AddString(kManagementExtensionReportSafeBrowsingWarnings,
 -                    l10n_util::GetStringFUTF16(
@@ -3545,7 +3489,7 @@
                      chrome::kLearnMoreEnterpriseURL);
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -110,7 +110,6 @@
+@@ -114,7 +114,6 @@
  #endif
  
  #if defined(OS_WIN)
@@ -3553,21 +3497,9 @@
  #include "device/fido/win/webauthn_api.h"
  
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -3077,11 +3076,6 @@ void AddSiteSettingsStrings(content::Web
-                           base::size(kSensorsLocalizedStrings));
- 
-   html_source->AddBoolean(
--      "enableSafeBrowsingSubresourceFilter",
--      base::FeatureList::IsEnabled(
--          subresource_filter::kSafeBrowsingSubresourceFilter));
--
--  html_source->AddBoolean(
-       "enableBlockAutoplayContentSetting",
-       base::FeatureList::IsEnabled(media::kAutoplayDisableSettings));
- 
 --- a/chrome/browser/ui/webui/settings/settings_ui.cc
 +++ b/chrome/browser/ui/webui/settings/settings_ui.cc
-@@ -64,9 +64,6 @@
+@@ -66,9 +66,6 @@
  #include "printing/buildflags/buildflags.h"
  
  #if defined(OS_WIN)
@@ -3577,7 +3509,7 @@
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
  #include "chrome/browser/ui/webui/settings/incompatible_applications_handler_win.h"
  #include "chrome/browser/win/conflicts/incompatible_applications_updater.h"
-@@ -233,10 +230,6 @@ SettingsUI::SettingsUI(content::WebUI* w
+@@ -240,10 +237,6 @@ SettingsUI::SettingsUI(content::WebUI* w
    AddSettingsPageUIHandler(std::make_unique<PrintingHandler>());
  #endif
  
@@ -3596,8 +3528,8 @@
      "//base:i18n",
 -    "//chrome/common/safe_browsing:pe_image_reader",
    ]
- }
  
+   libs = [ "crypt32.lib" ]
 --- a/chrome/browser/win/conflicts/module_info_util.cc
 +++ b/chrome/browser/win/conflicts/module_info_util.cc
 @@ -21,7 +21,6 @@
@@ -3624,7 +3556,7 @@
  
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -250,7 +250,6 @@ static_library("common") {
+@@ -229,7 +229,6 @@ static_library("common") {
      "//components/policy/core/common",
      "//components/prefs",
      "//components/safe_browsing:buildflags",
@@ -3632,7 +3564,7 @@
      "//components/services/heap_profiling/public/cpp",
      "//components/strings",
      "//components/translate/content/common",
-@@ -513,10 +512,6 @@ static_library("common") {
+@@ -496,10 +495,6 @@ static_library("common") {
      }
    }
  
@@ -3643,7 +3575,7 @@
    if (is_linux) {
      deps += [ "//sandbox/linux:sandbox_services" ]
    }
-@@ -784,10 +779,6 @@ mojom("mojo_bindings") {
+@@ -771,10 +766,6 @@ mojom("mojo_bindings") {
      public_deps += [ "//components/remote_cocoa/common:mojo" ]
    }
  
@@ -3666,7 +3598,7 @@
    "signed_in_devices.idl",
 --- a/chrome/common/features.gni
 +++ b/chrome/common/features.gni
-@@ -91,6 +91,5 @@ chrome_grit_defines = [
+@@ -88,6 +88,5 @@ chrome_grit_defines = [
    "enable_supervised_users=$enable_supervised_users",
    "enable_vr=$enable_vr",
    "enable_webui_tab_strip=$enable_webui_tab_strip",
@@ -3707,7 +3639,7 @@
  #include "extensions/buildflags/buildflags.h"
  
  namespace chrome {
-@@ -531,7 +530,6 @@ const char* const kChromeHostURLs[] = {
+@@ -538,7 +537,6 @@ const char* const kChromeHostURLs[] = {
      kChromeUISignInInternalsHost,
      kChromeUISiteEngagementHost,
      kChromeUINTPTilesInternalsHost,
@@ -3717,7 +3649,7 @@
      kChromeUISyncInternalsHost,
 --- a/chrome/renderer/BUILD.gn
 +++ b/chrome/renderer/BUILD.gn
-@@ -149,8 +149,6 @@ jumbo_static_library("renderer") {
+@@ -150,8 +150,6 @@ jumbo_static_library("renderer") {
      "//components/rappor/public/mojom",
      "//components/resources:components_resources",
      "//components/safe_browsing:buildflags",
@@ -3726,7 +3658,7 @@
      "//components/security_interstitials/content/renderer:security_interstitial_page_controller",
      "//components/security_interstitials/core:",
      "//components/security_interstitials/core/common/mojom:",
-@@ -247,40 +245,6 @@ jumbo_static_library("renderer") {
+@@ -248,40 +246,6 @@ jumbo_static_library("renderer") {
      deps += [ "//third_party/widevine/cdm:headers" ]
    }
  
@@ -3767,7 +3699,7 @@
    if (enable_extensions) {
      sources += [
        "extensions/accessibility_private_hooks_delegate.cc",
-@@ -440,10 +404,6 @@ jumbo_static_library("test_support") {
+@@ -441,10 +405,6 @@ jumbo_static_library("test_support") {
    sources = [
      "chrome_mock_render_thread.cc",
      "chrome_mock_render_thread.h",
@@ -3778,7 +3710,7 @@
    ]
  
    deps = [
-@@ -454,11 +414,4 @@ jumbo_static_library("test_support") {
+@@ -455,11 +415,4 @@ jumbo_static_library("test_support") {
      "//testing/gmock",
      "//testing/gtest",
    ]
@@ -3934,7 +3866,7 @@
    DISALLOW_ASSIGN(WebSocketHandshakeThrottleProviderImpl);
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -189,7 +189,6 @@ static_library("test_support") {
+@@ -195,7 +195,6 @@ static_library("test_support") {
      "//components/performance_manager/test_support",
      "//components/prefs:test_support",
      "//components/rappor:test_support",
@@ -3942,15 +3874,15 @@
      "//components/search_engines:test_support",
      "//components/sessions:test_support",
      "//components/signin/public/base:test_support",
-@@ -692,7 +691,6 @@ if (!is_android) {
+@@ -705,7 +704,6 @@ if (!is_android) {
        "//components/policy:chrome_settings_proto_generated_compile",
        "//components/resources",
        "//components/safe_browsing:buildflags",
 -      "//components/safe_browsing/db:test_database_manager",
+       "//components/services/paint_preview_compositor/public/mojom",
        "//components/services/patch/public/mojom",
        "//components/services/quarantine:test_support",
-       "//components/signin/core/browser",
-@@ -888,7 +886,6 @@ if (!is_android) {
+@@ -910,7 +908,6 @@ if (!is_android) {
        "../browser/domain_reliability/browsertest.cc",
        "../browser/download/download_browsertest.cc",
        "../browser/download/download_browsertest.h",
@@ -3958,7 +3890,7 @@
        "../browser/download/download_frame_policy_browsertest.cc",
        "../browser/download/download_started_animation_browsertest.cc",
        "../browser/download/save_page_browsertest.cc",
-@@ -1104,10 +1101,6 @@ if (!is_android) {
+@@ -1132,10 +1129,6 @@ if (!is_android) {
        "../browser/resource_coordinator/local_site_characteristics_database_browsertest.cc",
        "../browser/resource_coordinator/tab_activity_watcher_browsertest.cc",
        "../browser/resource_coordinator/tab_manager_browsertest.cc",
@@ -3966,18 +3898,18 @@
 -      "../browser/safe_browsing/download_protection/download_protection_service_browsertest.cc",
 -      "../browser/safe_browsing/test_safe_browsing_database_helper.cc",
 -      "../browser/safe_browsing/test_safe_browsing_database_helper.h",
-       "../browser/safe_json_parser_browsertest.cc",
        "../browser/safe_xml_parser_browsertest.cc",
+       "../browser/search/ntp_custom_background_enabled_policy_handler_browsertest.cc",
        "../browser/search_engines/template_url_scraper_browsertest.cc",
-@@ -1131,7 +1124,6 @@ if (!is_android) {
-       "../browser/site_isolation/chrome_site_per_process_browsertest.cc",
+@@ -1159,7 +1152,6 @@ if (!is_android) {
        "../browser/site_isolation/site_details_browsertest.cc",
+       "../browser/ssl/known_interception_disclosure_ui_browsertest.cc",
        "../browser/ui/blocked_content/popup_tracker_browsertest.cc",
 -      "../browser/ui/blocked_content/safe_browsing_triggered_popup_blocker_browsertest.cc",
        "../browser/ui/blocked_content/tab_under_blocker_browsertest.cc",
        "../browser/ui/managed_ui_browsertest.cc",
        "../browser/ui/manifest_web_app_browsertest.cc",
-@@ -1776,16 +1768,6 @@ if (!is_android) {
+@@ -1824,16 +1816,6 @@ if (!is_android) {
          "../browser/extensions/worker_apitest.cc",
          "../browser/notifications/notification_permission_context_apitest.cc",
          "../browser/policy/extension_policy_browsertest.cc",
@@ -3992,9 +3924,9 @@
 -        "../browser/safe_browsing/settings_reset_prompt/settings_reset_prompt_test_utils.cc",
 -        "../browser/safe_browsing/settings_reset_prompt/settings_reset_prompt_test_utils.h",
          "../browser/ui/views/extensions/extension_dialog_browsertest.cc",
+         "../browser/ui/views/extensions/pwa_confirmation_bubble_view_browsertest.cc",
          "../browser/ui/web_applications/test/bookmark_app_navigation_browsertest.cc",
-         "../browser/ui/web_applications/test/bookmark_app_navigation_browsertest.h",
-@@ -1938,7 +1920,6 @@ if (!is_android) {
+@@ -1990,7 +1972,6 @@ if (!is_android) {
          "../browser/ui/views/payments/shipping_option_view_controller_browsertest.cc",
          "../browser/ui/views/profiles/profile_menu_view_browsertest.cc",
          "../browser/ui/views/qrcode_generator/qrcode_generator_bubble_browsertest.cc",
@@ -4002,7 +3934,7 @@
          "../browser/ui/views/select_file_dialog_extension_browsertest.cc",
          "../browser/ui/views/session_crashed_bubble_view_browsertest.cc",
          "../browser/ui/views/status_bubble_views_browsertest.cc",
-@@ -2410,23 +2391,6 @@ if (!is_android) {
+@@ -2495,23 +2476,6 @@ if (!is_android) {
          "../browser/feature_engagement/new_tab/new_tab_tracker_browsertest.cc",
        ]
      }
@@ -4026,7 +3958,7 @@
      if (enable_captive_portal_detection) {
        sources += [ "../browser/captive_portal/captive_portal_browsertest.cc" ]
      }
-@@ -2475,15 +2439,6 @@ if (!is_android) {
+@@ -2562,15 +2526,6 @@ if (!is_android) {
        ]
  
        data += [ "//testing/buildbot/filters/mac_window_server_killers.browser_tests.filter" ]
@@ -4042,7 +3974,7 @@
      }
      if (is_win) {
        sources += [
-@@ -2613,14 +2568,6 @@ if (!is_android) {
+@@ -2702,14 +2657,6 @@ if (!is_android) {
      } else if (enable_extensions) {
        sources -= [ "../browser/extensions/api/braille_display_private/braille_display_private_apitest.cc" ]
      }
@@ -4054,10 +3986,10 @@
 -        "../renderer/safe_browsing/phishing_classifier_delegate_browsertest.cc",
 -      ]
 -    }
-     if (enable_remoting) {
-       sources += [
-         "remoting/auth_browsertest.cc",
-@@ -3282,7 +3229,6 @@ test("unit_tests") {
+ 
+     if (use_aura) {
+       if (enable_wifi_display) {
+@@ -3360,7 +3307,6 @@ test("unit_tests") {
      "../browser/ui/autofill/popup_view_test_helpers.cc",
      "../browser/ui/autofill/popup_view_test_helpers.h",
      "../browser/ui/blocked_content/popup_opener_tab_helper_unittest.cc",
@@ -4065,7 +3997,7 @@
      "../browser/ui/chrome_select_file_policy_unittest.cc",
      "../browser/ui/find_bar/find_backend_unittest.cc",
      "../browser/ui/login/login_handler_unittest.cc",
-@@ -3493,10 +3439,6 @@ test("unit_tests") {
+@@ -3574,10 +3520,6 @@ test("unit_tests") {
      "//components/page_load_metrics/common:test_support",
      "//components/resources",
      "//components/safe_browsing:buildflags",
@@ -4076,7 +4008,7 @@
      "//components/services/patch/content",
      "//components/services/unzip/content",
      "//components/spellcheck:buildflags",
-@@ -3784,14 +3726,6 @@ test("unit_tests") {
+@@ -3866,15 +3808,6 @@ test("unit_tests") {
        "../browser/profile_resetter/reset_report_uploader_unittest.cc",
        "../browser/profile_resetter/triggered_profile_resetter_win_unittest.cc",
        "../browser/renderer_context_menu/render_view_context_menu_unittest.cc",
@@ -4086,12 +4018,13 @@
 -      "../browser/safe_browsing/chrome_cleaner/chrome_prompt_channel_win_unittest.cc",
 -      "../browser/safe_browsing/chrome_cleaner/mock_chrome_cleaner_process_win.cc",
 -      "../browser/safe_browsing/chrome_cleaner/mock_chrome_cleaner_process_win.h",
+-      "../browser/safe_browsing/chrome_cleaner/reporter_runner_win_unittest.cc",
 -      "../browser/safe_browsing/chrome_cleaner/srt_delete_extension_win_unittest.cc",
 -      "../browser/safe_browsing/chrome_cleaner/srt_field_trial_win_unittest.cc",
        "../browser/search/background/ntp_background_service_unittest.cc",
        "../browser/search/chrome_colors/chrome_colors_service_unittest.cc",
        "../browser/search/instant_service_unittest.cc",
-@@ -4286,9 +4220,6 @@ test("unit_tests") {
+@@ -4391,9 +4324,6 @@ test("unit_tests") {
        "../browser/extensions/api/preference/preference_api_prefs_unittest.cc",
        "../browser/extensions/api/proxy/proxy_api_helpers_unittest.cc",
        "../browser/extensions/api/runtime/chrome_runtime_api_delegate_unittest.cc",
@@ -4101,7 +4034,7 @@
        "../browser/extensions/api/signed_in_devices/id_mapping_helper_unittest.cc",
        "../browser/extensions/api/signed_in_devices/signed_in_devices_api_unittest.cc",
        "../browser/extensions/api/signed_in_devices/signed_in_devices_manager_unittest.cc",
-@@ -4395,12 +4326,6 @@ test("unit_tests") {
+@@ -4502,12 +4432,6 @@ test("unit_tests") {
        "../browser/notifications/notification_system_observer_unittest.cc",
        "../browser/policy/chrome_extension_policy_migrator_unittest.cc",
        "../browser/renderer_context_menu/context_menu_content_type_unittest.cc",
@@ -4111,10 +4044,10 @@
 -      "../browser/safe_browsing/settings_reset_prompt/settings_reset_prompt_test_utils.h",
 -      "../browser/safe_browsing/test_extension_event_observer.cc",
 -      "../browser/safe_browsing/test_extension_event_observer.h",
-       "../browser/ssl/ssl_blocking_page_unittest.cc",
-       "../browser/sync/glue/extensions_activity_monitor_unittest.cc",
-       "../browser/sync_file_system/drive_backend/callback_helper_unittest.cc",
-@@ -4643,99 +4568,6 @@ test("unit_tests") {
+ 
+       # TODO(1026557): The below test depends on TestExtensionEventObserver.
+       # Maybe it should be changed to not use that class so that it could be
+@@ -4755,100 +4679,6 @@ test("unit_tests") {
      }
    }
  
@@ -4139,15 +4072,16 @@
 -      "../browser/safe_browsing/client_side_detection_host_unittest.cc",
 -      "../browser/safe_browsing/client_side_detection_service_unittest.cc",
 -      "../browser/safe_browsing/client_side_model_loader_unittest.cc",
+-      "../browser/safe_browsing/cloud_content_scanning/binary_fcm_service_unittest.cc",
+-      "../browser/safe_browsing/cloud_content_scanning/binary_upload_service_unittest.cc",
 -      "../browser/safe_browsing/cloud_content_scanning/deep_scanning_dialog_delegate_unittest.cc",
--      "../browser/safe_browsing/download_protection/binary_fcm_service_unittest.cc",
--      "../browser/safe_browsing/download_protection/binary_upload_service_unittest.cc",
+-      "../browser/safe_browsing/cloud_content_scanning/deep_scanning_utils_unittest.cc",
+-      "../browser/safe_browsing/cloud_content_scanning/multipart_uploader_unittest.cc",
 -      "../browser/safe_browsing/download_protection/download_feedback_service_unittest.cc",
 -      "../browser/safe_browsing/download_protection/download_feedback_unittest.cc",
 -      "../browser/safe_browsing/download_protection/download_item_request_unittest.cc",
 -      "../browser/safe_browsing/download_protection/download_protection_service_unittest.cc",
 -      "../browser/safe_browsing/download_protection/file_analyzer_unittest.cc",
--      "../browser/safe_browsing/download_protection/multipart_uploader_unittest.cc",
 -      "../browser/safe_browsing/download_protection/path_sanitizer_unittest.cc",
 -      "../browser/safe_browsing/download_protection/two_phase_uploader_unittest.cc",
 -      "../browser/safe_browsing/incident_reporting/binary_integrity_analyzer_mac_unittest.cc",
@@ -4214,7 +4148,7 @@
    if (enable_plugins) {
      sources += [
        "../browser/component_updater/component_installers_unittest.cc",
-@@ -4942,10 +4774,6 @@ test("unit_tests") {
+@@ -5053,10 +4883,6 @@ test("unit_tests") {
        "//third_party/wtl",
        "//ui/resources",
      ]
@@ -4225,17 +4159,17 @@
  
      libs = [
        "comsupp.lib",
-@@ -5127,9 +4955,6 @@ test("unit_tests") {
+@@ -5237,9 +5063,6 @@ test("unit_tests") {
        "//chrome/browser/supervised_user/supervised_user_error_page:unit_tests",
      ]
    }
 -  if (safe_browsing_mode == 1 && enable_extensions) {
 -    sources += [ "../browser/extensions/blacklist_unittest.cc" ]
 -  }
-   if (enable_app_list) {
+ 
+   if (is_win || is_mac || (is_linux && !is_chromeos)) {
      sources += [
-       "../browser/ui/app_list/app_context_menu_unittest.cc",
-@@ -5342,14 +5167,6 @@ if (!is_android) {
+@@ -5391,14 +5214,6 @@ if (!is_android) {
      }
    }
  
@@ -4248,9 +4182,9 @@
 -  }
 -
    if (is_chromeos) {
-     assert(enable_app_list)
      assert(enable_extensions)
-@@ -6455,27 +6272,6 @@ if (!is_android && !is_fuchsia) {
+ 
+@@ -6489,27 +6304,6 @@ if (!is_android && !is_fuchsia) {
    }
  }
  
@@ -4280,7 +4214,7 @@
      sources = [
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
-@@ -200,13 +200,6 @@ static_library("utility") {
+@@ -203,13 +203,6 @@ static_library("utility") {
      }
    }
  
@@ -4296,9 +4230,9 @@
    }
 --- a/components/BUILD.gn
 +++ b/components/BUILD.gn
-@@ -253,10 +253,6 @@ test("components_unittests") {
-       "//components/policy/core/browser:unit_tests",
-       "//components/policy/core/common:unit_tests",
+@@ -259,10 +259,6 @@ test("components_unittests") {
+       "//components/performance_manager:unit_tests",
+       "//components/policy/content:unit_tests",
        "//components/previews/content:unit_tests",
 -      "//components/safe_browsing/common:unit_tests",
 -      "//components/safe_browsing/password_protection:password_protection_unittest",
@@ -4307,7 +4241,7 @@
        "//components/security_interstitials/content:unit_tests",
        "//components/security_state/content:unit_tests",
        "//components/services/heap_profiling:unit_tests",
-@@ -385,15 +381,6 @@ test("components_unittests") {
+@@ -395,14 +391,6 @@ test("components_unittests") {
    if (enable_print_preview) {
      deps += [ "//components/pwg_encoder:unit_tests" ]
    }
@@ -4315,7 +4249,6 @@
 -    deps += [
 -      "//components/safe_browsing:verdict_cache_manager_unittest",
 -      "//components/safe_browsing/db:unit_tests_desktop",
--      "//components/safe_browsing/realtime:unit_tests",
 -    ]
 -  } else if (safe_browsing_mode == 2) {
 -    deps += [ "//components/safe_browsing/android:unit_tests_mobile" ]
@@ -4323,7 +4256,7 @@
  
    if (!is_ios) {
      deps += [
-@@ -673,11 +660,8 @@ if (!is_ios && !is_fuchsia) {
+@@ -687,11 +675,8 @@ if (!is_ios && !is_fuchsia) {
      }
  
      if (!is_android) {
@@ -4338,17 +4271,17 @@
      }
 --- a/components/components_strings.grd
 +++ b/components/components_strings.grd
-@@ -219,7 +219,6 @@
+@@ -247,7 +247,6 @@
        <part file="print_media_strings.grdp" />
        <part file="printing_component_strings.grdp" />
        <part file="reset_password_strings.grdp" />
 -      <part file="safe_browsing_strings.grdp" />
        <part file="security_interstitials_strings.grdp" />
        <part file="security_state_strings.grdp" />
-       <part file="ssl_errors_strings.grdp" />
+       <part file="send_tab_to_self_strings.grdp" />
 --- a/components/password_manager/core/browser/BUILD.gn
 +++ b/components/password_manager/core/browser/BUILD.gn
-@@ -284,7 +284,6 @@ jumbo_static_library("browser") {
+@@ -300,7 +300,6 @@ jumbo_static_library("browser") {
        "http_credentials_cleaner.cc",
        "http_credentials_cleaner.h",
      ]
@@ -4356,16 +4289,13 @@
    }
  
    if ((is_posix && !is_mac && !is_ios) || is_fuchsia) {
-@@ -628,13 +627,6 @@ source_set("unit_tests") {
+@@ -651,10 +650,6 @@ source_set("unit_tests") {
      "//ui/gfx:test_support",
      "//url",
    ]
 -
 -  if (password_reuse_detection_support) {
--    deps += [
--      "//components/safe_browsing:features",
--      "//components/safe_browsing/common:safe_browsing_prefs",
--    ]
+-    deps += [ "//components/safe_browsing/common:safe_browsing_prefs" ]
 -  }
  }
  
@@ -4381,7 +4311,7 @@
  namespace safe_browsing {
  class PasswordProtectionService;
  }
-@@ -285,7 +285,7 @@ class PasswordManagerClient {
+@@ -291,7 +291,7 @@ class PasswordManagerClient {
                                             const GURL& frame_url) = 0;
  #endif
  
@@ -4410,7 +4340,7 @@
  
 --- a/components/password_manager/core/browser/password_store.cc
 +++ b/components/password_manager/core/browser/password_store.cc
-@@ -523,10 +523,7 @@ void PasswordStore::SchedulePasswordHash
+@@ -565,10 +565,7 @@ void PasswordStore::SchedulePasswordHash
  
  void PasswordStore::ScheduleEnterprisePasswordURLUpdate() {
    std::vector<GURL> enterprise_login_urls;
@@ -4639,7 +4569,7 @@
      "//components/subresource_filter/core/browser:test_support",
 --- a/testing/variations/fieldtrial_testing_config.json
 +++ b/testing/variations/fieldtrial_testing_config.json
-@@ -5093,221 +5093,6 @@
+@@ -5384,323 +5384,6 @@
              ]
          }
      ],
@@ -4740,6 +4670,24 @@
 -            ]
 -        }
 -    ],
+-    "SafeBrowsingPasswordProtectionForSavedPasswords": [
+-        {
+-            "platforms": [
+-                "chromeos",
+-                "linux",
+-                "mac",
+-                "windows"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "SafeBrowsingPasswordProtectionForSavedPasswords"
+-                    ]
+-                }
+-            ]
+-        }
+-    ],
 -    "SafeBrowsingPasswordProtectionForSignedInUsers": [
 -        {
 -            "platforms": [
@@ -4753,6 +4701,72 @@
 -                    "name": "Enabled",
 -                    "enable_features": [
 -                        "SafeBrowsingPasswordProtectionForSignedInUsers"
+-                    ]
+-                }
+-            ]
+-        }
+-    ],
+-    "SafeBrowsingPasswordProtectionOnFocusPingAndroid": [
+-        {
+-            "platforms": [
+-                "android"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "SafeBrowsingSendOnFocusPing"
+-                    ]
+-                }
+-            ]
+-        }
+-    ],
+-    "SafeBrowsingPasswordProtectionPasswordReusePingAndroid": [
+-        {
+-            "platforms": [
+-                "android"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "SafeBrowsingSendPasswordReusePing"
+-                    ]
+-                }
+-            ]
+-        }
+-    ],
+-    "SafeBrowsingPasswordProtectionShowDomainsForSavedPasswords": [
+-        {
+-            "platforms": [
+-                "chromeos",
+-                "linux",
+-                "mac",
+-                "windows"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "SafeBrowsingPasswordProtectionShowDomainsForSavedPasswords"
+-                    ]
+-                }
+-            ]
+-        }
+-    ],
+-    "SafeBrowsingRealTimeUrlLookupEnabled": [
+-        {
+-            "platforms": [
+-                "chromeos",
+-                "linux",
+-                "mac",
+-                "windows"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "SafeBrowsingRealTimeUrlLookupEnabled"
 -                    ]
 -                }
 -            ]
@@ -4783,6 +4797,24 @@
 -                },
 -                {
 -                    "name": "Default"
+-                }
+-            ]
+-        }
+-    ],
+-    "SafeBrowsingSendSampledPingsForAllowlistDomain": [
+-        {
+-            "platforms": [
+-                "chromeos",
+-                "linux",
+-                "mac",
+-                "windows"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "SafeBrowsingSendSampledPingsForAllowlistDomain"
+-                    ]
 -                }
 -            ]
 -        }
@@ -4858,10 +4890,10 @@
 -            ]
 -        }
 -    ],
-     "SameSiteCookieMessages": [
+     "SameSiteByDefaultCookies_AndroidAw": [
          {
              "platforms": [
-@@ -6317,25 +6102,6 @@
+@@ -6843,25 +6526,6 @@
                      ]
                  }
              ]
@@ -4886,7 +4918,7 @@
 -            ]
          }
      ],
-     "UnifiedAutoplay": [
+     "UmaAndUkmDemographics": [
 --- a/third_party/unrar/BUILD.gn
 +++ b/third_party/unrar/BUILD.gn
 @@ -20,87 +20,3 @@ config("unrar_warnings") {
@@ -4979,14 +5011,13 @@
 -}
 --- a/tools/ipc_fuzzer/message_lib/BUILD.gn
 +++ b/tools/ipc_fuzzer/message_lib/BUILD.gn
-@@ -11,11 +11,9 @@ static_library("ipc_message_lib") {
+@@ -11,10 +11,8 @@ static_library("ipc_message_lib") {
    public_deps = [
      "//base",
      "//chrome/common",
 -    "//chrome/common/safe_browsing:proto",
      "//components/guest_view/common",
      "//components/nacl/common:buildflags",
-     "//components/network_hints/common",
 -    "//components/safe_browsing/common",
      "//components/spellcheck/common",
      "//components/subresource_filter/content/common",

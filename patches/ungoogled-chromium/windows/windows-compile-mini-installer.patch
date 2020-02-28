@@ -3,7 +3,7 @@
 
 --- a/chrome/tools/build/win/create_installer_archive.py
 +++ b/chrome/tools/build/win/create_installer_archive.py
-@@ -147,8 +147,14 @@ def GenerateDiffPatch(options, orig_file
+@@ -153,8 +153,14 @@ def GenerateDiffPatch(options, orig_file
  
  def GetLZMAExec(build_dir):
    if sys.platform == 'win32':
