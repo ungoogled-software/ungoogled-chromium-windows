@@ -38,6 +38,8 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
     * Python 3.6+ (for build and packaging scripts used below)
 	    * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
     * Python 2.7 (for scripts in the Chromium source tree), with pypiwin32 module (`pip install pypiwin32`)
+    * Git (to fetch all required ungoogled-chromium scripts)
+        * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
 
 2. Make sure Python 2.7 is set in the user or system environment variable `PATH` as `python`.
 
@@ -45,7 +47,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 NOTE: The commands below assume the `py` command was installed by Python 3 into `PATH`. If this is not the case, then substitute it with `python3`.
 
-Run in `cmd.exe`:
+Run in `cmd.exe` (as administrator):
 
 ```cmd
 git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git
@@ -55,7 +57,7 @@ py build.py
 py package.py
 ```
 
-A zip archive will be created under `build`
+A zip archive and an installer will be created under `build`.
 
 **NOTE**: If the build fails, you must take additional steps before re-running the build:
 
