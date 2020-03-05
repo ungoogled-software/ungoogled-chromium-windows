@@ -2292,14 +2292,16 @@
  
 --- a/chrome/browser/extensions/blacklist_state_fetcher.h
 +++ b/chrome/browser/extensions/blacklist_state_fetcher.h
-@@ -13,7 +13,6 @@
+@@ -13,8 +13,8 @@
  #include "base/callback.h"
  #include "base/macros.h"
  #include "base/memory/weak_ptr.h"
 -#include "components/safe_browsing/db/util.h"
  #include "extensions/browser/blacklist_state.h"
++#include "url/gurl.h"
  
  namespace network {
+ class SharedURLLoaderFactory;
 --- a/chrome/browser/extensions/blacklist_state_fetcher_unittest.cc
 +++ b/chrome/browser/extensions/blacklist_state_fetcher_unittest.cc
 @@ -7,7 +7,6 @@
@@ -2420,16 +2422,17 @@
  }
 --- a/chrome/browser/interstitials/enterprise_util.h
 +++ b/chrome/browser/interstitials/enterprise_util.h
-@@ -5,8 +5,6 @@
+@@ -5,7 +5,8 @@
  #ifndef CHROME_BROWSER_INTERSTITIALS_ENTERPRISE_UTIL_H_
  #define CHROME_BROWSER_INTERSTITIALS_ENTERPRISE_UTIL_H_
  
 -#include "components/safe_browsing/db/v4_protocol_manager_util.h"
--
++#include <string>
++#include "url/gurl.h"
+ 
  namespace content {
  class WebContents;
- }
-@@ -27,7 +25,4 @@ void MaybeTriggerSecurityInterstitialPro
+@@ -27,7 +28,4 @@ void MaybeTriggerSecurityInterstitialPro
      const std::string& reason,
      int net_error_code);
  
@@ -2772,7 +2775,14 @@
  #include "chrome/browser/search_engines/template_url_service_factory.h"
 --- a/chrome/browser/profiles/pref_service_builder_utils.cc
 +++ b/chrome/browser/profiles/pref_service_builder_utils.cc
-@@ -18,7 +18,6 @@
+@@ -12,13 +12,13 @@
+ #include "base/files/file_util.h"
+ #include "base/path_service.h"
+ #include "base/sequenced_task_runner.h"
++#include "base/strings/stringprintf.h"
+ #include "base/threading/scoped_blocking_call.h"
+ #include "chrome/browser/browser_process.h"
+ #include "chrome/browser/policy/chrome_browser_policy_connector.h"
  #include "chrome/browser/prefs/browser_prefs.h"
  #include "chrome/browser/prefs/chrome_pref_service_factory.h"
  #include "chrome/browser/prefs/profile_pref_store_manager.h"
