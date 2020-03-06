@@ -303,7 +303,7 @@
  #include "components/security_interstitials/core/features.h"
  #include "components/security_state/core/features.h"
  #include "components/security_state/core/security_state.h"
-@@ -3867,10 +3866,6 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -3872,10 +3871,6 @@ const FeatureEntry kFeatureEntries[] = {
      {"overlay-new-layout", flag_descriptions::kOverlayNewLayoutName,
       flag_descriptions::kOverlayNewLayoutDescription, kOsAndroid,
       FEATURE_VALUE_TYPE(chrome::android::kOverlayNewLayout)},
