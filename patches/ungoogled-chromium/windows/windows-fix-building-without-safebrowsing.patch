@@ -44,7 +44,19 @@
      "net/url_request_context/system/0x?/cookie_monster",
 --- a/chrome/app/BUILD.gn
 +++ b/chrome/app/BUILD.gn
-@@ -380,7 +380,6 @@ source_set("chrome_content_browser_overl
+@@ -49,10 +49,7 @@ source_set("chrome_dll_resources") {
+   ]
+ 
+   if (is_win) {
+-    sources += [
+-      "chrome_dll.rc",
+-      "etw_events/chrome_events_win.rc",
+-    ]
++    sources += [ "chrome_dll.rc" ]
+ 
+     deps += [
+       "//build:branding_buildflags",
+@@ -380,7 +377,6 @@ source_set("chrome_content_browser_overl
      "//components/metrics/public/mojom:call_stack_mojo_bindings",
      "//components/page_load_metrics/common:page_load_metrics_mojom",
      "//components/rappor/public/mojom",
@@ -3574,7 +3586,15 @@
      "//components/services/heap_profiling/public/cpp",
      "//components/strings",
      "//components/translate/content/common",
-@@ -496,10 +495,6 @@ static_library("common") {
+@@ -435,7 +434,6 @@ static_library("common") {
+   if (is_win) {
+     deps += [
+       "//chrome/chrome_elf:chrome_elf_main_include",
+-      "//chrome/common/win:eventlog_messages",
+       "//components/crash/content/app:crash_export_thunk_include",
+     ]
+ 
+@@ -496,10 +494,6 @@ static_library("common") {
      }
    }
  
@@ -3585,7 +3605,7 @@
    if (is_linux) {
      deps += [ "//sandbox/linux:sandbox_services" ]
    }
-@@ -771,10 +766,6 @@ mojom("mojo_bindings") {
+@@ -771,10 +765,6 @@ mojom("mojo_bindings") {
      public_deps += [ "//components/remote_cocoa/common:mojo" ]
    }
  
