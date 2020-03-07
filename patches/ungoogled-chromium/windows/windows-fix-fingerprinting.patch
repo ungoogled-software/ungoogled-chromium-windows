@@ -2,7 +2,7 @@
 
 --- a/content/public/common/content_switches.cc
 +++ b/content/public/common/content_switches.cc
-@@ -1018,6 +1018,15 @@ const char kDisableLegacyIntermediateWin
+@@ -1023,6 +1023,15 @@ const char kDisableLegacyIntermediateWin
  const char kEnableWin7WebRtcHWH264Decoding[] =
      "enable-win7-webrtc-hw-h264-decoding";
  
@@ -20,7 +20,7 @@
  const char kFontCacheSharedHandle[] = "font-cache-shared-handle";
 --- a/content/public/common/content_switches.h
 +++ b/content/public/common/content_switches.h
-@@ -284,6 +284,10 @@ CONTENT_EXPORT extern const char kPrefet
+@@ -285,6 +285,10 @@ CONTENT_EXPORT extern const char kPrefet
  CONTENT_EXPORT extern const char kDeviceScaleFactor[];
  CONTENT_EXPORT extern const char kDisableLegacyIntermediateWindow[];
  CONTENT_EXPORT extern const char kEnableWin7WebRtcHWH264Decoding[];

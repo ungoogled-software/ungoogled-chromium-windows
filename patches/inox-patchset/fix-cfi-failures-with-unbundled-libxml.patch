@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
 +++ b/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
-@@ -139,11 +139,11 @@ class PendingStartElementNSCallback fina
+@@ -137,11 +137,11 @@ class PendingStartElementNSCallback fina
          attribute_count_(attribute_count),
          defaulted_count_(defaulted_count) {
      namespaces_ = static_cast<xmlChar**>(
@@ -14,7 +14,7 @@
      for (int i = 0; i < attribute_count; ++i) {
        // Each attribute has 5 elements in the array:
        // name, prefix, uri, value and an end pointer.
-@@ -158,12 +158,12 @@ class PendingStartElementNSCallback fina
+@@ -156,12 +156,12 @@ class PendingStartElementNSCallback fina
  
    ~PendingStartElementNSCallback() override {
      for (int i = 0; i < namespace_count_ * 2; ++i)
@@ -31,7 +31,7 @@
    }
  
    void Call(XMLDocumentParser* parser) override {
-@@ -205,7 +205,7 @@ class PendingCharactersCallback final
+@@ -203,7 +203,7 @@ class PendingCharactersCallback final
    PendingCharactersCallback(const xmlChar* chars, int length)
        : chars_(xmlStrndup(chars, length)), length_(length) {}
  
@@ -40,7 +40,7 @@
  
    void Call(XMLDocumentParser* parser) override {
      parser->Characters(chars_, length_);
-@@ -281,7 +281,7 @@ class PendingErrorCallback final : publi
+@@ -279,7 +279,7 @@ class PendingErrorCallback final : publi
          line_number_(line_number),
          column_number_(column_number) {}
  
@@ -126,9 +126,9 @@
      }
    }
  
---- a/third_party/libxml/chromium/libxml_utils.cc
-+++ b/third_party/libxml/chromium/libxml_utils.cc
-@@ -23,7 +23,7 @@ std::string XmlStringToStdString(const x
+--- a/third_party/libxml/chromium/xml_reader.cc
++++ b/third_party/libxml/chromium/xml_reader.cc
+@@ -16,7 +16,7 @@ namespace {
  // Same as XmlStringToStdString but also frees |xmlstring|.
  std::string XmlStringToStdStringWithDelete(xmlChar* xmlstring) {
    std::string result = XmlStringToStdString(xmlstring);

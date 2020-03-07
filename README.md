@@ -10,7 +10,7 @@ Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromi
 
 ## Building
 
-Google only supports [Windows 7 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/78.0.3904.70/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 7 Professional x64.
+Google only supports [Windows 7 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/80.0.3987.122/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 7 Professional x64.
 
 NOTE: The default configuration will build 64-bit binaries for maximum security (TODO: Link some explanation). This can be changed to 32-bit by following the instructions in `build.py`
 
@@ -20,7 +20,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 #### Setting up Visual Studio
 
-[Follow the "Visual Studio" section of the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/refs/tags/77.0.3865.90/docs/windows_build_instructions.md#visual-studio).
+[Follow the "Visual Studio" section of the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/refs/tags/80.0.3987.122/docs/windows_build_instructions.md#visual-studio).
 
 * Make sure to read through the entire section and install/configure all the required components.
 * If your Visual Studio is installed in a directory other than the default, you'll need to set a few environment variables to point the toolchains to your installation path. (Copied from [instructions for Electron](https://electronjs.org/docs/development/build-instructions-windows))
@@ -38,6 +38,8 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
     * Python 3.6+ (for build and packaging scripts used below)
 	    * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
     * Python 2.7 (for scripts in the Chromium source tree), with pypiwin32 module (`pip install pypiwin32`)
+    * Git (to fetch all required ungoogled-chromium scripts)
+        * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
 
 2. Make sure Python 2.7 is set in the user or system environment variable `PATH` as `python`.
 
@@ -45,7 +47,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 NOTE: The commands below assume the `py` command was installed by Python 3 into `PATH`. If this is not the case, then substitute it with `python3`.
 
-Run in `cmd.exe`:
+Run in `cmd.exe` (as administrator):
 
 ```cmd
 git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git
@@ -55,7 +57,7 @@ py build.py
 py package.py
 ```
 
-A zip archive will be created under `build`
+A zip archive and an installer will be created under `build`.
 
 **NOTE**: If the build fails, you must take additional steps before re-running the build:
 

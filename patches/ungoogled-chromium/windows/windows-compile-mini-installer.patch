@@ -1,9 +1,19 @@
 # To compile the mini-installer, a 7z archive of the browser has to be made.
 # Google's 7z executable gets purged, so we have to use the system's 7z executable.
 
+--- a/chrome/installer/mini_installer/BUILD.gn
++++ b/chrome/installer/mini_installer/BUILD.gn
+@@ -184,7 +184,6 @@ template("generate_mini_installer") {
+       ":setup_runtime_deps",
+       "//chrome",
+       "//chrome/browser/extensions/default_extensions",
+-      "//chrome/common/win:eventlog_provider",
+       "//chrome/installer/setup",
+       "//third_party/icu:icudata",
+       chrome_dll_target,
 --- a/chrome/tools/build/win/create_installer_archive.py
 +++ b/chrome/tools/build/win/create_installer_archive.py
-@@ -147,8 +147,14 @@ def GenerateDiffPatch(options, orig_file
+@@ -153,8 +153,14 @@ def GenerateDiffPatch(options, orig_file
  
  def GetLZMAExec(build_dir):
    if sys.platform == 'win32':
