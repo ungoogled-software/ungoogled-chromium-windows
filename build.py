@@ -29,6 +29,7 @@ from _common import ENCODING, SEVENZIP_USE_REGISTRY, ExtractorEnum, get_logger
 sys.path.pop(0)
 
 _ROOT_DIR = Path(__file__).resolve().parent
+_PATCH_BIN_RELPATH = Path('third_party/git/usr/bin/patch.exe')
 
 
 def _get_vcvars_path(name='64'):
@@ -167,12 +168,14 @@ def main():
     # First, ungoogled-chromium-patches
     patches.apply_patches(
         patches.generate_patches_from_series(_ROOT_DIR / 'ungoogled-chromium' / 'patches', resolve=True),
-        source_tree
+        source_tree,
+        patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
     )
     # Then Windows-specific patches
     patches.apply_patches(
         patches.generate_patches_from_series(_ROOT_DIR / 'patches', resolve=True),
-        source_tree
+        source_tree,
+        patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
     )
 
     # Substitute domains
