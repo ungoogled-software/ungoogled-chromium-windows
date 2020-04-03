@@ -26,6 +26,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 * If your Visual Studio is installed in a directory other than the default, you'll need to set a few environment variables to point the toolchains to your installation path. (Copied from [instructions for Electron](https://electronjs.org/docs/development/build-instructions-windows))
 	* `vs2019_install = DRIVE:\path\to\Microsoft Visual Studio\2019\Community` (replace `2019` and `Community` with your installed versions)
 	* `WINDOWSSDKDIR = DRIVE:\path\to\Windows Kits\10`
+	* `GYP_MSVS_VERSION = 2019` (replace 2019 with your installed version's year)
 
 
 #### Other build requirements
