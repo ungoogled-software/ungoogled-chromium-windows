@@ -25,7 +25,7 @@ import downloads
 import domain_substitution
 import prune_binaries
 import patches
-from _common import ENCODING, SEVENZIP_USE_REGISTRY, ExtractorEnum, get_logger
+from _common import ENCODING, USE_REGISTRY, ExtractorEnum, get_logger
 sys.path.pop(0)
 
 _ROOT_DIR = Path(__file__).resolve().parent
@@ -114,8 +114,14 @@ def main():
     parser.add_argument(
         '--7z-path',
         dest='sevenz_path',
-        default=SEVENZIP_USE_REGISTRY,
+        default=USE_REGISTRY,
         help=('Command or path to 7-Zip\'s "7z" binary. If "_use_registry" is '
+              'specified, determine the path from the registry. Default: %(default)s'))
+    parser.add_argument(
+        '--winrar-path',
+        dest='winrar_path',
+        default=USE_REGISTRY,
+        help=('Command or path to WinRAR\'s "winrar.exe" binary. If "_use_registry" is '
               'specified, determine the path from the registry. Default: %(default)s'))
     args = parser.parse_args()
 
@@ -151,6 +157,7 @@ def main():
     # Unpack downloads
     extractors = {
         ExtractorEnum.SEVENZIP: args.sevenz_path,
+        ExtractorEnum.WINRAR: args.winrar_path,
     }
     get_logger().info('Unpacking downloads...')
     downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)

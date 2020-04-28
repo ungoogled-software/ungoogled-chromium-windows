@@ -10,37 +10,29 @@
 -  gn_path = options.output or os.path.join(out_dir, 'gn')
 +  gn_path = options.output or os.path.join(out_dir, 'gn.exe')
    gn_build_dir = os.path.join(out_dir, 'gn_build')
+   ninja_binary = os.environ.get('NINJA', 'ninja')
  
-   # TODO(thomasanderson): Remove this once Ubuntu Trusty reaches EOL, or when
-@@ -122,11 +122,11 @@ def main(argv):
+@@ -123,11 +123,11 @@ def main(argv):
        os.path.join(BOOTSTRAP_DIR, 'last_commit_position.h'), gn_build_dir)
    if options.jobs:
      subprocess.check_call(
--        ['ninja', '-C', gn_build_dir, 'gn', '-w', 'dupbuild=err', '-j'+str(options.jobs)])
-+        ['ninja', '-C', gn_build_dir, 'gn.exe', '-w', 'dupbuild=err', '-j'+str(options.jobs)])
+-        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', '-j'+str(options.jobs), 'gn'])
++        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', '-j'+str(options.jobs), 'gn.exe'])
    else:
      subprocess.check_call(
--        ['ninja', '-C', gn_build_dir, 'gn', '-w', 'dupbuild=err'])
+-        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', 'gn'])
 -  shutil.copy2(os.path.join(gn_build_dir, 'gn'), gn_path)
-+        ['ninja', '-C', gn_build_dir, 'gn.exe', '-w', 'dupbuild=err'])
++        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', 'gn.exe'])
 +  shutil.copy2(os.path.join(gn_build_dir, 'gn.exe'), gn_path)
  
    if not options.skip_generate_buildfiles:
      gn_gen_args = options.gn_gen_args or ''
 --- a/tools/gn/build/build_win.ninja.template
 +++ b/tools/gn/build/build_win.ninja.template
-@@ -1,12 +1,12 @@
- rule cc
--  command = ninja -t msvc -- $cc /nologo /showIncludes /FC @${out}.rsp /c ${in} /Fo${out}
-+  command = ninja -t msvc -- $cc /utf-8 /nologo /showIncludes /FC @${out}.rsp /c ${in} /Fo${out}
-   description = CC ${out}
-   rspfile = ${out}.rsp
-   rspfile_content = ${defines} ${includes} ${cflags} ${cflags_c}
+@@ -1,5 +1,5 @@
+ rule cxx
+-  command = ninja -t msvc -- $cxx /nologo /showIncludes /FC $includes $cflags /c $in /Fo$out
++  command = ninja -t msvc -- $cxx /utf-8 /nologo /showIncludes /FC $includes $cflags /c $in /Fo$out
+   description = CXX $out
    deps = msvc
  
- rule cxx
--  command = ninja -t msvc -- $cxx /nologo /showIncludes /FC @${out}.rsp /c ${in} /Fo${out}
-+  command = ninja -t msvc -- $cxx /utf-8 /nologo /showIncludes /FC @${out}.rsp /c ${in} /Fo${out}
-   description = CXX ${out}
-   rspfile = ${out}.rsp
-   rspfile_content = ${defines} ${includes} ${cflags} ${cflags_cc}

@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
 +++ b/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
-@@ -137,11 +137,11 @@ class PendingStartElementNSCallback fina
+@@ -138,11 +138,11 @@ class PendingStartElementNSCallback fina
          attribute_count_(attribute_count),
          defaulted_count_(defaulted_count) {
      namespaces_ = static_cast<xmlChar**>(
@@ -14,7 +14,7 @@
      for (int i = 0; i < attribute_count; ++i) {
        // Each attribute has 5 elements in the array:
        // name, prefix, uri, value and an end pointer.
-@@ -156,12 +156,12 @@ class PendingStartElementNSCallback fina
+@@ -157,12 +157,12 @@ class PendingStartElementNSCallback fina
  
    ~PendingStartElementNSCallback() override {
      for (int i = 0; i < namespace_count_ * 2; ++i)
@@ -31,7 +31,7 @@
    }
  
    void Call(XMLDocumentParser* parser) override {
-@@ -203,7 +203,7 @@ class PendingCharactersCallback final
+@@ -204,7 +204,7 @@ class PendingCharactersCallback final
    PendingCharactersCallback(const xmlChar* chars, int length)
        : chars_(xmlStrndup(chars, length)), length_(length) {}
  
@@ -40,7 +40,7 @@
  
    void Call(XMLDocumentParser* parser) override {
      parser->Characters(chars_, length_);
-@@ -279,7 +279,7 @@ class PendingErrorCallback final : publi
+@@ -280,7 +280,7 @@ class PendingErrorCallback final : publi
          line_number_(line_number),
          column_number_(column_number) {}
  
@@ -51,7 +51,7 @@
      parser->HandleError(type_, reinterpret_cast<char*>(message_),
 --- a/third_party/blink/renderer/core/xml/xsl_style_sheet_libxslt.cc
 +++ b/third_party/blink/renderer/core/xml/xsl_style_sheet_libxslt.cc
-@@ -189,7 +189,7 @@ void XSLStyleSheet::LoadChildSheets() {
+@@ -195,7 +195,7 @@ void XSLStyleSheet::LoadChildSheets() {
          xmlChar* uri_ref =
              xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);
          LoadChildSheet(String::FromUTF8((const char*)uri_ref));
@@ -60,7 +60,7 @@
        } else {
          break;
        }
-@@ -203,7 +203,7 @@ void XSLStyleSheet::LoadChildSheets() {
+@@ -209,7 +209,7 @@ void XSLStyleSheet::LoadChildSheets() {
          xmlChar* uri_ref =
              xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);
          LoadChildSheet(String::FromUTF8((const char*)uri_ref));
@@ -69,7 +69,7 @@
        }
        curr = curr->next;
      }
-@@ -292,8 +292,8 @@ xmlDocPtr XSLStyleSheet::LocateStyleshee
+@@ -298,8 +298,8 @@ xmlDocPtr XSLStyleSheet::LocateStyleshee
        xmlChar* child_uri =
            xmlBuildURI((const xmlChar*)import_href.c_str(), base);
        bool equal_ur_is = xmlStrEqual(uri, child_uri);
@@ -128,7 +128,7 @@
  
 --- a/third_party/libxml/chromium/xml_reader.cc
 +++ b/third_party/libxml/chromium/xml_reader.cc
-@@ -16,7 +16,7 @@ namespace {
+@@ -17,7 +17,7 @@ namespace {
  // Same as XmlStringToStdString but also frees |xmlstring|.
  std::string XmlStringToStdStringWithDelete(xmlChar* xmlstring) {
    std::string result = XmlStringToStdString(xmlstring);

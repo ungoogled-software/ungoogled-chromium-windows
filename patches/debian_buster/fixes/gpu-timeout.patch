@@ -4,7 +4,7 @@ bug-debian: http://bugs.debian.org/781940
 
 --- a/gpu/ipc/service/gpu_watchdog_thread.cc
 +++ b/gpu/ipc/service/gpu_watchdog_thread.cc
-@@ -38,7 +38,7 @@ const int kGpuTimeout = 30000;
+@@ -39,7 +39,7 @@ const int kGpuTimeout = 30000;
  // hangs at context creation during startup. See https://crbug.com/918490.
  const int kGpuTimeout = 15000;
  #else
@@ -12,4 +12,4 @@ bug-debian: http://bugs.debian.org/781940
 +const int kGpuTimeout = 20000;
  #endif
  
- #if defined(USE_X11)
+ // The same set of timeouts from Watchdog V2 so we can compare the results
