@@ -683,6 +683,40 @@
  #include "components/spellcheck/spellcheck_buildflags.h"
  #include "content/public/browser/browser_task_traits.h"
  #include "content/public/browser/render_process_host.h"
+@@ -90,33 +89,6 @@ void AddDataReductionProxyReceiver(
+   drp_settings->data_reduction_proxy_service()->Clone(std::move(receiver));
+ }
+ 
+-// Helper method for ExposeInterfacesToRenderer() that checks the latest
+-// SafeBrowsing pref value on the UI thread before hopping over to the IO
+-// thread.
+-void MaybeCreateSafeBrowsingForRenderer(
+-    int process_id,
+-    content::ResourceContext* resource_context,
+-    base::RepeatingCallback<scoped_refptr<safe_browsing::UrlCheckerDelegate>(
+-        bool safe_browsing_enabled)> get_checker_delegate,
+-    mojo::PendingReceiver<safe_browsing::mojom::SafeBrowsing> receiver) {
+-  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+-
+-  content::RenderProcessHost* render_process_host =
+-      content::RenderProcessHost::FromID(process_id);
+-  if (!render_process_host)
+-    return;
+-
+-  bool safe_browsing_enabled = false;
+-  base::CreateSingleThreadTaskRunner({content::BrowserThread::IO})
+-      ->PostTask(
+-          FROM_HERE,
+-          base::BindOnce(
+-              &safe_browsing::MojoSafeBrowsingImpl::MaybeCreate, process_id,
+-              resource_context,
+-              base::BindRepeating(get_checker_delegate, safe_browsing_enabled),
+-              std::move(receiver)));
+-}
+-
+ }  // namespace
+ 
+ void ChromeContentBrowserClient::ExposeInterfacesToRenderer(
 --- a/chrome/browser/component_updater/file_type_policies_component_installer.cc
 +++ b/chrome/browser/component_updater/file_type_policies_component_installer.cc
 @@ -18,7 +18,6 @@
@@ -2495,6 +2529,16 @@
  #include "chrome/browser/sync/device_info_sync_service_factory.h"
  #include "chrome/browser/sync/profile_sync_service_factory.h"
  #include "chrome/browser/tracing/background_tracing_metrics_provider.h"
+--- a/chrome/browser/native_file_system/tab_scoped_native_file_system_permission_context.cc
++++ b/chrome/browser/native_file_system/tab_scoped_native_file_system_permission_context.cc
+@@ -18,7 +18,6 @@
+ #include "chrome/browser/native_file_system/native_file_system_permission_context_factory.h"
+ #include "chrome/browser/native_file_system/native_file_system_permission_request_manager.h"
+ #include "chrome/browser/profiles/profile.h"
+-#include "chrome/browser/safe_browsing/download_protection/download_protection_service.h"
+ #include "chrome/browser/ui/browser_dialogs.h"
+ #include "chrome/common/chrome_paths.h"
+ #include "components/content_settings/core/browser/host_content_settings_map.h"
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
 @@ -27,7 +27,6 @@
@@ -3358,7 +3402,7 @@
  }
 --- a/chrome/browser/ui/views/download/download_item_view.cc
 +++ b/chrome/browser/ui/views/download/download_item_view.cc
-@@ -33,11 +33,6 @@
+@@ -33,26 +33,18 @@
  #include "chrome/browser/download/drag_download_item.h"
  #include "chrome/browser/icon_loader.h"
  #include "chrome/browser/profiles/profile.h"
@@ -3370,7 +3414,33 @@
  #include "chrome/browser/themes/theme_properties.h"
  #include "chrome/browser/ui/tab_modal_confirm_dialog.h"
  #include "chrome/browser/ui/views/chrome_typography.h"
-@@ -727,12 +722,6 @@ void DownloadItemView::ButtonPressed(vie
+ #include "chrome/browser/ui/views/download/download_shelf_context_menu_view.h"
+ #include "chrome/browser/ui/views/download/download_shelf_view.h"
+ #include "chrome/browser/ui/views/frame/browser_view.h"
+-#include "chrome/browser/ui/views/safe_browsing/deep_scanning_modal_dialog.h"
+-#include "chrome/browser/ui/views/safe_browsing/prompt_for_scanning_modal_dialog.h"
+ #include "chrome/common/pref_names.h"
+ #include "chrome/grit/generated_resources.h"
+ #include "components/download/public/common/download_danger_type.h"
+ #include "components/download/public/common/download_item.h"
+ #include "components/prefs/pref_service.h"
+ #include "components/safe_browsing/buildflags.h"
+-#include "components/safe_browsing/core/features.h"
+ #include "components/url_formatter/elide_url.h"
+ #include "components/vector_icons/vector_icons.h"
+ #include "content/public/browser/download_item_utils.h"
+@@ -233,10 +225,6 @@ DownloadItemView::DownloadItemView(Downl
+   open_button_ = AddChildView(std::move(open_button));
+ 
+   int file_name_style = views::style::STYLE_PRIMARY;
+-#if !defined(OS_LINUX)
+-  if (base::FeatureList::IsEnabled(safe_browsing::kUseNewDownloadWarnings))
+-    file_name_style = STYLE_EMPHASIZED;
+-#endif
+   auto file_name_label = std::make_unique<views::Label>(
+       ElidedFilename(), views::style::CONTEXT_LABEL, file_name_style);
+   file_name_label->SetHorizontalAlignment(gfx::ALIGN_LEFT);
+@@ -727,24 +715,12 @@ void DownloadItemView::ButtonPressed(vie
      if (IsShowingDeepScanning()) {
        content::WebContents* current_web_contents =
            shelf_->browser()->tab_strip_model()->GetActiveWebContents();
@@ -3383,7 +3453,29 @@
        return;
      }
      if (model_->GetDangerType() ==
-@@ -1210,15 +1199,10 @@ void DownloadItemView::ShowWarningDialog
+         download::DOWNLOAD_DANGER_TYPE_PROMPT_FOR_SCANNING) {
+       content::WebContents* current_web_contents =
+           shelf_->browser()->tab_strip_model()->GetActiveWebContents();
+-      safe_browsing::PromptForScanningModalDialog::ShowForWebContents(
+-          current_web_contents,
+-          base::BindOnce(&DownloadItemView::ConfirmDeepScanning,
+-                         weak_ptr_factory_.GetWeakPtr()),
+-          base::BindOnce(&DownloadItemView::BypassDeepScanning,
+-                         weak_ptr_factory_.GetWeakPtr()));
+       return;
+     }
+     if (IsShowingWarningDialog() || IsShowingMixedContentDialog())
+@@ -798,8 +774,7 @@ int DownloadItemView::GetYForFilenameTex
+ }
+ 
+ void DownloadItemView::DrawIcon(gfx::Canvas* canvas) {
+-  bool use_new_warnings =
+-      base::FeatureList::IsEnabled(safe_browsing::kUseNewDownloadWarnings);
++  bool use_new_warnings = false;
+   bool show_warning_icon = IsShowingWarningDialog() ||
+                            IsShowingMixedContentDialog() ||
+                            IsShowingDeepScanning();
+@@ -1210,15 +1185,10 @@ void DownloadItemView::ShowWarningDialog
  gfx::ImageSkia DownloadItemView::GetWarningIcon() {
    switch (model_->GetDangerType()) {
      case download::DOWNLOAD_DANGER_TYPE_UNCOMMON_CONTENT:
@@ -3403,6 +3495,36 @@
  
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_URL:
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT:
+@@ -1635,8 +1605,6 @@ void DownloadItemView::OpenDownloadDurin
+ }
+ 
+ void DownloadItemView::StyleFilenameInLabel(views::StyledLabel* label) {
+-  if (!base::FeatureList::IsEnabled(safe_browsing::kUseNewDownloadWarnings))
+-    return;
+ 
+ #if !defined(OS_LINUX)
+   base::string16 filename = ElidedFilename();
+@@ -1655,18 +1623,14 @@ void DownloadItemView::StyleFilenameInLa
+ int DownloadItemView::GetWarningIconSize() {
+   // TODO(drubery): Replace this method with a constexpr variable when the new
+   // UX is fully launched.
+-  return base::FeatureList::IsEnabled(safe_browsing::kUseNewDownloadWarnings)
+-             ? 20
+-             : 24;
++  return 24;
+ }
+ 
+ // static
+ int DownloadItemView::GetErrorIconSize() {
+   // TODO(drubery): Replace this method with a constexpr variable when the new
+   // UX is fully launched.
+-  return base::FeatureList::IsEnabled(safe_browsing::kUseNewDownloadWarnings)
+-             ? 20
+-             : 27;
++  return 27;
+ }
+ 
+ void DownloadItemView::ConfirmDeepScanning() {
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
 @@ -139,7 +139,6 @@
@@ -4286,6 +4408,71 @@
      "//components/security_state/core",
      "//components/signin/public/identity_manager:test_support",
      "//components/strings",
+--- a/components/password_manager/core/browser/compromised_credentials_observer.cc
++++ b/components/password_manager/core/browser/compromised_credentials_observer.cc
+@@ -9,7 +9,6 @@
+ #include "base/metrics/histogram_macros.h"
+ #include "components/password_manager/core/browser/compromised_credentials_table.h"
+ #include "components/password_manager/core/common/password_manager_features.h"
+-#include "components/safe_browsing/core/features.h"
+ 
+ namespace password_manager {
+ 
+@@ -29,11 +28,7 @@ CompromisedCredentialsObserver::~Comprom
+ 
+ void CompromisedCredentialsObserver::OnLoginsChanged(
+     const PasswordStoreChangeList& changes) {
+-  bool password_protection_show_domains_for_saved_password_is_on =
+-      base::FeatureList::IsEnabled(
+-          safe_browsing::kPasswordProtectionShowDomainsForSavedPasswords);
+-  if (!password_protection_show_domains_for_saved_password_is_on &&
+-      !base::FeatureList::IsEnabled(password_manager::features::kLeakHistory))
++  if (!base::FeatureList::IsEnabled(password_manager::features::kLeakHistory))
+     return;
+ 
+   // If the change is an UPDATE and the password did not change, there is
+--- a/components/password_manager/core/browser/compromised_credentials_table.cc
++++ b/components/password_manager/core/browser/compromised_credentials_table.cc
+@@ -7,7 +7,6 @@
+ #include "base/metrics/histogram_macros.h"
+ #include "components/password_manager/core/browser/sql_table_builder.h"
+ #include "components/password_manager/core/common/password_manager_features.h"
+-#include "components/safe_browsing/core/features.h"
+ #include "sql/database.h"
+ #include "sql/statement.h"
+ 
+@@ -74,9 +73,7 @@ bool operator==(const CompromisedCredent
+ }
+ 
+ void CompromisedCredentialsTable::Init(sql::Database* db) {
+-  bool password_protection_show_domains_for_saved_password_is_on =
+-      base::FeatureList::IsEnabled(
+-          safe_browsing::kPasswordProtectionShowDomainsForSavedPasswords);
++  bool password_protection_show_domains_for_saved_password_is_on = false;
+   if (password_protection_show_domains_for_saved_password_is_on ||
+       base::FeatureList::IsEnabled(password_manager::features::kLeakHistory))
+     db_ = db;
+--- a/components/password_manager/core/browser/login_database.cc
++++ b/components/password_manager/core/browser/login_database.cc
+@@ -40,7 +40,6 @@
+ #include "components/password_manager/core/browser/psl_matching_helper.h"
+ #include "components/password_manager/core/browser/sql_table_builder.h"
+ #include "components/password_manager/core/common/password_manager_features.h"
+-#include "components/safe_browsing/core/features.h"
+ #include "components/sync/protocol/entity_metadata.pb.h"
+ #include "components/sync/protocol/model_type_state.pb.h"
+ #include "google_apis/gaia/gaia_auth_util.h"
+@@ -829,9 +828,7 @@ bool LoginDatabase::Init() {
+     }
+   }
+ 
+-  if (base::FeatureList::IsEnabled(password_manager::features::kLeakHistory) ||
+-      base::FeatureList::IsEnabled(
+-          safe_browsing::kPasswordProtectionShowDomainsForSavedPasswords)) {
++  if (base::FeatureList::IsEnabled(password_manager::features::kLeakHistory)) {
+     if (!compromised_credentials_table_.CreateTableIfNecessary()) {
+       LogDatabaseInitError(INIT_COMPROMISED_CREDENTIALS_ERROR);
+       LOG(ERROR) << "Unable to create the compromised credentials table.";
 --- a/components/password_manager/core/browser/password_manager_client.h
 +++ b/components/password_manager/core/browser/password_manager_client.h
 @@ -46,7 +46,7 @@ class IdentityManager;

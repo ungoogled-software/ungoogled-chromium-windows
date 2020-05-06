@@ -2,10 +2,13 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -62,24 +62,6 @@ if (is_win) {
-   action("reorder_imports") {
-     script = "//build/win/reorder-imports.py"
+@@ -59,27 +59,6 @@ if (enable_resource_whitelist_generation
+ }
  
+ if (is_win) {
+-  action("reorder_imports") {
+-    script = "//build/win/reorder-imports.py"
+-
 -    # See comment in chrome_dll.gypi in the hardlink_to_output
 -    # target for why this cannot be 'initial' like the DLL.
 -    inputs = [ "$root_out_dir/initialexe/chrome.exe" ]
@@ -27,7 +30,7 @@
    if (!is_multi_dll_chrome) {
      # Remove the chrome_child.dll build artifacts from the build directory if
      # they're not needed to avoid packaging them in the installer.
-@@ -130,21 +112,13 @@ if (!is_android && !is_mac) {
+@@ -130,21 +109,13 @@ if (!is_android && !is_mac) {
    group("chrome") {
      public_deps = [ ":chrome_initial" ]
      data_deps = [ ":chrome_initial" ]
