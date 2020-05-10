@@ -10,9 +10,9 @@ Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromi
 
 ## Building
 
-Google only supports [Windows 7 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/80.0.3987.122/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 7 Professional x64.
+Google only supports [Windows 7 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/81.0.4044.113/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 7 Professional x64.
 
-NOTE: The default configuration will build 64-bit binaries for maximum security (TODO: Link some explanation). This can be changed to 32-bit by following the instructions in `build.py`
+NOTE: The default configuration will build 64-bit binaries for maximum security (TODO: Link some explanation). This can be changed to 32-bit by setting `target_cpu` to `"x86"` in `flags.windows.gn`.
 
 ### Setting up the build environment
 
@@ -20,7 +20,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 #### Setting up Visual Studio
 
-[Follow the "Visual Studio" section of the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/refs/tags/80.0.3987.122/docs/windows_build_instructions.md#visual-studio).
+[Follow the "Visual Studio" section of the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/refs/tags/81.0.4044.113/docs/windows_build_instructions.md#visual-studio).
 
 * Make sure to read through the entire section and install/configure all the required components.
 * If your Visual Studio is installed in a directory other than the default, you'll need to set a few environment variables to point the toolchains to your installation path. (Copied from [instructions for Electron](https://electronjs.org/docs/development/build-instructions-windows))

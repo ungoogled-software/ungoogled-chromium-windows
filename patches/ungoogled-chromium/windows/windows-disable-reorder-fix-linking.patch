@@ -2,7 +2,7 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -59,33 +59,6 @@ if (enable_resource_whitelist_generation
+@@ -59,27 +59,6 @@ if (enable_resource_whitelist_generation
  }
  
  if (is_win) {
@@ -11,12 +11,8 @@
 -
 -    # See comment in chrome_dll.gypi in the hardlink_to_output
 -    # target for why this cannot be 'initial' like the DLL.
--    inputs = [
--      "$root_out_dir/initialexe/chrome.exe",
--    ]
--    outputs = [
--      "$root_out_dir/chrome.exe",
--    ]
+-    inputs = [ "$root_out_dir/initialexe/chrome.exe" ]
+-    outputs = [ "$root_out_dir/chrome.exe" ]
 -    if (symbol_level != 0) {
 -      outputs += [ "$root_out_dir/chrome.exe.pdb" ]
 -    }
@@ -28,18 +24,16 @@
 -      "-a",
 -      current_cpu,
 -    ]
--    deps = [
--      ":chrome_initial",
--    ]
+-    deps = [ ":chrome_initial" ]
 -  }
 -
    if (!is_multi_dll_chrome) {
      # Remove the chrome_child.dll build artifacts from the build directory if
      # they're not needed to avoid packaging them in the installer.
-@@ -142,21 +115,13 @@ if (!is_android && !is_mac) {
-     data_deps = [
-       ":chrome_initial",
-     ]
+@@ -130,21 +109,13 @@ if (!is_android && !is_mac) {
+   group("chrome") {
+     public_deps = [ ":chrome_initial" ]
+     data_deps = [ ":chrome_initial" ]
 -    if (is_win) {
 -      public_deps += [ ":reorder_imports" ]
 -      data_deps += [ ":reorder_imports" ]
@@ -61,7 +55,7 @@
        # Normally, we need to pass specific flags to the linker to
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -354,11 +354,6 @@ python_library("chromedriver_py_tests")
+@@ -352,11 +352,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }
@@ -75,7 +69,7 @@
  python_library("chromedriver_replay_unittests") {
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
-@@ -40,10 +40,6 @@ group("telemetry_chrome_test") {
+@@ -42,10 +42,6 @@ group("telemetry_chrome_test") {
      data_deps += [ "//chrome" ]
    }
  
@@ -84,5 +78,5 @@
 -  }
 -
    if (is_linux) {
-     data_deps += [ "//third_party/breakpad:dump_syms($host_toolchain)" ]
-   }
+     data_deps += [
+       "//third_party/breakpad:dump_syms($host_toolchain)",
