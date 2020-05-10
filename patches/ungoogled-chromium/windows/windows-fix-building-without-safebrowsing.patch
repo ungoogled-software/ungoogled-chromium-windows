@@ -2357,6 +2357,21 @@
  #include "content/public/test/browser_task_environment.h"
  #include "testing/gtest/include/gtest/gtest.h"
  
+--- a/chrome/browser/extensions/crx_installer.cc
++++ b/chrome/browser/extensions/crx_installer.cc
+@@ -615,12 +615,9 @@ void CrxInstaller::CheckInstall() {
+ 
+   policy_check_ = std::make_unique<PolicyCheck>(profile_, extension());
+   requirements_check_ = std::make_unique<RequirementsChecker>(extension());
+-  blacklist_check_ =
+-      std::make_unique<BlacklistCheck>(Blacklist::Get(profile_), extension_);
+ 
+   check_group_->AddCheck(policy_check_.get());
+   check_group_->AddCheck(requirements_check_.get());
+-  check_group_->AddCheck(blacklist_check_.get());
+ 
+   check_group_->Start(
+       base::BindOnce(&CrxInstaller::OnInstallChecksComplete, this));
 --- a/chrome/browser/extensions/webstore_data_fetcher.cc
 +++ b/chrome/browser/extensions/webstore_data_fetcher.cc
 @@ -10,7 +10,6 @@
