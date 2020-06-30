@@ -73,7 +73,7 @@ A zip archive and an installer will be created under `build`.
 2. Run the following in a "MSYS2 MSYS" shell:
 
 ```sh
-pacman -S quilt python3 vim
+pacman -S quilt python3 vim tar
 # By default, there doesn't seem to be a vi command for less, quilt edit, etc.
 ln -s /usr/bin/vim /usr/bin/vi
 ```
