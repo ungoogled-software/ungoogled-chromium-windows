@@ -16,3 +16,4 @@ ungoogled-chromium/windows/windows-compile-mini-installer.patch
 ungoogled-chromium/windows/windows-no-unknown-warnings.patch
 ungoogled-chromium/windows/windows-fix-showIncludes.patch
 ungoogled-chromium/windows/windows-fix-v8_build.patch
+ungoogled-chromium/windows/windows-fix-rc.patch
