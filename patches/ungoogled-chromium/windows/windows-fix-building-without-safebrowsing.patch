@@ -3474,6 +3474,14 @@
      auto throttle =
 --- a/chrome/renderer/url_loader_throttle_provider_impl.h
 +++ b/chrome/renderer/url_loader_throttle_provider_impl.h
+@@ -9,7 +9,6 @@
+ #include <vector>
+ 
+ #include "base/threading/thread_checker.h"
+-#include "components/safe_browsing/content/common/safe_browsing.mojom.h"
+ #include "content/public/renderer/url_loader_throttle_provider.h"
+ #include "extensions/buildflags/buildflags.h"
+ #include "mojo/public/cpp/bindings/pending_remote.h"
 @@ -49,9 +49,6 @@ class URLLoaderThrottleProviderImpl
    content::URLLoaderThrottleProviderType type_;
    ChromeContentRendererClient* const chrome_content_renderer_client_;
