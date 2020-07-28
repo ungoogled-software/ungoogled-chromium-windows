@@ -2933,15 +2933,6 @@
      "Xrco2HsXS-8/discussion";
  
  // Tag value used to uniquely identify the "learn more" (?) button.
-@@ -85,7 +85,7 @@ InvertBubbleView::InvertBubbleView(Brows
-       browser_(browser) {
-   SetButtons(ui::DIALOG_BUTTON_OK);
-   SetButtonLabel(ui::DIALOG_BUTTON_OK, l10n_util::GetStringUTF16(IDS_DONE));
--  SetExtraView(::CreateExtraView(this));
-+  SetExtraView(::CreateInvertedView(this));
-   set_margins(gfx::Insets());
-   chrome::RecordDialogCreation(chrome::DialogIdentifier::INVERT);
- }
 --- a/chrome/browser/ui/views/download/download_item_view.cc
 +++ b/chrome/browser/ui/views/download/download_item_view.cc
 @@ -34,26 +34,18 @@
