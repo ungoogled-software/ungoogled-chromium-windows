@@ -4711,3 +4711,31 @@
  #include "components/safe_browsing/content/password_protection/metrics_util.h"
  #include "components/safe_browsing/core/browser/referrer_chain_provider.h"
  #include "components/safe_browsing/core/db/v4_protocol_manager_util.h"
+--- a/chrome/browser/component_updater/registration.cc
++++ b/chrome/browser/component_updater/registration.cc
+@@ -116,7 +116,6 @@
+   whitelist_installer->RegisterComponents();
+ #endif
+ 
+-  RegisterSubresourceFilterComponent(cus);
+   RegisterOnDeviceHeadSuggestComponent(
+       cus, g_browser_process->GetApplicationLocale());
+   RegisterOptimizationHintsComponent(cus, is_off_the_record_profile,
+@@ -159,7 +158,6 @@
+   // on chromium build bots, it is always registered here and
+   // RegisterSwReporterComponent() has support for running only in official
+   // builds or tests.
+-  RegisterSwReporterComponent(cus);
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+   RegisterThirdPartyModuleListComponent(cus);
+ #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+--- a/chrome/browser/extensions/browser_context_keyed_service_factories.cc
++++ b/chrome/browser/extensions/browser_context_keyed_service_factories.cc
+@@ -124,7 +124,6 @@
+ #endif
+   extensions::PreferenceAPI::GetFactoryInstance();
+   extensions::ProcessesAPI::GetFactoryInstance();
+-  extensions::SafeBrowsingPrivateEventRouterFactory::GetInstance();
+   extensions::SessionsAPI::GetFactoryInstance();
+   extensions::SettingsPrivateEventRouterFactory::GetInstance();
+   extensions::SettingsOverridesAPI::GetFactoryInstance();
