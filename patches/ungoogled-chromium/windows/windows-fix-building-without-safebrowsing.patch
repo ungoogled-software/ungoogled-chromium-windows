@@ -3273,6 +3273,19 @@
    overridden_deps = [
      "//content/public/common:interfaces",
      "//third_party/blink/public/mojom:mojom_platform",
+--- a/chrome/common/logging_chrome.cc
++++ b/chrome/common/logging_chrome.cc
+@@ -62,5 +62,4 @@ 
+ #include <initguid.h>
+ #include "base/logging_win.h"
+ #include "base/syslog_logging.h"
+-#include "chrome/common/win/eventlog_messages.h"
+ #include "chrome/install_static/install_details.h"
+@@ -371,4 +370,1 @@ 
+ // Enable logging to the Windows Event Log.
+- SetEventSource(base::UTF16ToASCII(
+-                     install_static::InstallDetails::Get().install_full_name()),
+-                 BROWSER_CATEGORY, MSG_LOG_MESSAGE);
 --- a/chrome/common/extensions/api/api_sources.gni
 +++ b/chrome/common/extensions/api/api_sources.gni
 @@ -51,7 +51,6 @@ schema_sources_ = [
