@@ -1,0 +1,72 @@
+--- a/third_party/blink/renderer/bindings/core/v8/BUILD.gn
++++ b/third_party/blink/renderer/bindings/core/v8/BUILD.gn
+@@ -12,18 +12,6 @@
+ 
+ visibility = [ "//third_party/blink/renderer/*" ]
+ 
+-blink_core_sources("generated") {
+-  sources = generated_enumeration_sources_in_core
+-  deps =
+-      [ "//third_party/blink/renderer/bindings:generate_bindings_enumeration" ]
+-}
+-
+-blink_core_sources("generated_for_testing") {
+-  sources = generated_enumeration_sources_for_testing_in_core
+-  deps =
+-      [ "//third_party/blink/renderer/bindings:generate_bindings_enumeration" ]
+-}
+-
+ generate_origin_trial_features("bindings_core_origin_trial_features") {
+   sources =
+       core_idl_files + core_idl_with_modules_dependency_files +
+--- a/third_party/blink/renderer/bindings/modules/v8/BUILD.gn
++++ b/third_party/blink/renderer/bindings/modules/v8/BUILD.gn
+@@ -11,12 +11,6 @@
+ 
+ visibility = [ "//third_party/blink/renderer/*" ]
+ 
+-blink_modules_sources("generated") {
+-  sources = generated_enumeration_sources_in_modules
+-  deps =
+-      [ "//third_party/blink/renderer/bindings:generate_bindings_enumeration" ]
+-}
+-
+ group("bindings_modules_v8_generated") {
+   public_deps = [
+     ":bindings_modules_impl_generated",
+--- a/third_party/blink/renderer/bindings/BUILD.gn
++++ b/third_party/blink/renderer/bindings/BUILD.gn
+@@ -189,13 +189,6 @@
+   }
+ }
+ 
+-generate_bindings("generate_bindings_enumeration") {
+-  target = "enumeration"
+-  outputs = generated_enumeration_sources_in_core +
+-            generated_enumeration_sources_in_modules +
+-            generated_enumeration_sources_for_testing_in_core
+-}
+-
+ action_with_pydeps("generate_high_entropy_list") {
+   script = "${bindings_scripts_dir}/generate_high_entropy_list.py"
+ 
+--- a/third_party/blink/renderer/core/BUILD.gn
++++ b/third_party/blink/renderer/core/BUILD.gn
+@@ -73,7 +73,6 @@
+     "//skia",
+     "//third_party/blink/renderer/bindings/core/v8:bindings_core_origin_trial_features",
+     "//third_party/blink/renderer/bindings/core/v8:bindings_core_v8_generated",
+-    "//third_party/blink/renderer/bindings/core/v8:generated",
+     "//third_party/blink/renderer/core/inspector:generated",
+     "//third_party/blink/renderer/core/probe:generated",
+     "//third_party/iccjpeg",
+--- a/third_party/blink/renderer/modules/BUILD.gn
++++ b/third_party/blink/renderer/modules/BUILD.gn
+@@ -169,7 +169,6 @@
+     "//third_party/blink/renderer/bindings/modules:generated",
+     "//third_party/blink/renderer/bindings/modules/v8:bindings_modules_impl",
+     "//third_party/blink/renderer/bindings/modules/v8:bindings_modules_origin_trial_features",
+-    "//third_party/blink/renderer/bindings/modules/v8:generated",
+     "//third_party/blink/renderer/core",
+     "//third_party/icu",
+     "//third_party/webrtc_overrides:webrtc_component",

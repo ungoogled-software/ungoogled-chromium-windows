@@ -1,0 +1,10 @@
+--- a/chrome/browser/web_applications/chrome_pwa_launcher/chrome_pwa_launcher_exe.rc
++++ b/chrome/browser/web_applications/chrome_pwa_launcher/chrome_pwa_launcher_exe.rc
+@@ -1,7 +1,3 @@
+ #include "build/branding_buildflags.h"
+ 
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-1 ICON "..\\..\\..\\app\\theme\\google_chrome\\win\\chrome_pwa_launcher.ico"
+-#else
+ 1 ICON "chrome_pwa_launcher.ico"
+-#endif
