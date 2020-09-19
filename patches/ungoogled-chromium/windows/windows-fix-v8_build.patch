@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/bindings/BUILD.gn
 +++ b/third_party/blink/renderer/bindings/BUILD.gn
-@@ -209,13 +209,6 @@ if (use_v8_bind_gen_for_dictionary) {
+@@ -202,13 +202,6 @@ if (use_v8_bind_gen_for_dictionary) {
    }
  }
  
@@ -62,7 +62,7 @@
      "//third_party/iccjpeg",
 --- a/third_party/blink/renderer/modules/BUILD.gn
 +++ b/third_party/blink/renderer/modules/BUILD.gn
-@@ -171,7 +171,6 @@ jumbo_component("modules") {
+@@ -172,7 +172,6 @@ jumbo_component("modules") {
      "//third_party/blink/renderer/bindings/modules:generated",
      "//third_party/blink/renderer/bindings/modules/v8:bindings_modules_impl",
      "//third_party/blink/renderer/bindings/modules/v8:bindings_modules_origin_trial_features",

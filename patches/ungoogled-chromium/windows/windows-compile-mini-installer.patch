@@ -9,8 +9,8 @@
        "//chrome/browser/extensions/default_extensions",
 -      "//chrome/common/win:eventlog_provider",
        "//chrome/installer/setup",
+       "//mojo/core:shared_library",
        "//third_party/icu:icudata",
-       chrome_dll_target,
 --- a/chrome/tools/build/win/create_installer_archive.py
 +++ b/chrome/tools/build/win/create_installer_archive.py
 @@ -164,8 +164,14 @@ def GenerateDiffPatch(options, orig_file

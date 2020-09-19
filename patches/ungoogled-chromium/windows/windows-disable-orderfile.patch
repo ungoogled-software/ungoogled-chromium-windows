@@ -2,7 +2,7 @@
 
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -183,8 +183,6 @@ if (is_win || is_android || (is_chromeos
+@@ -189,8 +189,6 @@ if (is_win || is_android || (is_chromeos
        # Allow downstream tools to set orderfile path with
        # another variable.
        chrome_orderfile_path = default_chrome_orderfile
