@@ -3,8 +3,8 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -424,7 +424,6 @@ static_library("common") {
-   if (is_win) {
+@@ -427,7 +427,6 @@ static_library("common") {
+     ]
      deps += [
        "//chrome/chrome_elf:chrome_elf_main_include",
 -      "//chrome/common/win:eventlog_messages",

@@ -31,8 +31,8 @@
 -#endif  // ENABLE_PRINTING_FOR_RC
      "D",            IDC_BOOKMARK_ALL_TABS,      VIRTKEY, CONTROL, SHIFT
      "D",            IDC_BOOKMARK_THIS_TAB,      VIRTKEY, CONTROL
-     VK_DELETE,      IDC_CLEAR_BROWSING_DATA,    VIRTKEY, CONTROL, SHIFT
-@@ -163,14 +161,7 @@ END
+     VK_F7,          IDC_CARET_BROWSING_TOGGLE,  VIRTKEY
+@@ -164,14 +162,7 @@ END
  // the icon from the current module). We can perhaps work around this in the
  // future to get the icon from the .exe, which would save a copy.
  

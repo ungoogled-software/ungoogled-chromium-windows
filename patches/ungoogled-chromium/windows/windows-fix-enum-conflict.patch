@@ -2,7 +2,7 @@
 
 --- a/extensions/browser/api/feedback_private/feedback_private_api.cc
 +++ b/extensions/browser/api/feedback_private/feedback_private_api.cc
-@@ -406,7 +406,7 @@ void FeedbackPrivateSendFeedbackFunction
+@@ -415,7 +415,7 @@ void FeedbackPrivateSendFeedbackFunction
      bool success) {
    Respond(TwoArguments(
        std::make_unique<base::Value>(feedback_private::ToString(

@@ -3,7 +3,7 @@
 
 --- a/build/config/win/BUILD.gn
 +++ b/build/config/win/BUILD.gn
-@@ -64,7 +64,8 @@ config("compiler") {
+@@ -65,7 +65,8 @@ config("compiler") {
    ]
  
    if (is_clang) {
