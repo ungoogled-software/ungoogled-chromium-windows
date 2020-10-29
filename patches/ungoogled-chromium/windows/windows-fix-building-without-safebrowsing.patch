@@ -697,8 +697,12 @@
  #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
 --- a/chrome/browser/download/chrome_download_manager_delegate.cc
 +++ b/chrome/browser/download/chrome_download_manager_delegate.cc
-@@ -43,9 +43,6 @@
- #include "chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_event_router_factory.h"
+@@ -39,13 +39,8 @@
+ #include "chrome/browser/download/download_target_determiner.h"
+ #include "chrome/browser/download/mixed_content_download_blocking.h"
+ #include "chrome/browser/download/save_package_file_picker.h"
+-#include "chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_event_router.h"
+-#include "chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_event_router_factory.h"
  #include "chrome/browser/platform_util.h"
  #include "chrome/browser/profiles/profile.h"
 -#include "chrome/browser/safe_browsing/cloud_content_scanning/binary_upload_service.h"
@@ -707,7 +711,7 @@
  #include "chrome/browser/ui/chrome_pages.h"
  #include "chrome/browser/ui/scoped_tabbed_browser_displayer.h"
  #include "chrome/common/buildflags.h"
-@@ -65,7 +62,6 @@
+@@ -65,7 +60,6 @@
  #include "components/prefs/pref_member.h"
  #include "components/prefs/pref_service.h"
  #include "components/safe_browsing/buildflags.h"
@@ -715,7 +719,7 @@
  #include "components/services/quarantine/public/mojom/quarantine.mojom.h"
  #include "components/services/quarantine/quarantine_impl.h"
  #include "content/public/browser/browser_task_traits.h"
-@@ -124,7 +120,6 @@ using content::DownloadManager;
+@@ -124,7 +118,6 @@ using content::DownloadManager;
  using download::DownloadItem;
  using download::DownloadPathReservationTracker;
  using download::PathValidationResult;
@@ -723,7 +727,7 @@
  
  namespace {
  
-@@ -819,19 +814,6 @@ ChromeDownloadManagerDelegate::Applicati
+@@ -819,19 +812,6 @@ ChromeDownloadManagerDelegate::Applicati
    return std::string(chrome::kApplicationClientIDStringForAVScanning);
  }
  
@@ -1933,14 +1937,16 @@
        VLOG(1) << "Blocklist request for: " << id
 --- a/chrome/browser/extensions/blocklist_state_fetcher.h
 +++ b/chrome/browser/extensions/blocklist_state_fetcher.h
-@@ -13,7 +13,6 @@
+@@ -13,8 +13,8 @@
  #include "base/callback.h"
  #include "base/macros.h"
  #include "base/memory/weak_ptr.h"
 -#include "components/safe_browsing/core/db/util.h"
  #include "extensions/browser/blocklist_state.h"
++#include "url/gurl.h"
  
  namespace network {
+ class SharedURLLoaderFactory;
 --- a/chrome/browser/extensions/blocklist_state_fetcher_unittest.cc
 +++ b/chrome/browser/extensions/blocklist_state_fetcher_unittest.cc
 @@ -7,7 +7,6 @@
