@@ -1,0 +1,24 @@
+--- a/third_party/blink/renderer/bindings/scripts/generate_bindings.py
++++ b/third_party/blink/renderer/bindings/scripts/generate_bindings.py
+@@ -11,6 +11,10 @@ import sys
+ import web_idl
+ import bind_gen
+ 
++# shutil.copy
++import shutil
++import os
++
+ 
+ def parse_options():
+     parser = optparse.OptionParser(usage="%prog [options] TASK...")
+@@ -53,6 +56,10 @@ def parse_options():
+ 
+ 
+ def main():
++    # This fix build issue on Windows caused by missing google dependencies.
++    if os.name == 'nt':
++        shutil.copy('../../third_party/llvm-build/Release+Asserts/bin/clang-format.exe', '../../buildtools/win')
++
+     options, tasks = parse_options()
+ 
+     dispatch_table = {
