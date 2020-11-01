@@ -2879,14 +2879,14 @@
  #include "components/url_formatter/elide_url.h"
  #include "components/vector_icons/vector_icons.h"
  #include "third_party/skia/include/core/SkColor.h"
-@@ -186,15 +179,7 @@ BEGIN_METADATA(TransparentButton)
- METADATA_PARENT_CLASS(Button)
+@@ -187,14 +180,10 @@ METADATA_PARENT_CLASS(Button)
  END_METADATA()
  
--bool UseNewWarnings() {
+ bool UseNewWarnings() {
 -  return base::FeatureList::IsEnabled(safe_browsing::kUseNewDownloadWarnings);
--}
--
++  return false;
+ }
+ 
  int GetFilenameStyle(const views::StyledLabel& label) {
 -#if !defined(OS_LINUX) && !defined(OS_CHROMEOS)
 -  if (UseNewWarnings())
@@ -2895,7 +2895,7 @@
    return label.GetDefaultTextStyle();
  }
  
-@@ -998,11 +983,7 @@ ui::ImageModel DownloadItemView::GetIcon
+@@ -998,11 +987,7 @@ ui::ImageModel DownloadItemView::GetIcon
    const auto danger_type = model_->GetDangerType();
    switch (danger_type) {
      case download::DOWNLOAD_DANGER_TYPE_UNCOMMON_CONTENT:
@@ -2908,7 +2908,7 @@
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_URL:
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT:
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_HOST:
-@@ -1148,23 +1129,6 @@ void DownloadItemView::UpdateDropdownBut
+@@ -1148,23 +1133,6 @@ void DownloadItemView::UpdateDropdownBut
  }
  
  void DownloadItemView::ShowOpenDialog(content::WebContents* web_contents) {
