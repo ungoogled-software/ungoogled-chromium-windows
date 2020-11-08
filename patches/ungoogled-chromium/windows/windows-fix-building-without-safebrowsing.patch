@@ -1937,7 +1937,15 @@
        VLOG(1) << "Blocklist request for: " << id
 --- a/chrome/browser/extensions/blocklist_state_fetcher.h
 +++ b/chrome/browser/extensions/blocklist_state_fetcher.h
-@@ -13,8 +13,8 @@
+@@ -6,6 +6,7 @@
+ #define CHROME_BROWSER_EXTENSIONS_BLOCKLIST_STATE_FETCHER_H_
+ 
+ #include <algorithm>
++#include <map>
+ #include <memory>
+ #include <set>
+ #include <string>
+@@ -13,8 +14,8 @@
  #include "base/callback.h"
  #include "base/macros.h"
  #include "base/memory/weak_ptr.h"
