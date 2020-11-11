@@ -3,7 +3,7 @@
 
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
-@@ -178,7 +178,6 @@ template("generate_mini_installer") {
+@@ -183,7 +183,6 @@ template("generate_mini_installer") {
        ":setup_runtime_deps",
        "//chrome",
        "//chrome/browser/extensions/default_extensions",
@@ -13,7 +13,7 @@
        "//third_party/icu:icudata",
 --- a/chrome/tools/build/win/create_installer_archive.py
 +++ b/chrome/tools/build/win/create_installer_archive.py
-@@ -164,8 +164,14 @@ def GenerateDiffPatch(options, orig_file
+@@ -169,8 +169,14 @@ def GenerateDiffPatch(options, orig_file
  
  def GetLZMAExec(build_dir):
    if sys.platform == 'win32':

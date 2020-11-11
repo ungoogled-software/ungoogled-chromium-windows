@@ -1,6 +1,6 @@
 --- a/third_party/skia/src/ports/SkFontHost_FreeType.cpp
 +++ b/third_party/skia/src/ports/SkFontHost_FreeType.cpp
-@@ -128,9 +128,9 @@ public:
+@@ -131,9 +131,9 @@ public:
          : fGetVarDesignCoordinates(nullptr)
          , fGetVarAxisFlags(nullptr)
          , fLibrary(nullptr)
