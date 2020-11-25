@@ -1,6 +1,17 @@
 # Disable machine ID generation on Windows.
 # See https://github.com/Eloston/ungoogled-chromium/issues/444
 
+--- a/chrome/browser/ungoogled_platform_flag_entries.h
++++ b/chrome/browser/ungoogled_platform_flag_entries.h
+@@ -8,4 +8,8 @@
+      "Disable encryption",
+      "Disable encryption of cookies, passwords, and settings which uses a generated machine-specific encryption key.  This is used to enable portable user data directories.  ungoogled-chromium flag.",
+      kOsWin, SINGLE_VALUE_TYPE("disable-encryption")},
++    {"disable-machine-id",
++     "Disable machine ID",
++     "Disables use of a generated machine-specific ID to lock the user data directory to that machine.  This is used to enable portable user data directories.  ungoogled-chromium flag.",
++     kOsWin, SINGLE_VALUE_TYPE("disable-machine-id")},
+ #endif  // CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
 --- a/components/metrics/machine_id_provider_win.cc
 +++ b/components/metrics/machine_id_provider_win.cc
 @@ -9,6 +9,7 @@
