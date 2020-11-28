@@ -1,0 +1,56 @@
+--- a/chrome/installer/setup/BUILD.gn
++++ b/chrome/installer/setup/BUILD.gn
+@@ -42,7 +42,6 @@ if (is_win) {
+       "//components/crash/core/app:crash_export_thunks",
+       "//components/crash/core/app:run_as_crashpad_handler",
+       "//content/public/common:static_switches",
+-      "//rlz:rlz_lib_no_network",
+     ]
+ 
+     libs = [ "netapi32.lib" ]
+--- a/chrome/installer/setup/uninstall.cc
++++ b/chrome/installer/setup/uninstall.cc
+@@ -61,8 +61,6 @@
+ #include "chrome/installer/util/util_constants.h"
+ #include "chrome/installer/util/work_item.h"
+ #include "content/public/common/result_codes.h"
+-#include "rlz/lib/rlz_lib_clear.h"
+-#include "rlz/lib/supplementary_branding.h"
+ 
+ using base::win::RegKey;
+ 
+@@ -105,22 +103,6 @@ void ProcessChromeWorkItems(const Instal
+   work_item_list->Do();
+ }
+ 
+-void ClearRlzProductState() {
+-  const rlz_lib::AccessPoint points[] = {
+-      rlz_lib::CHROME_OMNIBOX, rlz_lib::CHROME_HOME_PAGE,
+-      rlz_lib::CHROME_APP_LIST, rlz_lib::NO_ACCESS_POINT};
+-
+-  rlz_lib::ClearProductState(rlz_lib::CHROME, points);
+-
+-  // If chrome has been reactivated, clear all events for this brand as well.
+-  base::string16 reactivation_brand_wide;
+-  if (GoogleUpdateSettings::GetReactivationBrand(&reactivation_brand_wide)) {
+-    std::string reactivation_brand(base::UTF16ToASCII(reactivation_brand_wide));
+-    rlz_lib::SupplementaryBranding branding(reactivation_brand.c_str());
+-    rlz_lib::ClearProductState(rlz_lib::CHROME, points);
+-  }
+-}
+-
+ // Removes all files from the installer directory. Returns false in case of an
+ // error.
+ bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
+@@ -846,11 +828,6 @@ InstallStatus UninstallProduct(const Mod
+     }
+   }
+ 
+-  // Chrome is not in use so lets uninstall Chrome by deleting various files
+-  // and registry entries. Here we will just make best effort and keep going
+-  // in case of errors.
+-  ClearRlzProductState();
+-
+   auto_launch_util::DisableBackgroundStartAtLogin();
+ 
+   // If user-level chrome is self-destructing as a result of encountering a
