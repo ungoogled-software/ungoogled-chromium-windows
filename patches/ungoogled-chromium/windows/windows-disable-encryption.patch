@@ -2,6 +2,17 @@
 # WARNING! Use ONLY if your hard drive is encrypted or if you know what you are doing.
 # See https://github.com/Eloston/ungoogled-chromium/issues/444
 
+--- a/chrome/browser/ungoogled_platform_flag_entries.h
++++ b/chrome/browser/ungoogled_platform_flag_entries.h
+@@ -4,4 +4,8 @@
+
+ #ifndef CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
+ #define CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
++    {"disable-encryption",
++     "Disable encryption",
++     "Disable encryption of cookies, passwords, and settings which uses a generated machine-specific encryption key.  This is used to enable portable user data directories.  ungoogled-chromium flag.",
++     kOsWin, SINGLE_VALUE_TYPE("disable-encryption")},
+ #endif  // CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
 --- a/components/os_crypt/os_crypt_win.cc
 +++ b/components/os_crypt/os_crypt_win.cc
 @@ -5,6 +5,7 @@
