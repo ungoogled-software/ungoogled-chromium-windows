@@ -273,7 +273,7 @@
  #include "components/security_interstitials/content/stateful_ssl_host_state_delegate.h"
  #include "components/security_interstitials/core/features.h"
  #include "components/security_state/core/features.h"
-@@ -5760,15 +5759,6 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5666,15 +5665,6 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(safe_browsing::kSafeBrowsingSecuritySectionUIAndroid)},
  #endif
  
@@ -542,7 +542,7 @@
  #include "components/security_interstitials/content/insecure_form_navigation_throttle.h"
  #include "components/security_interstitials/content/origin_policy_ui.h"
  #include "components/security_interstitials/content/ssl_cert_reporter.h"
-@@ -5169,41 +5153,6 @@ const ui::NativeTheme* ChromeContentBrow
+@@ -5179,41 +5163,6 @@ const ui::NativeTheme* ChromeContentBrow
    return ui::NativeTheme::GetInstanceForWeb();
  }
  
@@ -599,7 +599,7 @@
  namespace sandbox {
  class SeatbeltExecClient;
  }  // namespace sandbox
-@@ -747,34 +741,10 @@ class ChromeContentBrowserClient : publi
+@@ -748,34 +742,10 @@ class ChromeContentBrowserClient : publi
        bool allow);
  #endif
  
@@ -1242,6 +1242,90 @@
  }
  #endif  // FULL_SAFE_BROWSING
  
+--- a/chrome/browser/download/download_item_model.cc
++++ b/chrome/browser/download/download_item_model.cc
+@@ -27,16 +27,12 @@
+ #include "chrome/browser/enterprise/connectors/common.h"
+ #include "chrome/browser/enterprise/connectors/connectors_manager.h"
+ #include "chrome/browser/profiles/profile.h"
+-#include "chrome/browser/safe_browsing/download_protection/deep_scanning_request.h"
+-#include "chrome/browser/safe_browsing/download_protection/download_feedback_service.h"
+ #include "chrome/grit/chromium_strings.h"
+ #include "chrome/grit/generated_resources.h"
+ #include "components/download/public/common/download_danger_type.h"
+ #include "components/download/public/common/download_interrupt_reasons.h"
+ #include "components/download/public/common/download_item.h"
+ #include "components/safe_browsing/buildflags.h"
+-#include "components/safe_browsing/core/file_type_policies.h"
+-#include "components/safe_browsing/core/proto/download_file_types.pb.h"
+ #include "content/public/browser/download_item_utils.h"
+ #include "ui/base/l10n/l10n_util.h"
+ #include "ui/base/l10n/time_format.h"
+@@ -49,7 +45,6 @@
+ using base::TimeDelta;
+ using download::DownloadItem;
+ using MixedContentStatus = download::DownloadItem::MixedContentStatus;
+-using safe_browsing::DownloadFileType;
+ 
+ namespace {
+ 
+@@ -79,10 +74,6 @@ class DownloadItemModelData : public bas
+   // for the file type.
+   bool should_prefer_opening_in_browser_;
+ 
+-  // Danger level of the file determined based on the file type and whether
+-  // there was a user action associated with the download.
+-  safe_browsing::DownloadFileType::DangerLevel danger_level_;
+-
+   // Whether the download is currently being revived.
+   bool is_being_revived_;
+ 
+@@ -118,7 +109,6 @@ DownloadItemModelData::DownloadItemModel
+     : should_show_in_shelf_(true),
+       was_ui_notified_(false),
+       should_prefer_opening_in_browser_(false),
+-      danger_level_(safe_browsing::DownloadFileType::NOT_DANGEROUS),
+       is_being_revived_(false) {}
+ 
+ } // namespace
+@@ -372,17 +362,6 @@ void DownloadItemModel::SetShouldPreferO
+   data->should_prefer_opening_in_browser_ = preference;
+ }
+ 
+-safe_browsing::DownloadFileType::DangerLevel DownloadItemModel::GetDangerLevel() const {
+-  const DownloadItemModelData* data = DownloadItemModelData::Get(download_);
+-  return data ? data->danger_level_ : safe_browsing::DownloadFileType::NOT_DANGEROUS;
+-}
+-
+-void DownloadItemModel::SetDangerLevel(
+-    safe_browsing::DownloadFileType::DangerLevel danger_level) {
+-  DownloadItemModelData* data = DownloadItemModelData::GetOrCreate(download_);
+-  data->danger_level_ = danger_level;
+-}
+-
+ download::DownloadItem::MixedContentStatus
+ DownloadItemModel::GetMixedContentStatus() const {
+   return download_->GetMixedContentStatus();
+--- a/chrome/browser/download/download_item_model.h
++++ b/chrome/browser/download/download_item_model.h
+@@ -13,7 +13,6 @@
+ #include "chrome/browser/download/download_ui_model.h"
+ #include "components/download/public/common/download_item.h"
+ #include "components/safe_browsing/buildflags.h"
+-#include "components/safe_browsing/core/proto/download_file_types.pb.h"
+ 
+ // Implementation of DownloadUIModel that wrappers around a |DownloadItem*|. As
+ // such, the caller is expected to ensure that the |download| passed into the
+@@ -50,9 +49,6 @@ class DownloadItemModel : public Downloa
+   void SetWasUINotified(bool should_notify) override;
+   bool ShouldPreferOpeningInBrowser() const override;
+   void SetShouldPreferOpeningInBrowser(bool preference) override;
+-  safe_browsing::DownloadFileType::DangerLevel GetDangerLevel() const override;
+-  void SetDangerLevel(
+-      safe_browsing::DownloadFileType::DangerLevel danger_level) override;
+   download::DownloadItem::MixedContentStatus GetMixedContentStatus()
+       const override;
+   void OpenUsingPlatformHandler() override;
 --- a/chrome/browser/download/download_item_model_unittest.cc
 +++ b/chrome/browser/download/download_item_model_unittest.cc
 @@ -22,7 +22,6 @@
@@ -1360,9 +1444,160 @@
  #include "content/public/browser/browser_context.h"
  #include "content/public/browser/browser_task_traits.h"
  #include "content/public/browser/browser_thread.h"
+@@ -61,7 +60,6 @@
+ using content::BrowserThread;
+ using download::DownloadItem;
+ using download::DownloadPathReservationTracker;
+-using safe_browsing::DownloadFileType;
+ 
+ namespace {
+ 
+@@ -102,7 +100,6 @@ DownloadTargetDeterminer::DownloadTarget
+       create_target_directory_(false),
+       conflict_action_(conflict_action),
+       danger_type_(download->GetDangerType()),
+-      danger_level_(DownloadFileType::NOT_DANGEROUS),
+       virtual_path_(initial_virtual_path),
+       is_filetype_handled_safely_(false),
+ #if defined(OS_ANDROID)
+@@ -806,37 +803,6 @@ DownloadTargetDeterminer::Result
+     return CONTINUE;
+   }
+ 
+-  // First determine the danger level assuming that the user doesn't have any
+-  // prior visits to the referrer recoreded in history. The resulting danger
+-  // level would be ALLOW_ON_USER_GESTURE if the level depends on the visit
+-  // history. In the latter case, we can query the history DB to determine if
+-  // there were prior requests and determine the danger level again once the
+-  // result is available.
+-  danger_level_ = GetDangerLevel(NO_VISITS_TO_REFERRER);
+-
+-  if (danger_level_ == DownloadFileType::NOT_DANGEROUS)
+-    return CONTINUE;
+-
+-  if (danger_level_ == DownloadFileType::ALLOW_ON_USER_GESTURE) {
+-    // HistoryServiceFactory redirects incognito profiles to on-record profiles.
+-    // There's no history for on-record profiles in unit_tests.
+-    history::HistoryService* history_service =
+-        HistoryServiceFactory::GetForProfile(
+-            GetProfile(), ServiceAccessType::EXPLICIT_ACCESS);
+-
+-    if (history_service && download_->GetReferrerUrl().is_valid()) {
+-      history_service->GetVisibleVisitCountToHost(
+-          download_->GetReferrerUrl(),
+-          base::BindOnce(
+-              &VisitCountsToVisitedBefore,
+-              base::BindOnce(
+-                  &DownloadTargetDeterminer::CheckVisitedReferrerBeforeDone,
+-                  weak_ptr_factory_.GetWeakPtr())),
+-          &history_tracker_);
+-      return QUIT_DOLOOP;
+-    }
+-  }
+-
+   // If the danger level doesn't depend on having visited the refererrer URL or
+   // if original profile doesn't have a HistoryService or the referrer url is
+   // invalid, then assume the referrer has not been visited before.
+@@ -849,11 +815,6 @@ void DownloadTargetDeterminer::CheckVisi
+     bool visited_referrer_before) {
+   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+   DCHECK_EQ(STATE_DETERMINE_INTERMEDIATE_PATH, next_state_);
+-  danger_level_ = GetDangerLevel(
+-      visited_referrer_before ? VISITED_REFERRER : NO_VISITS_TO_REFERRER);
+-  if (danger_level_ != DownloadFileType::NOT_DANGEROUS &&
+-      danger_type_ == download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS)
+-    danger_type_ = download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE;
+   DoLoop();
+ }
+ 
+@@ -958,7 +919,6 @@ void DownloadTargetDeterminer::ScheduleC
+             << " Intermediate:" << intermediate_path_.AsUTF8Unsafe()
+             << " Confirmation reason:" << static_cast<int>(confirmation_reason_)
+             << " Danger type:" << danger_type_
+-            << " Danger level:" << danger_level_
+             << " Result:" << static_cast<int>(result);
+   std::unique_ptr<DownloadTargetInfo> target_info(new DownloadTargetInfo);
+ 
+@@ -970,7 +930,6 @@ void DownloadTargetDeterminer::ScheduleC
+            ? DownloadItem::TARGET_DISPOSITION_PROMPT
+            : DownloadItem::TARGET_DISPOSITION_OVERWRITE);
+   target_info->danger_type = danger_type_;
+-  target_info->danger_level = danger_level_;
+   target_info->intermediate_path = intermediate_path_;
+   target_info->mime_type = mime_type_;
+   target_info->is_filetype_handled_safely = is_filetype_handled_safely_;
+@@ -1061,33 +1020,6 @@ bool DownloadTargetDeterminer::HasPrompt
+                                 DownloadItem::TARGET_DISPOSITION_PROMPT);
+ }
+ 
+-DownloadFileType::DangerLevel DownloadTargetDeterminer::GetDangerLevel(
+-    PriorVisitsToReferrer visits) const {
+-  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+-
+-  // If the user has has been prompted or will be, assume that the user has
+-  // approved the download. A programmatic download is considered safe unless it
+-  // contains malware.
+-  if (HasPromptedForPath() ||
+-      confirmation_reason_ != DownloadConfirmationReason::NONE ||
+-      !download_->GetForcedFilePath().empty())
+-    return DownloadFileType::NOT_DANGEROUS;
+-
+-  // User-initiated extension downloads from pref-whitelisted sources are not
+-  // considered dangerous.
+-  if (download_->HasUserGesture() &&
+-      download_crx_util::IsTrustedExtensionDownload(GetProfile(), *download_)) {
+-    return DownloadFileType::NOT_DANGEROUS;
+-  }
+-
+-  // Anything the user has marked auto-open is OK if it's user-initiated.
+-  if (download_prefs_->IsAutoOpenEnabled(download_->GetURL(), virtual_path_) &&
+-      download_->HasUserGesture())
+-    return DownloadFileType::NOT_DANGEROUS;
+-
+-  return DownloadFileType::NOT_DANGEROUS;
+-}
+-
+ void DownloadTargetDeterminer::OnDownloadDestroyed(
+     DownloadItem* download) {
+   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+--- a/chrome/browser/download/download_target_determiner.h
++++ b/chrome/browser/download/download_target_determiner.h
+@@ -19,7 +19,6 @@
+ #include "components/download/public/common/download_danger_type.h"
+ #include "components/download/public/common/download_item.h"
+ #include "components/download/public/common/download_path_reservation_tracker.h"
+-#include "components/safe_browsing/core/proto/download_file_types.pb.h"
+ #include "content/public/browser/download_manager_delegate.h"
+ #include "ppapi/buildflags/buildflags.h"
+ 
+@@ -316,16 +315,6 @@ class DownloadTargetDeterminer : public
+   // operation.
+   bool HasPromptedForPath() const;
+ 
+-  // Returns true if this download should show the "dangerous file" warning.
+-  // Various factors are considered, such as the type of the file, whether a
+-  // user action initiated the download, and whether the user has explicitly
+-  // marked the file type as "auto open". Protected virtual for testing.
+-  //
+-  // If |require_explicit_consent| is non-null then the pointed bool will be set
+-  // to true if the download requires explicit user consent.
+-  safe_browsing::DownloadFileType::DangerLevel GetDangerLevel(
+-      PriorVisitsToReferrer visits) const;
+-
+   // Generates the download file name based on information from URL, response
+   // headers and sniffed mime type.
+   base::FilePath GenerateFileName() const;
+@@ -341,7 +330,6 @@ class DownloadTargetDeterminer : public
+   download::DownloadPathReservationTracker::FilenameConflictAction
+       conflict_action_;
+   download::DownloadDangerType danger_type_;
+-  safe_browsing::DownloadFileType::DangerLevel danger_level_;
+   base::FilePath virtual_path_;
+   base::FilePath local_path_;
+   base::FilePath intermediate_path_;
 --- a/chrome/browser/download/download_target_info.cc
 +++ b/chrome/browser/download/download_target_info.cc
-@@ -4,8 +4,6 @@
+@@ -4,12 +4,9 @@
  
  #include "chrome/browser/download/download_target_info.h"
  
@@ -1371,6 +1606,53 @@
  DownloadTargetInfo::DownloadTargetInfo()
      : target_disposition(download::DownloadItem::TARGET_DISPOSITION_OVERWRITE),
        danger_type(download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS),
+-      danger_level(safe_browsing::DownloadFileType::NOT_DANGEROUS),
+       is_filetype_handled_safely(false),
+       result(download::DOWNLOAD_INTERRUPT_REASON_NONE),
+       mixed_content_status(
+--- a/chrome/browser/download/download_target_info.h
++++ b/chrome/browser/download/download_target_info.h
+@@ -13,7 +13,6 @@
+ #include "components/download/public/common/download_interrupt_reasons.h"
+ #include "components/download/public/common/download_item.h"
+ #include "components/download/public/common/download_schedule.h"
+-#include "components/safe_browsing/core/proto/download_file_types.pb.h"
+ 
+ struct DownloadTargetInfo {
+   DownloadTargetInfo();
+@@ -34,32 +33,6 @@ struct DownloadTargetInfo {
+   // Danger type of the download.
+   download::DownloadDangerType danger_type;
+ 
+-  // The danger type of the download could be set to MAYBE_DANGEROUS_CONTENT if
+-  // the file type is handled by SafeBrowsing. However, if the SafeBrowsing
+-  // service is unable to verify whether the file is safe or not, we are on our
+-  // own. The value of |danger_level| indicates whether the download should be
+-  // considered dangerous if SafeBrowsing returns an unknown verdict.
+-  //
+-  // Note that some downloads (e.g. "Save link as" on a link to a binary) would
+-  // not be considered 'Dangerous' even if SafeBrowsing came back with an
+-  // unknown verdict. So we can't always show a warning when SafeBrowsing fails.
+-  //
+-  // The value of |danger_level| should be interpreted as follows:
+-  //
+-  //   NOT_DANGEROUS : Unless flagged by SafeBrowsing, the file should be
+-  //       considered safe.
+-  //
+-  //   ALLOW_ON_USER_GESTURE : If SafeBrowsing claims the file is safe, then the
+-  //       file is safe. An UNKOWN verdict results in the file being marked as
+-  //       DANGEROUS_FILE.
+-  //
+-  //   DANGEROUS : This type of file shouldn't be allowed to download witout any
+-  //       user action. Hence, if SafeBrowsing marks the file as SAFE, or
+-  //       UNKONWN, the file will still be conisdered a DANGEROUS_FILE. However,
+-  //       SafeBrowsing may flag the file as being malicious, in which case the
+-  //       malicious classification should take precedence.
+-  safe_browsing::DownloadFileType::DangerLevel danger_level;
+-
+   // Suggested intermediate path. The downloaded bytes should be written to this
+   // path until all the bytes are available and the user has accepted a
+   // dangerous download. At that point, the download can be renamed to
 --- a/chrome/browser/download/download_ui_model.cc
 +++ b/chrome/browser/download/download_ui_model.cc
 @@ -9,8 +9,6 @@
@@ -1382,7 +1664,15 @@
  #include "chrome/common/url_constants.h"
  #include "chrome/grit/chromium_strings.h"
  #include "chrome/grit/generated_resources.h"
-@@ -238,7 +236,7 @@ base::string16 DownloadUIModel::GetWarni
+@@ -32,7 +30,6 @@
+ 
+ using base::TimeDelta;
+ using download::DownloadItem;
+-using safe_browsing::DownloadFileType;
+ using offline_items_collection::FailState;
+ 
+ namespace {
+@@ -239,7 +236,7 @@ base::string16 DownloadUIModel::GetWarni
    *offset = std::string::npos;
    switch (GetDangerType()) {
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_URL:
@@ -1391,7 +1681,7 @@
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_FILE:
        return IsExtensionDownload()
                   ? l10n_util::GetStringUTF16(
-@@ -247,21 +245,8 @@ base::string16 DownloadUIModel::GetWarni
+@@ -248,21 +245,8 @@ base::string16 DownloadUIModel::GetWarni
                                                filename, offset);
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_CONTENT:
      case download::DOWNLOAD_DANGER_TYPE_DANGEROUS_HOST:
@@ -1414,6 +1704,46 @@
      }
      case download::DOWNLOAD_DANGER_TYPE_POTENTIALLY_UNWANTED:
        return l10n_util::GetStringFUTF16(IDS_PROMPT_DOWNLOAD_CHANGES_SETTINGS,
+@@ -395,13 +379,6 @@ bool DownloadUIModel::ShouldPreferOpenin
+ 
+ void DownloadUIModel::SetShouldPreferOpeningInBrowser(bool preference) {}
+ 
+-DownloadFileType::DangerLevel DownloadUIModel::GetDangerLevel() const {
+-  return DownloadFileType::NOT_DANGEROUS;
+-}
+-
+-void DownloadUIModel::SetDangerLevel(
+-    DownloadFileType::DangerLevel danger_level) {}
+-
+ download::DownloadItem::MixedContentStatus
+ DownloadUIModel::GetMixedContentStatus() const {
+   return download::DownloadItem::MixedContentStatus::UNKNOWN;
+--- a/chrome/browser/download/download_ui_model.h
++++ b/chrome/browser/download/download_ui_model.h
+@@ -17,7 +17,6 @@
+ #include "components/download/public/common/download_item.h"
+ #include "components/offline_items_collection/core/offline_item.h"
+ #include "components/safe_browsing/buildflags.h"
+-#include "components/safe_browsing/core/proto/download_file_types.pb.h"
+ 
+ #if !defined(OS_ANDROID)
+ #include "chrome/browser/download/download_commands.h"
+@@ -168,15 +167,6 @@ class DownloadUIModel {
+   // Change what's returned by ShouldPreferOpeningInBrowser to |preference|.
+   virtual void SetShouldPreferOpeningInBrowser(bool preference);
+ 
+-  // Return the danger level determined during download target determination.
+-  // The value returned here is independent of the danger level as determined by
+-  // the Safe Browsing.
+-  virtual safe_browsing::DownloadFileType::DangerLevel GetDangerLevel() const;
+-
+-  // Change what's returned by GetDangerLevel().
+-  virtual void SetDangerLevel(
+-      safe_browsing::DownloadFileType::DangerLevel danger_level);
+-
+   // Return the mixed content status determined during download target
+   // determination.
+   virtual download::DownloadItem::MixedContentStatus GetMixedContentStatus()
 --- a/chrome/browser/download/notification/download_item_notification.cc
 +++ b/chrome/browser/download/notification/download_item_notification.cc
 @@ -27,8 +27,6 @@
@@ -4139,7 +4469,7 @@
  }  // namespace subresource_filter
 --- a/testing/variations/fieldtrial_testing_config.json
 +++ b/testing/variations/fieldtrial_testing_config.json
-@@ -5971,187 +5971,6 @@
+@@ -5972,187 +5972,6 @@
              ]
          }
      ],

@@ -5,7 +5,7 @@
 --- a/chrome/browser/ungoogled_platform_flag_entries.h
 +++ b/chrome/browser/ungoogled_platform_flag_entries.h
 @@ -4,4 +4,8 @@
-
+ 
  #ifndef CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
  #define CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
 +    {"disable-encryption",
