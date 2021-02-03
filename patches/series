@@ -1,6 +1,5 @@
 inox-patchset/chromium-skia-harmony.patch
 inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
-debian_buster/fixes/gpu-timeout.patch
 ungoogled-chromium/windows/windows-disable-reorder-fix-linking.patch
 ungoogled-chromium/windows/windows-fix-missing-include-es_parser_adts-cc.patch
 ungoogled-chromium/windows/windows-disable-win-build-output.patch

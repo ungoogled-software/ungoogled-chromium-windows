@@ -2,12 +2,13 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -65,29 +65,6 @@ if (enable_resource_allowlist_generation
+@@ -61,30 +61,6 @@ if (enable_resource_allowlist_generation
    chrome_resource_whitelist = "$target_gen_dir/chrome_resource_whitelist.txt"
  }
  
 -if (is_win) {
--  action("reorder_imports") {
+-  # TODO(crbug.com/1112471): Get this to run cleanly under Python 3.
+-  python2_action("reorder_imports") {
 -    script = "//build/win/reorder-imports.py"
 -
 -    # See comment in chrome_dll.gypi in the hardlink_to_output
@@ -32,7 +33,7 @@
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
  # on Chrome and the main DLLs it uses, it will transitively assert that those
-@@ -114,21 +91,13 @@ if (!is_android && !is_mac) {
+@@ -111,21 +87,13 @@ if (!is_android && !is_mac) {
    group("chrome") {
      public_deps = [ ":chrome_initial" ]
      data_deps = [ ":chrome_initial" ]
@@ -57,7 +58,7 @@
      # each platform lists its own files rather than relying on filtering or
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -335,11 +335,6 @@ python_library("chromedriver_py_tests")
+@@ -347,11 +347,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }

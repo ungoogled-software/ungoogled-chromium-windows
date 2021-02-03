@@ -10,7 +10,7 @@ Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromi
 
 ## Building
 
-Google only supports [Windows 7 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/86.0.4240.183/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 7 Professional x64.
+Google only supports [Windows 7 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/88.0.4324.104/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 7 Professional x64.
 
 NOTE: The default configuration will build 64-bit binaries for maximum security (TODO: Link some explanation). This can be changed to 32-bit by setting `target_cpu` to `"x86"` in `flags.windows.gn`.
 
