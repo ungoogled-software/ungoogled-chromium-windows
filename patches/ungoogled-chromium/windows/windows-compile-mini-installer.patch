@@ -3,7 +3,7 @@
 
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
-@@ -183,7 +183,6 @@ template("generate_mini_installer") {
+@@ -188,7 +188,6 @@ template("generate_mini_installer") {
        ":setup_runtime_deps",
        "//chrome",
        "//chrome/browser/extensions/default_extensions",
