@@ -172,7 +172,7 @@
  
      all_dependent_configs = [ ":browser_win_linker_flags" ]
  
-@@ -5174,7 +5150,7 @@ static_library("browser") {
+@@ -5172,7 +5148,7 @@ static_library("browser") {
      ]
    }
  
@@ -181,7 +181,7 @@
      sources += [
        "password_manager/password_store_signin_notifier_impl.cc",
        "password_manager/password_store_signin_notifier_impl.h",
-@@ -6455,10 +6431,6 @@ grit("resources") {
+@@ -6453,10 +6429,6 @@ grit("resources") {
        "//chrome/browser/resources/chromeos/internet_detail_dialog:build",
      ]
    }
@@ -192,7 +192,7 @@
  }
  
  if (is_chrome_branded) {
-@@ -6606,14 +6578,12 @@ static_library("test_support") {
+@@ -6604,14 +6576,12 @@ static_library("test_support") {
  
    public_deps = [
      ":browser",
@@ -207,7 +207,7 @@
      "//components/consent_auditor:test_support",
      "//components/invalidation/impl",
      "//components/invalidation/impl:test_support",
-@@ -6623,7 +6593,6 @@ static_library("test_support") {
+@@ -6621,7 +6591,6 @@ static_library("test_support") {
      "//components/prefs:test_support",
      "//components/reputation/core",
      "//components/reputation/core:proto",
@@ -215,7 +215,7 @@
      "//components/search_engines:test_support",
      "//components/security_interstitials/content:security_interstitial_page",
      "//components/services/unzip/content",
-@@ -6786,7 +6755,6 @@ static_library("test_support") {
+@@ -6784,7 +6753,6 @@ static_library("test_support") {
      deps += [
        "//components/crx_file",
        "//components/drive:test_support",
@@ -223,7 +223,7 @@
        "//components/services/unzip:in_process",
        "//components/storage_monitor:test_support",
        "//extensions:test_support",
-@@ -6817,34 +6785,6 @@ static_library("test_support") {
+@@ -6815,34 +6783,6 @@ static_library("test_support") {
      ]
    }
  
@@ -3860,7 +3860,7 @@
  
      if (use_aura) {
        if (enable_wifi_display) {
-@@ -4001,7 +3937,6 @@ test("unit_tests") {
+@@ -4000,7 +3936,6 @@ test("unit_tests") {
        "../browser/performance_manager/test_support/site_data_utils.h",
        "../browser/profiles/profile_avatar_icon_util_unittest.cc",
        "../browser/profiles/profile_destroyer_unittest.cc",
@@ -3868,7 +3868,7 @@
        "../browser/speech/speech_recognition_service_factory_unittest.cc",
        "../browser/tab_contents/form_interaction_tab_helper_unittest.cc",
        "../browser/ui/autofill/payments/autofill_dialog_models_unittest.cc",
-@@ -4156,10 +4091,6 @@ test("unit_tests") {
+@@ -4155,10 +4090,6 @@ test("unit_tests") {
      "//components/query_tiles:unit_tests",
      "//components/resources",
      "//components/safe_browsing:buildflags",
@@ -3879,7 +3879,7 @@
      "//components/safe_search_api:test_support",
      "//components/schema_org/common:improved_mojom",
      "//components/services/patch/content",
-@@ -4690,15 +4621,6 @@ test("unit_tests") {
+@@ -4689,15 +4620,6 @@ test("unit_tests") {
      if (is_win) {
        sources += [
          "../browser/profile_resetter/triggered_profile_resetter_win_unittest.cc",
@@ -3895,7 +3895,7 @@
          "../browser/task_manager/sampling/shared_sampler_win_unittest.cc",
          "../utility/importer/edge_database_reader_unittest_win.cc",
        ]
-@@ -5170,9 +5092,6 @@ test("unit_tests") {
+@@ -5169,9 +5091,6 @@ test("unit_tests") {
        "../browser/extensions/api/preference/preference_api_prefs_unittest.cc",
        "../browser/extensions/api/proxy/proxy_api_helpers_unittest.cc",
        "../browser/extensions/api/runtime/chrome_runtime_api_delegate_unittest.cc",
@@ -3905,7 +3905,7 @@
        "../browser/extensions/api/search/search_api_unittest.cc",
        "../browser/extensions/api/settings_private/generated_pref_test_base.cc",
        "../browser/extensions/api/settings_private/generated_pref_test_base.h",
-@@ -5283,12 +5202,6 @@ test("unit_tests") {
+@@ -5282,12 +5201,6 @@ test("unit_tests") {
        "../browser/notifications/notification_system_observer_unittest.cc",
        "../browser/policy/chrome_extension_policy_migrator_unittest.cc",
        "../browser/renderer_context_menu/context_menu_content_type_unittest.cc",
@@ -3918,7 +3918,7 @@
        "../browser/sync/glue/extensions_activity_monitor_unittest.cc",
        "../browser/sync_file_system/drive_backend/callback_helper_unittest.cc",
        "../browser/sync_file_system/drive_backend/callback_tracker_unittest.cc",
-@@ -5568,113 +5481,6 @@ test("unit_tests") {
+@@ -5567,113 +5480,6 @@ test("unit_tests") {
      }
    }
  
@@ -4032,7 +4032,7 @@
    if (enable_plugins) {
      sources += [
        "../browser/metrics/plugin_metrics_provider_unittest.cc",
-@@ -5882,10 +5688,6 @@ test("unit_tests") {
+@@ -5881,10 +5687,6 @@ test("unit_tests") {
        "//third_party/wtl",
        "//ui/resources",
      ]
@@ -4043,7 +4043,7 @@
  
      libs = [
        "comsupp.lib",
-@@ -6109,9 +5911,6 @@ test("unit_tests") {
+@@ -6108,9 +5910,6 @@ test("unit_tests") {
        "//chrome/browser/supervised_user/supervised_user_error_page:unit_tests",
      ]
    }
@@ -4053,7 +4053,7 @@
  
    if (is_win || is_mac || (is_linux && !is_chromeos)) {
      sources += [
-@@ -6277,10 +6076,6 @@ if (!is_android) {
+@@ -6276,10 +6075,6 @@ if (!is_android) {
      }
    }
  
@@ -4064,7 +4064,7 @@
    if (is_chromeos) {
      assert(enable_extensions)
  
-@@ -7422,26 +7217,6 @@ if (!is_fuchsia && !is_android) {
+@@ -7421,26 +7216,6 @@ if (!is_fuchsia && !is_android) {
    }
  }
  
