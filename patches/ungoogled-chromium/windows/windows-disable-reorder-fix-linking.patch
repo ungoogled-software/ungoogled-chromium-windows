@@ -2,7 +2,7 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -61,30 +61,6 @@ if (enable_resource_allowlist_generation
+@@ -62,30 +62,6 @@ if (enable_resource_allowlist_generation
    chrome_resource_whitelist = "$target_gen_dir/chrome_resource_whitelist.txt"
  }
  
@@ -33,7 +33,7 @@
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
  # on Chrome and the main DLLs it uses, it will transitively assert that those
-@@ -111,21 +87,13 @@ if (!is_android && !is_mac) {
+@@ -112,21 +88,13 @@ if (!is_android && !is_mac) {
    group("chrome") {
      public_deps = [ ":chrome_initial" ]
      data_deps = [ ":chrome_initial" ]
