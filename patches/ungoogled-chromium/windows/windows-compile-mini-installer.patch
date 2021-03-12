@@ -3,14 +3,14 @@
 
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
-@@ -188,7 +188,6 @@ template("generate_mini_installer") {
-       ":setup_runtime_deps",
-       "//chrome",
-       "//chrome/browser/extensions/default_extensions",
--      "//chrome/common/win:eventlog_provider",
-       "//chrome/installer/setup",
-       "//mojo/core:shared_library",
-       "//third_party/icu:icudata",
+@@ -167,7 +167,6 @@ python2_action("mini_installer_archive")
+     "//chrome",
+     "//chrome:chrome_dll",
+     "//chrome/browser/extensions/default_extensions",
+-    "//chrome/common/win:eventlog_provider",
+     "//chrome/installer/setup",
+     "//mojo/core:shared_library",
+     "//third_party/icu:icudata",
 --- a/chrome/tools/build/win/create_installer_archive.py
 +++ b/chrome/tools/build/win/create_installer_archive.py
 @@ -169,8 +169,14 @@ def GenerateDiffPatch(options, orig_file
