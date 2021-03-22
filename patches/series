@@ -3,7 +3,6 @@ inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
 ungoogled-chromium/windows/windows-disable-reorder-fix-linking.patch
 ungoogled-chromium/windows/windows-fix-missing-include-es_parser_adts-cc.patch
 ungoogled-chromium/windows/windows-disable-win-build-output.patch
-ungoogled-chromium/windows/windows-disable-orderfile.patch
 ungoogled-chromium/windows/windows-disable-rcpy.patch
 ungoogled-chromium/windows/windows-fix-building-without-safebrowsing.patch
 ungoogled-chromium/windows/windows-fix-enum-conflict.patch
@@ -17,3 +16,5 @@ ungoogled-chromium/windows/windows-fix-rc.patch
 ungoogled-chromium/windows/windows-disable-event-log.patch
 ungoogled-chromium/windows/windows-fix-clang-format-exe.patch
 ungoogled-chromium/windows/windows-disable-rlz.patch
+ungoogled-chromium/windows/windows-fix-command-ids.patch
+ungoogled-chromium/windows/windows-disable-download-warning-prompt.patch

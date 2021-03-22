@@ -4,17 +4,28 @@
 
 --- a/build/toolchain/win/midl.py
 +++ b/build/toolchain/win/midl.py
-@@ -391,39 +391,11 @@ def main(arch, gendir, outdir, dynamic_g
+@@ -7,7 +7,7 @@ from __future__ import print_function
+ 
+ import array
+ import difflib
+-import distutils.dir_util
++import distutils.file_util
+ import filecmp
+ import io
+ import operator
+@@ -440,41 +440,13 @@ def main(arch, gendir, outdir, dynamic_g
    if returncode != 0:
      return returncode
  
 -  # Now compare the output in midl_output_dir to the copied-over outputs.
 +  # Copy missing files (pruned binary .tlb files) to the output.
-   diff = filecmp.dircmp(midl_output_dir, outdir, ignore=dircmp_ignore)
--  if diff.diff_files:
+   _, mismatch, errors = filecmp.cmpfiles(midl_output_dir, outdir, common_files)
+   assert not errors
+ 
+   if mismatch:
 -    print('midl.exe output different from files in %s, see %s' %
 -          (outdir, midl_output_dir))
--    for f in diff.diff_files:
+     for f in mismatch:
 -      if f.endswith('.tlb'): continue
 -      fromfile = os.path.join(outdir, f)
 -      tofile = os.path.join(midl_output_dir, f)
@@ -42,8 +53,6 @@
 -    print(r'  copy /y %s\* %s' % (midl_output_dir, source))
 -    return 1
 -
-+  if diff.left_only:
-+    for f in diff.left_only:
 +      distutils.file_util.copy_file(os.path.join(midl_output_dir, f), outdir, preserve_times=False)
    return 0
  
