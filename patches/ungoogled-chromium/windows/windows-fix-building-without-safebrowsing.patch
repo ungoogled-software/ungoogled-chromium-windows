@@ -3532,7 +3532,7 @@
      kChromeUISyncInternalsHost,
 --- a/chrome/renderer/BUILD.gn
 +++ b/chrome/renderer/BUILD.gn
-@@ -173,11 +173,6 @@ static_library("renderer") {
+@@ -175,11 +175,6 @@ static_library("renderer") {
      "//components/resources:components_resources",
      "//components/resources:components_scaled_resources",
      "//components/safe_browsing:buildflags",
@@ -3544,7 +3544,7 @@
      "//components/security_interstitials/content/renderer:security_interstitial_page_controller",
      "//components/security_interstitials/core:",
      "//components/security_interstitials/core/common/mojom:",
-@@ -272,11 +267,6 @@ static_library("renderer") {
+@@ -274,11 +269,6 @@ static_library("renderer") {
      deps += [ "//third_party/widevine/cdm:headers" ]
    }
  
