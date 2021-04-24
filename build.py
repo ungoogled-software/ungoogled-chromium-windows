@@ -40,7 +40,7 @@ def _get_vcvars_path(name='64'):
     """
     vswhere_exe = '%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\vswhere.exe'
     result = subprocess.run(
-        '"{}" -latest -property installationPath'.format(vswhere_exe),
+        '"{}" -prerelease -latest -property installationPath'.format(vswhere_exe),
         shell=True,
         check=True,
         stdout=subprocess.PIPE,
