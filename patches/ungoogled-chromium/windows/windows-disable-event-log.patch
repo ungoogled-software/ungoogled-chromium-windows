@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -419,7 +419,6 @@ static_library("common") {
+@@ -420,7 +420,6 @@ static_library("common") {
      ]
      deps += [
        "//chrome/chrome_elf:chrome_elf_main_include",
@@ -27,7 +27,7 @@
    LogEventProvider::Initialize(kChromeTraceProviderName);
 -
 -  // Enable logging to the Windows Event Log.
--  SetEventSource(base::UTF16ToASCII(
+-  SetEventSource(base::WideToASCII(
 -                     install_static::InstallDetails::Get().install_full_name()),
 -                 BROWSER_CATEGORY, MSG_LOG_MESSAGE);
  #endif

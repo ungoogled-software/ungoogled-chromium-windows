@@ -1,6 +1,6 @@
 --- a/chrome/installer/setup/BUILD.gn
 +++ b/chrome/installer/setup/BUILD.gn
-@@ -42,7 +42,6 @@ if (is_win) {
+@@ -45,7 +45,6 @@ if (is_win) {
        "//components/crash/core/app:crash_export_thunks",
        "//components/crash/core/app:run_as_crashpad_handler",
        "//content/public/common:static_switches",
@@ -10,7 +10,7 @@
      libs = [ "netapi32.lib" ]
 --- a/chrome/installer/setup/uninstall.cc
 +++ b/chrome/installer/setup/uninstall.cc
-@@ -61,8 +61,6 @@
+@@ -60,8 +60,6 @@
  #include "chrome/installer/util/util_constants.h"
  #include "chrome/installer/util/work_item.h"
  #include "content/public/common/result_codes.h"
@@ -19,7 +19,7 @@
  
  using base::win::RegKey;
  
-@@ -105,22 +103,6 @@ void ProcessChromeWorkItems(const Instal
+@@ -104,22 +102,6 @@ void ProcessChromeWorkItems(const Instal
    work_item_list->Do();
  }
  
@@ -31,9 +31,9 @@
 -  rlz_lib::ClearProductState(rlz_lib::CHROME, points);
 -
 -  // If chrome has been reactivated, clear all events for this brand as well.
--  base::string16 reactivation_brand_wide;
+-  std::wstring reactivation_brand_wide;
 -  if (GoogleUpdateSettings::GetReactivationBrand(&reactivation_brand_wide)) {
--    std::string reactivation_brand(base::UTF16ToASCII(reactivation_brand_wide));
+-    std::string reactivation_brand(base::WideToASCII(reactivation_brand_wide));
 -    rlz_lib::SupplementaryBranding branding(reactivation_brand.c_str());
 -    rlz_lib::ClearProductState(rlz_lib::CHROME, points);
 -  }
@@ -42,7 +42,7 @@
  // Removes all files from the installer directory. Returns false in case of an
  // error.
  bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
-@@ -846,11 +828,6 @@ InstallStatus UninstallProduct(const Mod
+@@ -845,11 +827,6 @@ InstallStatus UninstallProduct(const Mod
      }
    }
  
