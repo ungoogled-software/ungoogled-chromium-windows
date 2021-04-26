@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -63,12 +63,6 @@
+@@ -64,12 +64,6 @@
  #define IDC_ALL_WINDOWS_FRONT           34048
  #define IDC_NAME_WINDOW                 34049
  
@@ -13,7 +13,7 @@
  #define IDC_OPEN_IN_PWA_WINDOW          34053
  #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
  
-@@ -78,32 +72,6 @@
+@@ -79,32 +73,6 @@
  #define IDC_SITE_SETTINGS               34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
@@ -46,7 +46,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -426,12 +394,6 @@
+@@ -434,12 +402,6 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
