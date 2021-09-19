@@ -51,7 +51,7 @@
  
 +#include "base/command_line.h"
  #include "base/check.h"
- #include "base/stl_util.h"
+ #include "base/cxx17_backports.h"
  
  MachineIdStatus GetDeterministicMachineSpecificId(std::string* machine_id) {
    DCHECK(machine_id);
@@ -62,4 +62,3 @@
 +
    wchar_t computer_name[MAX_COMPUTERNAME_LENGTH + 1] = {};
    DWORD computer_name_size = base::size(computer_name);
- 
