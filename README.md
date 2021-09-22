@@ -10,7 +10,7 @@ Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromi
 
 ## Building
 
-Google only supports [Windows 7 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/89.0.4389.82/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 7 Professional x64.
+Google only supports [Windows 10 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/tags/89.0.4389.82/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 10 Professional x64.
 
 NOTE: The default configuration will build 64-bit binaries for maximum security (TODO: Link some explanation). This can be changed to 32-bit by setting `target_cpu` to `"x86"` in `flags.windows.gn`.
 
@@ -31,7 +31,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 #### Other build requirements
 
-**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (Anniversary or newer) with the official installer for Python 3.6 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for other Windows versions.
+**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (v1607 or newer) with the official installer for Python 3.6 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for other Windows versions.
 
 1. Setup the following:
 
