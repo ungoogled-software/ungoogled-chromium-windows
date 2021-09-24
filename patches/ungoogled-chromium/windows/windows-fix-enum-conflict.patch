@@ -2,15 +2,15 @@
 
 --- a/extensions/browser/api/feedback_private/feedback_private_api.cc
 +++ b/extensions/browser/api/feedback_private/feedback_private_api.cc
-@@ -469,7 +469,7 @@ void FeedbackPrivateSendFeedbackFunction
-     api::feedback_private::LandingPageType type,
-     bool success) {
-   Respond(TwoArguments(base::Value(feedback_private::ToString(
--                           success ? feedback_private::STATUS_SUCCESS
-+                           success ? feedback_private::STATUS_SUCCESS1
-                                    : feedback_private::STATUS_DELAYED)),
-                        base::Value(feedback_private::ToString(type))));
-   if (!success) {
+@@ -165,7 +165,7 @@ void SendFeedback(content::BrowserContex
+ }
+ 
+ std::string ToFeedbackStatus(bool success) {
+-  return feedback_private::ToString(success ? feedback_private::STATUS_SUCCESS
++  return feedback_private::ToString(success ? feedback_private::STATUS_SUCCESS1
+                                             : feedback_private::STATUS_DELAYED);
+ }
+ 
 --- a/extensions/common/api/feedback_private.idl
 +++ b/extensions/common/api/feedback_private.idl
 @@ -99,7 +99,7 @@ namespace feedbackPrivate {

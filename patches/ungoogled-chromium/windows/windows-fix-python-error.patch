@@ -11,7 +11,7 @@
    # If we get here, we are a Python3 executable. Hope that we can find
 --- a/chrome/browser/resources/tools/optimize_webui.py
 +++ b/chrome/browser/resources/tools/optimize_webui.py
-@@ -179,7 +179,7 @@ def _bundle_v3(tmp_out_dir, in_path, out
+@@ -181,7 +181,7 @@ def _bundle_v3(tmp_out_dir, in_path, out
           (len(generated_paths))
  
    for bundled_file in bundled_paths:
