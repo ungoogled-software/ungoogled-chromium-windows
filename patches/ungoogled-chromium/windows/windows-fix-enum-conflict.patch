@@ -2,7 +2,7 @@
 
 --- a/extensions/browser/api/feedback_private/feedback_private_api.cc
 +++ b/extensions/browser/api/feedback_private/feedback_private_api.cc
-@@ -165,7 +165,7 @@ void SendFeedback(content::BrowserContex
+@@ -171,7 +171,7 @@ void SendFeedback(content::BrowserContex
  }
  
  std::string ToFeedbackStatus(bool success) {

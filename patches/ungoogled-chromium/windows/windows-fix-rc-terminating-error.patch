@@ -91,7 +91,7 @@
  #if defined(OS_WIN)
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -374,7 +374,7 @@
+@@ -376,7 +376,7 @@
  #define IDC_MEDIA_ROUTER_ABOUT 51200
  #define IDC_MEDIA_ROUTER_HELP 51201
  #define IDC_MEDIA_ROUTER_LEARN_MORE 51202
