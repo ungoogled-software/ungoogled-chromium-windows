@@ -10,7 +10,7 @@
      libs = [ "netapi32.lib" ]
 --- a/chrome/installer/setup/uninstall.cc
 +++ b/chrome/installer/setup/uninstall.cc
-@@ -60,8 +60,6 @@
+@@ -61,8 +61,6 @@
  #include "chrome/installer/util/util_constants.h"
  #include "chrome/installer/util/work_item.h"
  #include "content/public/common/result_codes.h"
@@ -19,7 +19,7 @@
  
  using base::win::RegKey;
  
-@@ -104,22 +102,6 @@ void ProcessChromeWorkItems(const Instal
+@@ -105,22 +103,6 @@ void ProcessChromeWorkItems(const Instal
    work_item_list->Do();
  }
  
@@ -42,7 +42,7 @@
  // Removes all files from the installer directory. Returns false in case of an
  // error.
  bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
-@@ -845,11 +827,6 @@ InstallStatus UninstallProduct(const Mod
+@@ -835,11 +817,6 @@ InstallStatus UninstallProduct(const Mod
      }
    }
  
@@ -53,4 +53,4 @@
 -
    auto_launch_util::DisableBackgroundStartAtLogin();
  
-   // If user-level chrome is self-destructing as a result of encountering a
+   base::FilePath chrome_proxy_exe(

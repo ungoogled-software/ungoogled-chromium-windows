@@ -1,0 +1,102 @@
+--- a/build/build_config.h
++++ b/build/build_config.h
+@@ -118,88 +118,16 @@
+ 
+ // Compiler detection. Note: clang masquerades as GCC on POSIX and as MSVC on
+ // Windows.
+-#if defined(__GNUC__)
+-#define COMPILER_GCC 1
+-#elif defined(_MSC_VER)
+ #define COMPILER_MSVC 1
+-#else
+-#error Please add support for your compiler in build/build_config.h
+-#endif
+ 
+ // Processor architecture detection.  For more info on what's defined, see:
+ //   http://msdn.microsoft.com/en-us/library/b0084kay.aspx
+ //   http://www.agner.org/optimize/calling_conventions.pdf
+ //   or with gcc, run: "echo | gcc -E -dM -"
+-#if defined(_M_X64) || defined(__x86_64__)
+ #define ARCH_CPU_X86_FAMILY 1
+ #define ARCH_CPU_X86_64 1
+ #define ARCH_CPU_64_BITS 1
+ #define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(_M_IX86) || defined(__i386__)
+-#define ARCH_CPU_X86_FAMILY 1
+-#define ARCH_CPU_X86 1
+-#define ARCH_CPU_32_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__s390x__)
+-#define ARCH_CPU_S390_FAMILY 1
+-#define ARCH_CPU_S390X 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_BIG_ENDIAN 1
+-#elif defined(__s390__)
+-#define ARCH_CPU_S390_FAMILY 1
+-#define ARCH_CPU_S390 1
+-#define ARCH_CPU_31_BITS 1
+-#define ARCH_CPU_BIG_ENDIAN 1
+-#elif (defined(__PPC64__) || defined(__PPC__)) && defined(__BIG_ENDIAN__)
+-#define ARCH_CPU_PPC64_FAMILY 1
+-#define ARCH_CPU_PPC64 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_BIG_ENDIAN 1
+-#elif defined(__PPC64__)
+-#define ARCH_CPU_PPC64_FAMILY 1
+-#define ARCH_CPU_PPC64 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__ARMEL__)
+-#define ARCH_CPU_ARM_FAMILY 1
+-#define ARCH_CPU_ARMEL 1
+-#define ARCH_CPU_32_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__aarch64__) || defined(_M_ARM64)
+-#define ARCH_CPU_ARM_FAMILY 1
+-#define ARCH_CPU_ARM64 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__pnacl__) || defined(__asmjs__) || defined(__wasm__)
+-#define ARCH_CPU_32_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__MIPSEL__)
+-#if defined(__LP64__)
+-#define ARCH_CPU_MIPS_FAMILY 1
+-#define ARCH_CPU_MIPS64EL 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#else
+-#define ARCH_CPU_MIPS_FAMILY 1
+-#define ARCH_CPU_MIPSEL 1
+-#define ARCH_CPU_32_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#endif
+-#elif defined(__MIPSEB__)
+-#if defined(__LP64__)
+-#define ARCH_CPU_MIPS_FAMILY 1
+-#define ARCH_CPU_MIPS64 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_BIG_ENDIAN 1
+-#else
+-#define ARCH_CPU_MIPS_FAMILY 1
+-#define ARCH_CPU_MIPS 1
+-#define ARCH_CPU_32_BITS 1
+-#define ARCH_CPU_BIG_ENDIAN 1
+-#endif
+-#else
+-#error Please add support for your architecture in build/build_config.h
+-#endif
+ 
+ // Type detection for wchar_t.
+ #if defined(OS_WIN)
+--- a/chrome/app/chrome_command_ids.h
++++ b/chrome/app/chrome_command_ids.h
+@@ -370,7 +370,7 @@
+ #define IDC_MEDIA_ROUTER_ABOUT 51200
+ #define IDC_MEDIA_ROUTER_HELP 51201
+ #define IDC_MEDIA_ROUTER_LEARN_MORE 51202
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
++#if (0)
+ #define IDC_MEDIA_ROUTER_REPORT_ISSUE 51203
+ #endif
+ #define IDC_MEDIA_ROUTER_ALWAYS_SHOW_TOOLBAR_ACTION 51204

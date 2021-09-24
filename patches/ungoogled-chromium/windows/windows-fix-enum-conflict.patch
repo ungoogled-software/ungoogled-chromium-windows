@@ -2,7 +2,7 @@
 
 --- a/extensions/browser/api/feedback_private/feedback_private_api.cc
 +++ b/extensions/browser/api/feedback_private/feedback_private_api.cc
-@@ -468,7 +468,7 @@ void FeedbackPrivateSendFeedbackFunction
+@@ -469,7 +469,7 @@ void FeedbackPrivateSendFeedbackFunction
      api::feedback_private::LandingPageType type,
      bool success) {
    Respond(TwoArguments(base::Value(feedback_private::ToString(

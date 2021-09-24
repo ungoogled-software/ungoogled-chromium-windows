@@ -13,7 +13,7 @@
  import filecmp
  import io
  import operator
-@@ -440,41 +440,13 @@ def main(arch, gendir, outdir, dynamic_g
+@@ -445,41 +445,13 @@ def main(arch, gendir, outdir, dynamic_g
    if returncode != 0:
      return returncode
  

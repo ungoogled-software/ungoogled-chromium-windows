@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -64,12 +64,6 @@
+@@ -65,12 +65,6 @@
  #define IDC_ALL_WINDOWS_FRONT           34048
  #define IDC_NAME_WINDOW                 34049
  
@@ -13,7 +13,7 @@
  #define IDC_OPEN_IN_PWA_WINDOW          34053
  #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
  
-@@ -79,32 +73,6 @@
+@@ -80,20 +74,6 @@
  #define IDC_SITE_SETTINGS               34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
@@ -29,24 +29,12 @@
 -#define IDC_VISIT_DESKTOP_OF_LRU_USER_5 34083
 -#define IDC_VISIT_DESKTOP_OF_LRU_USER_NEXT IDC_VISIT_DESKTOP_OF_LRU_USER_2
 -#define IDC_VISIT_DESKTOP_OF_LRU_USER_LAST IDC_VISIT_DESKTOP_OF_LRU_USER_5
--
--// Move to desk commands
--#define IDC_MOVE_TO_DESKS_MENU 34090
--#define IDC_MOVE_TO_DESK_1 34091
--#define IDC_MOVE_TO_DESK_2 34092
--#define IDC_MOVE_TO_DESK_3 34093
--#define IDC_MOVE_TO_DESK_4 34094
--#define IDC_MOVE_TO_DESK_5 34095
--#define IDC_MOVE_TO_DESK_6 34096
--#define IDC_MOVE_TO_DESK_7 34097
--#define IDC_MOVE_TO_DESK_8 34098
--#define IDC_TOGGLE_ASSIGN_TO_ALL_DESKS 34099
 -#endif
 -
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -433,12 +401,6 @@
+@@ -427,12 +407,6 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
