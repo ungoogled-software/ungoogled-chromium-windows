@@ -3,7 +3,7 @@
 
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
-@@ -167,7 +167,6 @@ python2_action("mini_installer_archive")
+@@ -166,7 +166,6 @@ action("mini_installer_archive") {
      "//chrome",
      "//chrome:chrome_dll",
      "//chrome/browser/extensions/default_extensions",
@@ -20,11 +20,11 @@
 -    lzma_exec = os.path.join(build_dir, "..", "..", "third_party",
 -                             "lzma_sdk", "Executable", "7za.exe")
 +    # Taken from ungoogled-chromium's _extraction.py file, modified for Python 2
-+    import _winreg
++    import winreg
 +    sub_key_7zfm = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\7zFM.exe'
 +
-+    with _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, sub_key_7zfm) as key_handle:
-+      sevenzipfm_dir = _winreg.QueryValueEx(key_handle, 'Path')[0]
++    with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, sub_key_7zfm) as key_handle:
++      sevenzipfm_dir = winreg.QueryValueEx(key_handle, 'Path')[0]
 +
 +    lzma_exec = os.path.join(sevenzipfm_dir, "7z.exe")
    else:
