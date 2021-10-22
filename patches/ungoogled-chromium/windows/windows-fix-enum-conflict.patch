@@ -13,7 +13,7 @@
  
 --- a/extensions/common/api/feedback_private.idl
 +++ b/extensions/common/api/feedback_private.idl
-@@ -99,7 +99,7 @@ namespace feedbackPrivate {
+@@ -103,7 +103,7 @@ namespace feedbackPrivate {
    };
  
    // Status of the sending of a feedback report.

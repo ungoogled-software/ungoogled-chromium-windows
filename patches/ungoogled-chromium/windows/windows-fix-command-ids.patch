@@ -19,8 +19,8 @@
  
 -#if BUILDFLAG(IS_CHROMEOS_ASH)
 -// Terminal system app commands
--#define IDC_TERMINAL_SPLIT_HORIZONTAL   34070
--#define IDC_TERMINAL_SPLIT_VERTICAL     34071
+-#define IDC_TERMINAL_LINUX   34070
+-#define IDC_TERMINAL_SSH     34071
 -
 -// Move window to other user commands
 -#define IDC_VISIT_DESKTOP_OF_LRU_USER_2 34080
@@ -34,7 +34,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -433,12 +413,6 @@
+@@ -435,12 +415,6 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  

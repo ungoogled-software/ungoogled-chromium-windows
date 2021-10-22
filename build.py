@@ -68,32 +68,6 @@ def _run_build_process(*args, **kwargs):
                    **kwargs)
 
 
-def _test_python2(error_exit):
-    """
-    Tests if Python 2 is setup with the proper requirements
-    """
-    python2_exe = shutil.which('python')
-    if not python2_exe:
-        error_exit('Could not find "python" in PATH')
-
-    # Check Python version is at least 2.7.9 to avoid exec issues
-    result = subprocess.run((python2_exe, '--version'),
-                            stderr=subprocess.PIPE,
-                            check=True,
-                            universal_newlines=True)
-    match = re.fullmatch(r'Python 2\.7\.([0-9]+)', result.stderr.strip())
-    if not match:
-        error_exit('Could not detect Python 2 version from output: {}'.format(
-            result.stdout.strip()))
-    if int(match.group(1)) < 9:
-        error_exit('At least Python 2.7.9 is required; found 2.7.{}'.format(match.group(1)))
-
-    # Check for pypiwin32 module
-    result = subprocess.run((python2_exe, '-c', 'import win32api'))
-    if result.returncode:
-        error_exit('Unable to find pypiwin32 module in Python 2 installation.')
-
-
 def _make_tmp_paths():
     """Creates TMP and TEMP variable dirs so ninja won't fail"""
     tmp_path = Path(os.environ['TMP'])
@@ -129,9 +103,6 @@ def main():
     source_tree = _ROOT_DIR / 'build' / 'src'
     downloads_cache = _ROOT_DIR / 'build' / 'downloads_cache'
     domsubcache = _ROOT_DIR / 'build' / 'domsubcache.tar.gz'
-
-    # Test environment
-    _test_python2(parser.error)
 
     # Setup environment
     source_tree.mkdir(parents=True, exist_ok=True)
@@ -205,7 +176,7 @@ def main():
 
     # Run GN bootstrap
     _run_build_process(
-        shutil.which('python'), 'tools\\gn\\bootstrap\\bootstrap.py', '-o', 'out\\Default\\gn.exe',
+        sys.executable, 'tools\\gn\\bootstrap\\bootstrap.py', '-o', 'out\\Default\\gn.exe',
         '--skip-generate-buildfiles')
 
     # Run gn gen
