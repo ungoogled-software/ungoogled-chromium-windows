@@ -37,12 +37,9 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
     * 7-zip
     * Python 3.6+ (for build and packaging scripts used below)
-	    * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
-    * Python 2.7 (for scripts in the Chromium source tree), with pypiwin32 module (`pip install pypiwin32`)
+        * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
     * Git (to fetch all required ungoogled-chromium scripts)
         * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
-
-2. Make sure Python 2.7 is set in the user or system environment variable `PATH` as `python`.
 
 ### Building
 
