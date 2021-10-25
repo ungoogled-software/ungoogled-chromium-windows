@@ -2783,11 +2783,10 @@
    security_interstitials::InsecureFormBlockingPage::RegisterProfilePrefs(
        registry);
    segmentation_platform::SegmentationPlatformService::RegisterProfilePrefs(
-@@ -1349,12 +1340,6 @@ void RegisterProfilePrefs(user_prefs::Pr
- #endif
+@@ -1350,11 +1341,6 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if defined(OS_WIN)
--  CdmPrefServiceHelper::RegisterProfilePrefs(registry);
+   CdmPrefServiceHelper::RegisterProfilePrefs(registry);
 -  component_updater::RegisterProfilePrefsForSwReporter(registry);
 -  NetworkProfileBubble::RegisterProfilePrefs(registry);
 -  safe_browsing::SettingsResetPromptPrefsManager::RegisterProfilePrefs(
