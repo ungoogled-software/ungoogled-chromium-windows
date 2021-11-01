@@ -36,7 +36,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 1. Setup the following:
 
     * 7-zip
-    * Python 3.6+ (for build and packaging scripts used below)
+    * Python 3.6 - 3.9 or 3.10.2+ (for build and packaging scripts used below)
         * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
     * Git (to fetch all required ungoogled-chromium scripts)
         * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
