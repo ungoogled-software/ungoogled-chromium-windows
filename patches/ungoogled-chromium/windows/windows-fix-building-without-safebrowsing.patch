@@ -528,7 +528,7 @@
  #include "components/security_interstitials/content/insecure_form_navigation_throttle.h"
  #include "components/security_interstitials/content/origin_policy_ui.h"
  #include "components/security_interstitials/content/ssl_cert_reporter.h"
-@@ -4974,25 +4960,6 @@ void ChromeContentBrowserClient::WillCre
+@@ -4977,25 +4963,6 @@ void ChromeContentBrowserClient::WillCre
  #endif
  }
  
@@ -554,7 +554,7 @@
  void ChromeContentBrowserClient::MaybeInterceptWebTransport(
      const content::GlobalRenderFrameHostId& frame_id,
      const GURL& url,
-@@ -5446,37 +5413,6 @@ const ui::NativeTheme* ChromeContentBrow
+@@ -5449,37 +5416,6 @@ const ui::NativeTheme* ChromeContentBrow
    return ui::NativeTheme::GetInstanceForWeb();
  }
  
