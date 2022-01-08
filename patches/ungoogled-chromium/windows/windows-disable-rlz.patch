@@ -1,13 +1,13 @@
 --- a/chrome/installer/setup/BUILD.gn
 +++ b/chrome/installer/setup/BUILD.gn
-@@ -45,7 +45,6 @@ if (is_win) {
+@@ -46,7 +46,6 @@ if (is_win) {
        "//components/crash/core/app:crash_export_thunks",
        "//components/crash/core/app:run_as_crashpad_handler",
        "//content/public/common:static_switches",
 -      "//rlz:rlz_lib_no_network",
+       "//url",
      ]
  
-     libs = [ "netapi32.lib" ]
 --- a/chrome/installer/setup/uninstall.cc
 +++ b/chrome/installer/setup/uninstall.cc
 @@ -60,8 +60,6 @@

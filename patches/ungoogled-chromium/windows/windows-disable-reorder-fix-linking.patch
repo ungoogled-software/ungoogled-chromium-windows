@@ -2,8 +2,8 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -65,29 +65,6 @@ if (enable_resource_allowlist_generation
-   chrome_resource_whitelist = "$target_gen_dir/chrome_resource_whitelist.txt"
+@@ -65,29 +65,6 @@ if (is_win && enable_resource_allowlist_
+   _chrome_resource_allowlist = "$target_gen_dir/chrome_resource_allowlist.txt"
  }
  
 -if (is_win) {
@@ -32,7 +32,7 @@
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
  # on Chrome and the main DLLs it uses, it will transitively assert that those
-@@ -123,20 +100,12 @@ if (!is_android && !is_mac) {
+@@ -127,20 +104,12 @@ if (!is_android && !is_mac) {
      # Windows-only deps are OK because chrome_initial uses initialexe/chrome as
      # the output name for that platform.
      # See crbug.com/1146571.
@@ -56,7 +56,7 @@
      # each platform lists its own files rather than relying on filtering or
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -353,11 +353,6 @@ python_library("chromedriver_py_tests")
+@@ -354,11 +354,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }
@@ -70,7 +70,7 @@
  python_library("chromedriver_replay_unittests") {
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
-@@ -40,10 +40,6 @@ group("telemetry_chrome_test") {
+@@ -41,10 +41,6 @@ group("telemetry_chrome_test") {
      data_deps += [ "//chrome" ]
    }
  

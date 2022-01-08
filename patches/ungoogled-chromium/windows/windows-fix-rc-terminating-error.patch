@@ -1,6 +1,6 @@
 --- a/build/build_config.h
 +++ b/build/build_config.h
-@@ -118,88 +118,16 @@
+@@ -120,88 +120,16 @@
  
  // Compiler detection. Note: clang masquerades as GCC on POSIX and as MSVC on
  // Windows.
@@ -91,7 +91,7 @@
  #if defined(OS_WIN)
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -378,7 +378,7 @@
+@@ -376,7 +376,7 @@
  #define IDC_MEDIA_ROUTER_ABOUT 51200
  #define IDC_MEDIA_ROUTER_HELP 51201
  #define IDC_MEDIA_ROUTER_LEARN_MORE 51202
@@ -100,3 +100,12 @@
  #define IDC_MEDIA_ROUTER_REPORT_ISSUE 51203
  #endif
  #define IDC_MEDIA_ROUTER_ALWAYS_SHOW_TOOLBAR_ACTION 51204
+@@ -385,7 +385,7 @@
+ #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
+ 
+ // Context menu items for media toolbar button
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
++#if (0)
+ #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
+ #endif
+ 

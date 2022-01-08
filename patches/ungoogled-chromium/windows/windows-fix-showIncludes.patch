@@ -1,6 +1,6 @@
 --- a/build/toolchain/win/BUILD.gn
 +++ b/build/toolchain/win/BUILD.gn
-@@ -192,15 +192,11 @@ template("msvc_toolchain") {
+@@ -201,15 +201,11 @@ template("msvc_toolchain") {
      }
  
      # Disabled with cc_wrapper because of https://github.com/mozilla/sccache/issues/1013
