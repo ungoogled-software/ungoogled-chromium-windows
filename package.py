@@ -53,6 +53,10 @@ def main():
     os.remove('build/src/out/Default/mini_installer.exe')
     os.remove('build/src/out/Default/mini_installer_exe_version.rc')
     os.remove('build/src/out/Default/setup.exe')
+    try:
+        os.remove('build/src/out/Default/chrome.packed.7z')
+    except FileNotFoundError:
+        pass
 
     build_outputs = Path('build/src/out/Default')
     output = Path('build/ungoogled-chromium_{}-{}.{}_windows.zip'.format(
