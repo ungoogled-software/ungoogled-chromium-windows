@@ -101,7 +101,7 @@ def main():
 
     # Set common variables
     source_tree = _ROOT_DIR / 'build' / 'src'
-    downloads_cache = _ROOT_DIR / 'build' / 'downloads_cache'
+    downloads_cache = _ROOT_DIR / 'build' / 'download_cache'
     domsubcache = _ROOT_DIR / 'build' / 'domsubcache.tar.gz'
 
     # Setup environment
