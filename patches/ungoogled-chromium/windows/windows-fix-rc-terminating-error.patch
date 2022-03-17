@@ -1,6 +1,6 @@
 --- a/build/build_config.h
 +++ b/build/build_config.h
-@@ -113,88 +113,16 @@
+@@ -235,98 +235,16 @@
  
  // Compiler detection. Note: clang masquerades as GCC on POSIX and as MSVC on
  // Windows.
@@ -83,6 +83,16 @@
 -#define ARCH_CPU_32_BITS 1
 -#define ARCH_CPU_BIG_ENDIAN 1
 -#endif
+-#elif defined(__loongarch32)
+-#define ARCH_CPU_LOONG_FAMILY 1
+-#define ARCH_CPU_LOONG32 1
+-#define ARCH_CPU_32_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__loongarch64)
+-#define ARCH_CPU_LOONG_FAMILY 1
+-#define ARCH_CPU_LOONG64 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
 -#else
 -#error Please add support for your architecture in build/build_config.h
 -#endif
