@@ -33,7 +33,7 @@
  // Updates all Progressive Web App launchers in |profile_dir| to the latest
  // version.
  void UpdatePwaLaunchersForProfile(const base::FilePath& profile_dir) {
-@@ -688,23 +679,6 @@ void ChromeBrowserMainPartsWin::PostBrow
+@@ -685,23 +676,6 @@ void ChromeBrowserMainPartsWin::PostBrow
  
    InitializeChromeElf();
  
@@ -59,7 +59,7 @@
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1153,8 +1153,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1159,8 +1159,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
@@ -68,7 +68,7 @@
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    IncompatibleApplicationsUpdater::RegisterLocalStatePrefs(registry);
    ModuleDatabase::RegisterLocalStatePrefs(registry);
-@@ -1447,12 +1445,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1453,12 +1451,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);

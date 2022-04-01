@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -402,7 +402,6 @@ static_library("common") {
+@@ -403,7 +403,6 @@ static_library("common") {
      ]
      deps += [
        "//chrome/chrome_elf:chrome_elf_main_include",
