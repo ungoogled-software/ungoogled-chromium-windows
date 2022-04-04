@@ -14,10 +14,13 @@ if sys.version_info.major < 3 or sys.version_info.minor < 6:
         sys.version_info.major, sys.version_info.minor))
 
 import argparse
+import json
 import os
 import re
 import shutil
 import subprocess
+import urllib.request
+import urllib.parse
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'ungoogled-chromium' / 'utils'))
@@ -78,6 +81,65 @@ def _make_tmp_paths():
         tmp_path.mkdir()
 
 
+def _download_esbuild(source_tree, downloads_cache, disable_ssl_verification, extractors):
+    """Download esbuild if necessary"""
+    esbuild_file = source_tree / 'third_party' / 'devtools-frontend' / 'src' / 'third_party' / 'esbuild' / 'esbuild.exe'
+    if esbuild_file.exists():
+        return
+
+    with open(source_tree / 'DEPS', 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    func = lambda x: x
+    local_vars = {}
+    exec(content, {'Str': func, 'Var': func, '__builtins__': {}}, local_vars)
+
+    deps = local_vars.get('deps', None)
+    if deps is None:
+        return
+    esbuild = deps.get('src/third_party/devtools-frontend/src/third_party/esbuild', None)
+    if esbuild is None:
+        return
+    info = esbuild['packages'][0]
+    # download x86 binary for better compatibility
+    package_name = info['package'].replace('${{platform}}', 'windows-386')
+    package_version = info['version']
+
+    # resolve version
+    params = urllib.parse.urlencode({
+        'package_name': package_name,
+        'version': package_version,
+    })
+    with urllib.request.urlopen('https://chrome-infra-packages.appspot.com/_ah/api/repo/v1/instance/resolve?' + params) as resp:
+        content = resp.read()
+    instance_id = json.loads(content)['instance_id']
+
+    # get download url
+    params = urllib.parse.urlencode({
+        'package_name': package_name,
+        'instance_id': instance_id,
+    })
+    with urllib.request.urlopen('https://chrome-infra-packages.appspot.com/_ah/api/repo/v1/instance?' + params) as resp:
+        content = resp.read()
+    url = json.loads(content)['fetch_url']
+
+    download_info = downloads.DownloadInfo([])
+    download_info._data.read_dict({
+        'esbuild': {
+            'version': instance_id,
+            'url': url.replace('%', '%%'),
+            'download_filename': 'esbuild-windows-386-%(version)s.zip',
+            'extractor': '7z',
+            'output_path': 'third_party/devtools-frontend/src/third_party/esbuild'
+        }
+    })
+
+    get_logger().info('Downloading esbuild...')
+    downloads.retrieve_downloads(download_info, downloads_cache, True, disable_ssl_verification)
+    get_logger().info('Unpacking esbuild...')
+    downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
+
+
 def main():
     """CLI Entrypoint"""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -132,6 +194,9 @@ def main():
     }
     get_logger().info('Unpacking downloads...')
     downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
+
+    # Download esbuild
+    _download_esbuild(source_tree, downloads_cache, args.disable_ssl_verification, extractors)
 
     # Prune binaries
     unremovable_files = prune_binaries.prune_dir(
