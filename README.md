@@ -104,6 +104,8 @@ cd ../../
 # Sanity checking for consistency in series file
 ./devutils/check_patch_files.sh
 
+# Check for ezbuild dependency changes in file 'build/src/DEPS' and apdapt 'downloads.ini' accordingly.
+
 # Use git to add changes and commit
 ```
 
