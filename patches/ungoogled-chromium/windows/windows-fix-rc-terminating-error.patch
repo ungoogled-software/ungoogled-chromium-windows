@@ -1,6 +1,6 @@
 --- a/build/build_config.h
 +++ b/build/build_config.h
-@@ -235,98 +235,16 @@
+@@ -236,103 +236,16 @@
  
  // Compiler detection. Note: clang masquerades as GCC on POSIX and as MSVC on
  // Windows.
@@ -91,6 +91,11 @@
 -#elif defined(__loongarch64)
 -#define ARCH_CPU_LOONG_FAMILY 1
 -#define ARCH_CPU_LOONG64 1
+-#define ARCH_CPU_64_BITS 1
+-#define ARCH_CPU_LITTLE_ENDIAN 1
+-#elif defined(__riscv) && (__riscv_xlen == 64)
+-#define ARCH_CPU_RISCV_FAMILY 1
+-#define ARCH_CPU_RISCV64 1
 -#define ARCH_CPU_64_BITS 1
 -#define ARCH_CPU_LITTLE_ENDIAN 1
 -#else

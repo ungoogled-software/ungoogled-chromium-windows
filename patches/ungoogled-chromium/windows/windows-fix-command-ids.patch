@@ -13,7 +13,7 @@
  #define IDC_OPEN_IN_PWA_WINDOW          34053
  #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
  
-@@ -80,20 +74,6 @@
+@@ -80,21 +74,6 @@
  #define IDC_SITE_SETTINGS               34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
@@ -21,6 +21,7 @@
 -// Terminal system app commands
 -#define IDC_TERMINAL_LINUX   34070
 -#define IDC_TERMINAL_SSH     34071
+-#define IDC_TERMINAL_HOME    34072
 -
 -// Move window to other user commands
 -#define IDC_VISIT_DESKTOP_OF_LRU_USER_2 34080
@@ -34,7 +35,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -440,12 +420,6 @@
+@@ -441,12 +420,6 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
@@ -44,6 +45,6 @@
 -#define IDC_CONTENT_CONTEXT_QUICK_ANSWERS_INLINE_QUERY 52414
 -#endif
 -
- // Tab Search
- #define IDC_TAB_SEARCH 52500
- #define IDC_TAB_SEARCH_CLOSE 52501
+ #if BUILDFLAG(IS_LINUX)
+ // Screen AI
+ #define IDC_RUN_SCREEN_AI 52420

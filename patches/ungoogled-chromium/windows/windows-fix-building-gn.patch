@@ -31,8 +31,8 @@
 +++ b/tools/gn/build/build_win.ninja.template
 @@ -1,5 +1,5 @@
  rule cxx
--  command = ninja -t msvc -- $cxx /nologo /showIncludes /FC $includes $cflags /c $in /Fo$out
-+  command = ninja -t msvc -- $cxx /utf-8 /nologo /showIncludes /FC $includes $cflags /c $in /Fo$out
+-  command = $cxx /nologo /showIncludes /FC $includes $cflags /c $in /Fo$out
++  command = $cxx /utf-8 /nologo /showIncludes /FC $includes $cflags /c $in /Fo$out
    description = CXX $out
    deps = msvc
  
