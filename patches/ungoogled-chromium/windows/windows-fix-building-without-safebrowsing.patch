@@ -57,6 +57,16 @@
    // Record UMA data about whether the fault-tolerant heap is enabled.
    // Use a delayed task to minimize the impact on startup time.
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
+--- a/chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_event_router.cc
++++ b/chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_event_router.cc
+@@ -296,6 +296,7 @@ void SafeBrowsingPrivateEventRouter::OnP
+         std::move(event_value));
+     event_router_->BroadcastEvent(std::move(extension_event));
+   }
++  return;
+ 
+   absl::optional<enterprise_connectors::ReportingSettings> settings =
+       GetReportingSettings();
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
 @@ -1150,8 +1150,6 @@ void RegisterLocalState(PrefRegistrySimp
