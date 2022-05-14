@@ -1,3 +1,5 @@
+# The MSVC Resource Compiler truncates macro names at char 31. Therefore all BUILDFLAG ifdefs needs to be patched manually.
+
 --- a/build/build_config.h
 +++ b/build/build_config.h
 @@ -46,7 +46,7 @@
@@ -29,3 +31,12 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  
+@@ -420,7 +420,7 @@
+ #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
+ #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
+ 
+-#if BUILDFLAG(IS_LINUX)
++#if (0)
+ // Screen AI
+ #define IDC_RUN_SCREEN_AI 52420
+ #endif
