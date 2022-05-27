@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_browser_main_win.cc
 +++ b/chrome/browser/chrome_browser_main_win.cc
-@@ -457,15 +457,6 @@ void ShowCloseBrowserFirstMessageBox() {
+@@ -456,15 +456,6 @@ void ShowCloseBrowserFirstMessageBox() {
        l10n_util::GetStringUTF16(IDS_UNINSTALL_CLOSE_APP));
  }
  
@@ -33,7 +33,7 @@
  // Updates all Progressive Web App launchers in |profile_dir| to the latest
  // version.
  void UpdatePwaLaunchersForProfile(const base::FilePath& profile_dir) {
-@@ -685,23 +676,6 @@ void ChromeBrowserMainPartsWin::PostBrow
+@@ -684,23 +675,6 @@ void ChromeBrowserMainPartsWin::PostBrow
  
    InitializeChromeElf();
  
@@ -57,28 +57,18 @@
    // Record UMA data about whether the fault-tolerant heap is enabled.
    // Use a delayed task to minimize the impact on startup time.
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
---- a/chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_event_router.cc
-+++ b/chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_event_router.cc
-@@ -296,6 +296,7 @@ void SafeBrowsingPrivateEventRouter::OnP
-         std::move(event_value));
-     event_router_->BroadcastEvent(std::move(extension_event));
-   }
-+  return;
- 
-   absl::optional<enterprise_connectors::ReportingSettings> settings =
-       GetReportingSettings();
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1150,8 +1150,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1178,8 +1178,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
 -  component_updater::RegisterPrefsForSwReporter(registry);
 -  safe_browsing::RegisterChromeCleanerScanCompletionTimePref(registry);
+   MediaFoundationServiceMonitor::RegisterPrefs(registry);
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    IncompatibleApplicationsUpdater::RegisterLocalStatePrefs(registry);
-   ModuleDatabase::RegisterLocalStatePrefs(registry);
-@@ -1450,12 +1448,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1488,12 +1486,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);

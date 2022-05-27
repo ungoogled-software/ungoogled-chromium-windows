@@ -13,16 +13,11 @@
  #define IDC_OPEN_IN_PWA_WINDOW          34053
  #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
  
-@@ -80,21 +74,6 @@
+@@ -80,16 +74,6 @@
  #define IDC_SITE_SETTINGS               34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
 -#if BUILDFLAG(IS_CHROMEOS_ASH)
--// Terminal system app commands
--#define IDC_TERMINAL_LINUX   34070
--#define IDC_TERMINAL_SSH     34071
--#define IDC_TERMINAL_HOME    34072
--
 -// Move window to other user commands
 -#define IDC_VISIT_DESKTOP_OF_LRU_USER_2 34080
 -#define IDC_VISIT_DESKTOP_OF_LRU_USER_3 34081
@@ -35,7 +30,18 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -441,12 +420,6 @@
+@@ -223,10 +207,6 @@
+ #define IDC_CHROME_TIPS                40263
+ #define IDC_CHROME_WHATS_NEW           40264
+ 
+-#if BUILDFLAG(IS_CHROMEOS_ASH)
+-#define IDC_LACROS_DATA_MIGRATION      40265
+-#endif
+-
+ // Spell-check
+ // Insert any additional suggestions before _LAST; these have to be consecutive.
+ #define IDC_SPELLCHECK_SUGGESTION_0     41000
+@@ -441,12 +421,6 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
