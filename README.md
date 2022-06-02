@@ -77,38 +77,29 @@ pacman -S quilt python3 vim tar
 # By default, there doesn't seem to be a vi command for less, quilt edit, etc.
 ln -s /usr/bin/vim /usr/bin/vi
 ```
+
 ### Updating patches
 
-Run the following in a "MSYS2 MSYS" shell:
+**IMPORTANT**: Run the following in a "MSYS2 MSYS" shell:
 
-```sh
-# You can use Git Bash to determine the path to this repo
-# Or, you can find it yourself via /<drive letter>/<path with forward slashes>
-cd /path/to/repo/ungoogled-chromium-windows
-
-# Setup patches and shell to update patches
-./devutils/update_patches.sh merge
-source devutils/set_quilt_vars.sh
-
-# Setup Chromium source
-mkdir -p build/{src,download_cache}
-./ungoogled-chromium/utils/downloads.py retrieve -i ungoogled-chromium/downloads.ini -c build/download_cache
-./ungoogled-chromium/utils/downloads.py unpack -i ungoogled-chromium/downloads.ini -c build/download_cache build/src
-
-cd build/src
-# Use quilt to refresh patches. See ungoogled-chromium's docs/developing.md section "Updating patches" for more details
-quilt pop -a
-
-cd ../../
-# Remove all patches introduced by ungoogled-chromium
-./devutils/update_patches.sh unmerge
-# Ensure patches/series is formatted correctly, e.g. blank lines
-
-# Sanity checking for consistency in series file
-./devutils/check_patch_files.sh
-
-# Use git to add changes and commit
-```
+1. Navigate to the repo path: `cd /path/to/repo/ungoogled-chromium-windows`
+    * You can use Git Bash to determine the path to this repo
+    * Or, you can find it yourself via `/<drive letter>/<path with forward slashes>`
+2. Setup patches and shell to update patches
+    1. `./devutils/update_patches.sh merge`
+    2. `source devutils/set_quilt_vars.sh`
+3. Setup Chromium source
+    1. `mkdir -p build/{src,download_cache}`
+    2. `./ungoogled-chromium/utils/downloads.py retrieve -i ungoogled-chromium/downloads.ini -c build/download_cache`
+    3. `./ungoogled-chromium/utils/downloads.py unpack -i ungoogled-chromium/downloads.ini -c build/download_cache build/src`
+4. Go into the source tree: `cd build/src`
+5. Use quilt to refresh patches. See ungoogled-chromium's [docs/developing.md](https://github.com/Eloston/ungoogled-chromium/blob/master/docs/developing.md#updating-patches) section "Updating patches" for more details
+6. Go back to repo root: `cd ../..`
+7. Remove all patches introduced by ungoogled-chromium: `./devutils/update_patches.sh unmerge`
+    * Ensure patches/series is formatted correctly, e.g. blank lines
+8. Sanity checking for consistency in series file: `./devutils/check_patch_files.sh`
+9. Check for ezbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
+10. Use git to add changes and commit
 
 ## License
 
