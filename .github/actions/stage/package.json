@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@actions/artifact": "^1.1.0",
+    "@actions/core": "^1.8.2",
+    "@actions/exec": "^1.1.1",
+    "@actions/glob": "^0.3.0",
+    "@actions/io": "^1.1.2"
+  }
+}

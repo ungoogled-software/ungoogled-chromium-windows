@@ -1,0 +1,19 @@
+name: 'Stage'
+description: 'Stage build'
+inputs:
+  finished:
+    description: If a previous stage already finished the build, the stage will set all output variables to the input ones and exit
+    required: true
+  from_artifact:
+    description: If a previous stage already uploaded build artifacts, the stage will resume building
+    required: true
+  x86:
+    description: Build x86 binary
+    required: false
+    default: false
+outputs:
+  finished:
+    description: If a previous stage already finished the build, the stage will set all output variables to the input ones and exit
+runs:
+  using: 'node16'
+  main: 'index.js'

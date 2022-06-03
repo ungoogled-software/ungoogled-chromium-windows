@@ -9,6 +9,8 @@ ungoogled-chromium build script for Microsoft Windows
 """
 
 import sys
+import time
+
 if sys.version_info.major < 3 or sys.version_info.minor < 6:
     raise RuntimeError('Python 3.6+ is required for this script. You have: {}.{}'.format(
         sys.version_info.major, sys.version_info.minor))
@@ -18,6 +20,7 @@ import os
 import re
 import shutil
 import subprocess
+import ctypes
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'ungoogled-chromium' / 'utils'))
@@ -68,6 +71,32 @@ def _run_build_process(*args, **kwargs):
                    **kwargs)
 
 
+def _run_build_process_timeout(*args, timeout):
+    """
+    Runs the subprocess with the correct environment variables for building
+    """
+    # Add call to set VC variables
+    cmd_input = ['call "%s" >nul' % _get_vcvars_path()]
+    cmd_input.append('set DEPOT_TOOLS_WIN_TOOLCHAIN=0')
+    cmd_input.append(' '.join(map('"{}"'.format, args)))
+    cmd_input.append('exit\n')
+    with subprocess.Popen(('cmd.exe', '/k'), encoding=ENCODING, stdin=subprocess.PIPE, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP) as proc:
+        proc.stdin.write('\n'.join(cmd_input))
+        proc.stdin.close()
+        try:
+            proc.wait(timeout)
+        except subprocess.TimeoutExpired:
+            print('Sending keyboard interrupt')
+            for _ in range(3):
+                ctypes.windll.kernel32.GenerateConsoleCtrlEvent(1, proc.pid)
+                time.sleep(1)
+            try:
+                proc.wait(10)
+            except:
+                proc.kill()
+            raise KeyboardInterrupt
+
+
 def _make_tmp_paths():
     """Creates TMP and TEMP variable dirs so ninja won't fail"""
     tmp_path = Path(os.environ['TMP'])
@@ -97,6 +126,14 @@ def main():
         default=USE_REGISTRY,
         help=('Command or path to WinRAR\'s "winrar.exe" binary. If "_use_registry" is '
               'specified, determine the path from the registry. Default: %(default)s'))
+    parser.add_argument(
+        '--ci',
+        action='store_true'
+    )
+    parser.add_argument(
+        '--x86',
+        action='store_true'
+    )
     args = parser.parse_args()
 
     # Set common variables
@@ -104,87 +141,99 @@ def main():
     downloads_cache = _ROOT_DIR / 'build' / 'download_cache'
     domsubcache = _ROOT_DIR / 'build' / 'domsubcache.tar.gz'
 
-    # Setup environment
-    source_tree.mkdir(parents=True, exist_ok=True)
-    downloads_cache.mkdir(parents=True, exist_ok=True)
-    _make_tmp_paths()
+    if not args.ci or not (source_tree / 'BUILD.gn').exists():
+        # Setup environment
+        source_tree.mkdir(parents=True, exist_ok=True)
+        downloads_cache.mkdir(parents=True, exist_ok=True)
+        _make_tmp_paths()
 
-    # Get download metadata (DownloadInfo)
-    download_info = downloads.DownloadInfo([
-        _ROOT_DIR / 'downloads.ini',
-        _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
-    ])
+        # Get download metadata (DownloadInfo)
+        download_info = downloads.DownloadInfo([
+            _ROOT_DIR / 'downloads.ini',
+            _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
+        ])
 
-    # Retrieve downloads
-    get_logger().info('Downloading required files...')
-    downloads.retrieve_downloads(download_info, downloads_cache, True,
-                                          args.disable_ssl_verification)
-    try:
-        downloads.check_downloads(download_info, downloads_cache)
-    except downloads.HashMismatchError as exc:
-        get_logger().error('File checksum does not match: %s', exc)
-        exit(1)
+        # Retrieve downloads
+        get_logger().info('Downloading required files...')
+        downloads.retrieve_downloads(download_info, downloads_cache, True,
+                                              args.disable_ssl_verification)
+        try:
+            downloads.check_downloads(download_info, downloads_cache)
+        except downloads.HashMismatchError as exc:
+            get_logger().error('File checksum does not match: %s', exc)
+            exit(1)
 
-    # Unpack downloads
-    extractors = {
-        ExtractorEnum.SEVENZIP: args.sevenz_path,
-        ExtractorEnum.WINRAR: args.winrar_path,
-    }
-    get_logger().info('Unpacking downloads...')
-    downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
+        # Unpack downloads
+        extractors = {
+            ExtractorEnum.SEVENZIP: args.sevenz_path,
+            ExtractorEnum.WINRAR: args.winrar_path,
+        }
+        get_logger().info('Unpacking downloads...')
+        downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
 
-    # Prune binaries
-    unremovable_files = prune_binaries.prune_dir(
-        source_tree,
-        (_ROOT_DIR / 'ungoogled-chromium' / 'pruning.list').read_text(encoding=ENCODING).splitlines()
-    )
-    if unremovable_files:
-        get_logger().error('Files could not be pruned: %s', unremovable_files)
-        parser.exit(1)
+        # Prune binaries
+        unremovable_files = prune_binaries.prune_dir(
+            source_tree,
+            (_ROOT_DIR / 'ungoogled-chromium' / 'pruning.list').read_text(encoding=ENCODING).splitlines()
+        )
+        if unremovable_files:
+            get_logger().error('Files could not be pruned: %s', unremovable_files)
+            parser.exit(1)
 
-    # Apply patches
-    # First, ungoogled-chromium-patches
-    patches.apply_patches(
-        patches.generate_patches_from_series(_ROOT_DIR / 'ungoogled-chromium' / 'patches', resolve=True),
-        source_tree,
-        patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
-    )
-    # Then Windows-specific patches
-    patches.apply_patches(
-        patches.generate_patches_from_series(_ROOT_DIR / 'patches', resolve=True),
-        source_tree,
-        patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
-    )
+        # Apply patches
+        # First, ungoogled-chromium-patches
+        patches.apply_patches(
+            patches.generate_patches_from_series(_ROOT_DIR / 'ungoogled-chromium' / 'patches', resolve=True),
+            source_tree,
+            patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
+        )
+        # Then Windows-specific patches
+        patches.apply_patches(
+            patches.generate_patches_from_series(_ROOT_DIR / 'patches', resolve=True),
+            source_tree,
+            patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
+        )
 
-    # Substitute domains
-    domain_substitution.apply_substitution(
-        _ROOT_DIR / 'ungoogled-chromium' / 'domain_regex.list',
-        _ROOT_DIR / 'ungoogled-chromium' / 'domain_substitution.list',
-        source_tree,
-        domsubcache
-    )
+        # Substitute domains
+        domain_substitution.apply_substitution(
+            _ROOT_DIR / 'ungoogled-chromium' / 'domain_regex.list',
+            _ROOT_DIR / 'ungoogled-chromium' / 'domain_substitution.list',
+            source_tree,
+            domsubcache
+        )
 
-    # Output args.gn
-    (source_tree / 'out/Default').mkdir(parents=True)
-    gn_flags = (_ROOT_DIR / 'ungoogled-chromium' / 'flags.gn').read_text(encoding=ENCODING)
-    gn_flags += '\n'
-    gn_flags += (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
-    (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
+    if not args.ci or not (source_tree / 'out/Default').exists():
+        # Output args.gn
+        (source_tree / 'out/Default').mkdir(parents=True)
+        gn_flags = (_ROOT_DIR / 'ungoogled-chromium' / 'flags.gn').read_text(encoding=ENCODING)
+        gn_flags += '\n'
+        windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
+        if args.x86:
+            windows_flags = windows_flags.replace('x64', 'x86')
+        gn_flags += windows_flags
+        (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
 
     # Enter source tree to run build commands
     os.chdir(source_tree)
 
-    # Run GN bootstrap
-    _run_build_process(
-        sys.executable, 'tools\\gn\\bootstrap\\bootstrap.py', '-o', 'out\\Default\\gn.exe',
-        '--skip-generate-buildfiles')
+    if not args.ci or not os.path.exists('out\\Default\\gn.exe'):
+        # Run GN bootstrap
+        _run_build_process(
+            sys.executable, 'tools\\gn\\bootstrap\\bootstrap.py', '-o', 'out\\Default\\gn.exe',
+            '--skip-generate-buildfiles')
 
-    # Run gn gen
-    _run_build_process('out\\Default\\gn.exe', 'gen', 'out\\Default', '--fail-on-unused-args')
-
+        # Run gn gen
+        _run_build_process('out\\Default\\gn.exe', 'gen', 'out\\Default', '--fail-on-unused-args')
     # Run ninja
-    _run_build_process('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
-                       'chromedriver', 'mini_installer')
+    if args.ci:
+        _run_build_process_timeout('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
+                                   'chromedriver', 'mini_installer', timeout=4.5*60*60)
+        # package
+        os.chdir(_ROOT_DIR)
+        subprocess.run([sys.executable, 'package.py'])
+    else:
+        _run_build_process('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
+                           'chromedriver', 'mini_installer')
 
 
 if __name__ == '__main__':
