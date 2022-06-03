@@ -10,60 +10,64 @@ Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromi
 
 ## Building
 
-Google only supports [Windows 10 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 10 Pro x64.
-
-NOTE: The default configuration will build 64-bit binaries for maximum security (TODO: Link some explanation). This can be changed to 32-bit by setting `target_cpu` to `"x86"` in `flags.windows.gn`.
-
-### Setting up the build environment
-
 **IMPORTANT**: Please setup only what is referenced below. Do NOT setup other Chromium compilation tools like `depot_tools`, since we have a custom build process which avoids using Google's pre-built binaries.
 
-#### Setting up Visual Studio
+### Build requirements:
 
-[Follow the "Visual Studio" section of the official Windows build instructions](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/windows_build_instructions.md#visual-studio).
+1. Git - For downloading required building scripts
+2. 7-zip - For unzipping required building scripts
+3. Python version 3.6 - 3.9 or 3.10.2+ - For building and packaging scripts
+4. Python version 2.7.18
+5. Visual Studio 2019
+6. Windows 10 SDK - Choose the Windows 10 SDK even when you are using Windows 11.
 
-* Make sure to read through the entire section and install/configure all the required components.
-* If your Visual Studio is installed in a directory other than the default, you'll need to set a few environment variables to point the toolchains to your installation path. (Copied from [instructions for Electron](https://electronjs.org/docs/development/build-instructions-windows))
-	* `vs2019_install = DRIVE:\path\to\Microsoft Visual Studio\2019\Community` (replace `2019` and `Community` with your installed versions)
-	* `WINDOWSSDKDIR = DRIVE:\path\to\Windows Kits\10`
-	* `GYP_MSVS_VERSION = 2019` (replace 2019 with your installed version's year)
+**IMPORTANT**: Add both Python versions to path and also disable path length limit (MAX_PATH)       
 
+**RECOMMENDATION**: It is recommended that you go to both of your Python version's installtion path and make a copy of the `python.exe` file.                                                          
+* Rename the copy `python.exe` file to `python2` if the Python version number starts with a 2.
+* Rename the copy `python.exe` file to `python3` if the Python version number starts with a 3.
 
-#### Other build requirements
+#### Required Python packages:
 
-**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (Anniversary or newer) with the official installer for Python 3.6 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for other Windows versions.
+1. pypiwin32
+2. future
 
-1. Setup the following:
+### Environment Variables
 
-    * 7-zip
-    * Python 3.6 - 3.9 or 3.10.2+ (for build and packaging scripts used below)
-        * At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
-        * Check that your `PATH` does not contain the `python3` wrapper shipped by Windows, as it will only promt you to install Python from the Microsoft Store and exit. See [this question on stackoverflow.com](https://stackoverflow.com/questions/57485491/python-python3-executes-in-command-prompt-but-does-not-run-correctly)
-    * Git (to fetch all required ungoogled-chromium scripts)
-        * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
+1. Right click on your Windows start button => System => Advanced system settings => Environment Variables
+2. Create a new system variable
+    * Variable Name: `vs2019_install` - Put your Visual Studio installation path in the variable value section.
+    * Variable Value: `DRIVE:\path\to\Microsoft Visual Studio\2019\Community` (Replace `Community` with your installed version)
+3. Create another new system variable
+    * Variable Name: `WINDOWSSDKDIR` - Put your Windows 10 SDK installation path in the variable value section.
+    * Variable Value: `DRIVE:\path\to\Windows Kits\10`
+4. Create one last new system variable
+    * Variable Name: `GYP_MSVS_VERSION` - Put your Visual Studio version in the variable value section.
+    * Variable Value: `2019`
 
-### Building
+### Building ungoogled-chromium
 
-NOTE: The commands below assume the `py` command was installed by Python 3 into `PATH`. If this is not the case, then substitute it with `python3`.
+**IMPORTANT**: If you are using a 32-Bit system, please go to: `flags.windows.gn` and change `target_cpu` to `"x86"`
 
-Run in `cmd.exe` (as administrator):
+Now that you've finished setting up the required packages to build ungoogled-chromium, you are now ready for the final step.
 
-```cmd
-git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git
-# Replace TAG_OR_BRANCH_HERE with a tag or branch name
-git checkout --recurse-submodules TAG_OR_BRANCH_HERE
-py build.py
-py package.py
-```
+1. Open up your command prompt as an administrator and enter the following commands in order.
+    * `git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git`
+    * `git checkout --recurse-submodules TAG_OR_BRANCH_HERE` - Replace TAG_OR_BRANCH_HERE with a tag or branch name
+    * `py build.py` - This may take a while depending on your cpu.
+    * `py package.py` - After the building process has been completed you may enter this command.
+2. A zip archive and an installer will be created after your building process has been completed
 
-A zip archive and an installer will be created under `build`.
+### Tips
 
-**NOTE**: If the build fails, you must take additional steps before re-running the build:
+If your build fails, you **must** take additional steps before re-running the build:
 
 * If the build fails while downloading the Chromium source code (which is during `build.py`), it can be fixed by removing `build\download_cache` and re-running the build instructions.
-* If the build fails at any other point during `build.py`, it can be fixed by removing everything under `build` other than `build\download_cache` and re-running the build instructions. This will clear out all the code used by the build, and any files generated by the build.
 
-An efficient way to delete large amounts of files is using `Remove-Item PATH -Recurse -Force`. Be careful however, files deleted by that command will be permanently lost.
+* If the build fails at any other point during `build.py`, it can be fixed by removing everything under build other than `build\download_cache` and re-running the build instructions. This will clear out all the code used by the build, and any files generated by the build.
+
+If your build keeps failing and you are tired of waiting a long time to delete those large files, try using this powershell command `Remove-Item PATH -Recurse -Force`.                     
+**Warning**: Files deleted by this command^^ will be permanently lost.
 
 ## Developer info
 
