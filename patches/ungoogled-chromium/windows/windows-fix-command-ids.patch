@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -65,12 +65,6 @@
+@@ -66,12 +66,6 @@
  #define IDC_ALL_WINDOWS_FRONT           34048
  #define IDC_NAME_WINDOW                 34049
  
@@ -13,7 +13,7 @@
  #define IDC_OPEN_IN_PWA_WINDOW          34053
  #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
  
-@@ -80,16 +74,6 @@
+@@ -81,16 +75,6 @@
  #define IDC_SITE_SETTINGS               34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
@@ -51,6 +51,6 @@
 -#define IDC_CONTENT_CONTEXT_QUICK_ANSWERS_INLINE_QUERY 52414
 -#endif
 -
- #if BUILDFLAG(IS_LINUX)
- // Screen AI
- #define IDC_RUN_SCREEN_AI 52420
+ #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
+ // Screen AI Visual Annotations
+ #define IDC_RUN_SCREEN_AI_VISUAL_ANNOTATIONS 52420
