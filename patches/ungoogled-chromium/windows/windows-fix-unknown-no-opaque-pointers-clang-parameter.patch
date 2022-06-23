@@ -2,7 +2,7 @@
 
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1415,10 +1415,6 @@ config("default_warnings") {
+@@ -1414,10 +1414,6 @@ config("default_warnings") {
      if (treat_warnings_as_errors) {
        cflags += [ "/WX" ]
      }
@@ -13,7 +13,7 @@
      defines = [
        # Without this, Windows headers warn that functions like wcsnicmp
        # should be spelled _wcsnicmp. But all other platforms keep spelling
-@@ -1542,8 +1538,6 @@ config("default_warnings") {
+@@ -1538,8 +1534,6 @@ config("default_warnings") {
                          default_toolchain == "//build/toolchain/cros:target")) {
          # TODO(https://crbug.com/1316298): Re-enable once test failure is figured out
          cflags += [

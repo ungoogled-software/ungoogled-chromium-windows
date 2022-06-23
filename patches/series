@@ -19,4 +19,3 @@ ungoogled-chromium/windows/windows-disable-download-warning-prompt.patch
 ungoogled-chromium/windows/windows-fix-rc-terminating-error.patch
 ungoogled-chromium/windows/windows-fix-building-without-safebrowsing.patch
 ungoogled-chromium/windows/windows-fix-unknown-no-opaque-pointers-clang-parameter.patch
-ungoogled-chromium/windows/windows-fix-dawn-version-generator-git-path.patch

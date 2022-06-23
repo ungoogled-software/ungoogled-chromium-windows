@@ -3,7 +3,7 @@
 
 --- a/chrome/app/BUILD.gn
 +++ b/chrome/app/BUILD.gn
-@@ -41,10 +41,7 @@ source_set("chrome_dll_resources") {
+@@ -42,10 +42,7 @@ source_set("chrome_dll_resources") {
    deps = [ ":command_ids" ]
  
    if (is_win) {
@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_browser_main_win.cc
 +++ b/chrome/browser/chrome_browser_main_win.cc
-@@ -456,15 +456,6 @@ void ShowCloseBrowserFirstMessageBox() {
+@@ -459,15 +459,6 @@ void ShowCloseBrowserFirstMessageBox() {
        l10n_util::GetStringUTF16(IDS_UNINSTALL_CLOSE_APP));
  }
  
@@ -33,7 +33,7 @@
  // Updates all Progressive Web App launchers in |profile_dir| to the latest
  // version.
  void UpdatePwaLaunchersForProfile(const base::FilePath& profile_dir) {
-@@ -684,23 +675,6 @@ void ChromeBrowserMainPartsWin::PostBrow
+@@ -695,23 +686,6 @@ void ChromeBrowserMainPartsWin::PostBrow
  
    InitializeChromeElf();
  
@@ -42,7 +42,7 @@
 -  // enabled, we delay checks for settings reset prompt until the scheduled
 -  // reset is finished.
 -  if (safe_browsing::PostCleanupSettingsResetter::IsEnabled() &&
--      !parsed_command_line().HasSwitch(switches::kAppId)) {
+-      !base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kAppId)) {
 -    // Using last opened profiles, because we want to find reset the profile
 -    // that was open in the last Chrome run, which may not be open yet in
 -    // the current run.
@@ -59,7 +59,7 @@
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1178,8 +1178,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1164,8 +1164,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
@@ -68,7 +68,7 @@
    MediaFoundationServiceMonitor::RegisterPrefs(registry);
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    IncompatibleApplicationsUpdater::RegisterLocalStatePrefs(registry);
-@@ -1488,12 +1486,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1476,12 +1474,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);
