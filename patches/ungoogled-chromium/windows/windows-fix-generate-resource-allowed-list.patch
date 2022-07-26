@@ -1,0 +1,69 @@
+# This patch is only required when the is_official_build=true is enabled in flags.windows.gn
+
+--- a/tools/resources/generate_resource_allowlist.py
++++ b/tools/resources/generate_resource_allowlist.py
+@@ -61,7 +61,7 @@ def GetResourceAllowlistPDB(path):
+   pdbutil = subprocess.Popen(
+       [os.path.join(llvm_bindir, 'llvm-pdbutil'), 'dump', '-publics', path],
+       stdout=subprocess.PIPE)
+-  names = ''
++  names = set()
+   for line in pdbutil.stdout:
+     line = line.decode('utf8')
+     # Read a line of the form
+@@ -75,31 +75,35 @@ def GetResourceAllowlistPDB(path):
+     # Example: __profd_??$AllowlistedResource@$0BGPH@@ui@@YAXXZ
+     # C++ mangled names are supposed to begin with `?`, so check for that.
+     if 'AllowlistedResource' in sym_name and sym_name.startswith('?'):
+-      names += sym_name + '\n'
++      names.add(sym_name)
+   exit_code = pdbutil.wait()
+   if exit_code != 0:
+     raise Exception('llvm-pdbutil exited with exit code %d' % exit_code)
+ 
+-  undname = subprocess.Popen([os.path.join(llvm_bindir, 'llvm-undname')],
+-                             stdin=subprocess.PIPE,
+-                             stdout=subprocess.PIPE)
+-  stdout, _ = undname.communicate(names.encode('utf8'))
+   resource_ids = set()
+-  for line in stdout.split(b'\n'):
+-    line = line.decode('utf8')
+-    # Read a line of the form
+-    # "void __cdecl ui::AllowlistedResource<5484>(void)".
+-    prefix = ' ui::AllowlistedResource<'
+-    pos = line.find(prefix)
+-    if pos == -1:
+-      continue
+-    try:
+-      resource_ids.add(int(line[pos + len(prefix):line.rfind('>')]))
+-    except ValueError:
+-      continue
+-  exit_code = undname.wait()
+-  if exit_code != 0:
+-    raise Exception('llvm-undname exited with exit code %d' % exit_code)
++  for name in names:
++    undname = subprocess.Popen(['undname', name],
++                               stdout=subprocess.PIPE)
++    found = False
++    for line in undname.stdout:
++      line = line.decode('utf8')
++      # Read a line of the form
++      # "void __cdecl ui::AllowlistedResource<5484>(void)".
++      prefix = ' ui::AllowlistedResource<'
++      pos = line.find(prefix)
++      if pos == -1:
++        continue
++      try:
++        resource_ids.add(int(line[pos + len(prefix):line.rfind('>')]))
++      except ValueError:
++        continue
++      found = True
++      break
++    exit_code = undname.wait()
++    if exit_code != 0:
++      raise Exception('llvm-undname exited with exit code %d' % exit_code)
++    if not found:
++      raise Exception('Unexpected undname output')
+   return resource_ids
+ 
+ 
