@@ -98,7 +98,7 @@ ln -s /usr/bin/vim /usr/bin/vi
 7. Remove all patches introduced by ungoogled-chromium: `./devutils/update_patches.sh unmerge`
     * Ensure patches/series is formatted correctly, e.g. blank lines
 8. Sanity checking for consistency in series file: `./devutils/check_patch_files.sh`
-9. Check for ezbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
+9. Check for esbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
 10. Use git to add changes and commit
 
 ## License

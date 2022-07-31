@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_browser_main_win.cc
 +++ b/chrome/browser/chrome_browser_main_win.cc
-@@ -459,15 +459,6 @@ void ShowCloseBrowserFirstMessageBox() {
+@@ -394,15 +394,6 @@ void ShowCloseBrowserFirstMessageBox() {
        l10n_util::GetStringUTF16(IDS_UNINSTALL_CLOSE_APP));
  }
  
@@ -33,7 +33,7 @@
  // Updates all Progressive Web App launchers in |profile_dir| to the latest
  // version.
  void UpdatePwaLaunchersForProfile(const base::FilePath& profile_dir) {
-@@ -695,23 +686,6 @@ void ChromeBrowserMainPartsWin::PostBrow
+@@ -642,23 +633,6 @@ void ChromeBrowserMainPartsWin::PostBrow
  
    InitializeChromeElf();
  
@@ -59,7 +59,7 @@
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1164,8 +1164,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1208,8 +1208,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
@@ -68,7 +68,7 @@
    MediaFoundationServiceMonitor::RegisterPrefs(registry);
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    IncompatibleApplicationsUpdater::RegisterLocalStatePrefs(registry);
-@@ -1476,12 +1474,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1527,12 +1525,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);
@@ -151,19 +151,9 @@
  
 --- a/components/safe_browsing/buildflags.gni
 +++ b/components/safe_browsing/buildflags.gni
-@@ -8,15 +8,5 @@ if (is_android) {
- }
- 
- declare_args() {
--  # Variable safe_browsing is used to control the build time configuration for
--  # safe browsing feature. Safe browsing can be compiled in 3 different levels:
--  # 0 disables it, 1 enables it fully, and 2 enables mobile protection via an
--  # external API.
--  if (is_ios || is_chromecast) {
-     safe_browsing_mode = 0
--  } else if (is_android) {
--    safe_browsing_mode = 2
--  } else {
--    safe_browsing_mode = 1
--  }
+@@ -19,4 +19,5 @@ declare_args() {
+   } else {
+     safe_browsing_mode = 1
+   }
++  safe_browsing_mode = 0
  }
