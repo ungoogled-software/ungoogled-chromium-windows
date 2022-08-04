@@ -30,7 +30,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -223,10 +207,6 @@
+@@ -224,10 +208,6 @@
  #define IDC_CHROME_TIPS                40263
  #define IDC_CHROME_WHATS_NEW           40264
  
@@ -41,7 +41,7 @@
  // Spell-check
  // Insert any additional suggestions before _LAST; these have to be consecutive.
  #define IDC_SPELLCHECK_SUGGESTION_0     41000
-@@ -441,12 +421,6 @@
+@@ -442,12 +422,6 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  

@@ -3,13 +3,11 @@
 
 --- a/build/config/win/BUILD.gn
 +++ b/build/config/win/BUILD.gn
-@@ -71,7 +71,8 @@ config("compiler") {
-   ]
- 
+@@ -73,6 +73,7 @@ config("compiler") {
    if (is_clang) {
--    cflags += [ "/Zc:twoPhase" ]
-+    cflags += [ "/Zc:twoPhase",
-+                "-Wno-unknown-warning-option", ]
-   }
+     cflags += [
+       "/Zc:twoPhase",
++      "-Wno-unknown-warning-option",
  
-   # Force C/C++ mode for the given GN detected file type. This is necessary
+       # Consistently use backslash as the path separator when expanding the
+       # __FILE__ macro when targeting Windows regardless of the build
