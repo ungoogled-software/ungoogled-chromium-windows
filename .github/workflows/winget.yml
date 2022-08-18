@@ -1,0 +1,15 @@
+name: winget
+on: push
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/winget
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/winget
+        with:
+          token: ${{ secrets.PAT }}
