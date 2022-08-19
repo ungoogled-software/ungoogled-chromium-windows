@@ -276,8 +276,27 @@ jobs:
         with:
           name: chromium-x86
       - name: Publish release
+        id: publish
         uses: softprops/action-gh-release@v1
         with:
           fail_on_unmatched_files: true
           files: |
             ungoogled-chromium*
+    outputs:
+      assets: ${{ steps.publish.outputs.assets }}
+  publish-winget:
+    needs: publish-release
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/winget
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/winget
+        with:
+          token: ${{ secrets.PAT }}
+          version: ${{ github.ref_name }}
+          assets: ${{ needs.publish-release.outputs.assets }}

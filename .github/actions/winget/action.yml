@@ -4,6 +4,12 @@ inputs:
   token:
     description: GitHub Personal Access Token
     required: true
+  version:
+    description: New version
+    required: true
+  assets:
+    description: Artifact assets
+    required: true
 runs:
   using: 'node16'
   main: 'index.js'
