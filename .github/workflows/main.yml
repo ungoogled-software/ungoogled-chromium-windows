@@ -277,7 +277,7 @@ jobs:
           name: chromium-x86
       - name: Publish release
         id: publish
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@cd28b0f5ee8571b76cfdaa62a30d51d752317477
         with:
           fail_on_unmatched_files: true
           files: |
