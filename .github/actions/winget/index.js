@@ -63,7 +63,7 @@ async function run() {
             });
         }).on('error', reject);
     });
-    await exec.exec('wingetcreate.exe', ['submit', '-t', token, newVersionPath]);
+    await exec.exec('.\\wingetcreate.exe', ['submit', '-t', token, newVersionPath]);
 }
 
 async function replaceContent(latestVersionPath, newVersionPath, latestVersion, newVersion, fileName) {
