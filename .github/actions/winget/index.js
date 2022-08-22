@@ -89,8 +89,8 @@ async function updateInstaller(latestVersionPath, newVersionPath, latestVersion,
     }
 
     const newContent = content
-        .replaceAll(data.PackageVersion, newVersion)
-        .replaceAll(data.ReleaseDate, new Date().toLocaleDateString('en-CA'))
+        .replaceAll(`PackageVersion: ${data.PackageVersion}`, `PackageVersion: ${newVersion}`)
+        .replaceAll(`ReleaseDate: ${data.ReleaseDate}`, `ReleaseDate: ${new Date().toLocaleDateString('en-CA')}`)
         .replaceAll(oldX86Url, x86Url)
         .replaceAll(oldX86Hash, x86Hash)
         .replaceAll(oldX64Url, x64Url)
