@@ -10,19 +10,10 @@
 +#if !defined(BUILD_BUILD_CONFIG_H_) && !defined(RC_INVOKED)
  #define BUILD_BUILD_CONFIG_H_
  
- #include "build/buildflag.h"
+ #include "build/buildflag.h"  // IWYU pragma: export
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -379,7 +379,7 @@
- #define IDC_MEDIA_ROUTER_ABOUT 51200
- #define IDC_MEDIA_ROUTER_HELP 51201
- #define IDC_MEDIA_ROUTER_LEARN_MORE 51202
--#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-+#if (0)
- #define IDC_MEDIA_ROUTER_REPORT_ISSUE 51203
- #endif
- #define IDC_MEDIA_ROUTER_ALWAYS_SHOW_TOOLBAR_ACTION 51204
-@@ -388,7 +388,7 @@
+@@ -387,7 +387,7 @@
  #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
  
  // Context menu items for media toolbar button
@@ -31,12 +22,12 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -422,7 +422,7 @@
+@@ -421,7 +421,7 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
 -#if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
 +#if (0)
- // Screen AI Visual Annotations
+ // Screen AI Visual Annotations.
  #define IDC_RUN_SCREEN_AI_VISUAL_ANNOTATIONS 52420
  #endif

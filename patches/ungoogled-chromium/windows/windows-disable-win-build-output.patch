@@ -4,16 +4,15 @@
 
 --- a/build/toolchain/win/midl.py
 +++ b/build/toolchain/win/midl.py
-@@ -7,7 +7,7 @@ from __future__ import print_function
+@@ -7,6 +7,7 @@ from __future__ import print_function
  
  import array
  import difflib
--import distutils.dir_util
 +import distutils.file_util
  import filecmp
  import io
  import operator
-@@ -446,41 +446,13 @@ def main(arch, gendir, outdir, dynamic_g
+@@ -445,41 +446,13 @@ def main(arch, gendir, outdir, dynamic_g
    if returncode != 0:
      return returncode
  
