@@ -23,7 +23,7 @@
  #include "base/logging.h"
  #include "base/memory/singleton.h"
  #include "base/metrics/histogram_functions.h"
-@@ -37,6 +38,10 @@ constexpr char kDPAPIKeyPrefix[] = "DPAP
+@@ -38,6 +39,10 @@ constexpr char kDPAPIKeyPrefix[] = "DPAP
  
  bool EncryptStringWithDPAPI(const std::string& plaintext,
                              std::string* ciphertext) {
@@ -34,7 +34,7 @@
    DATA_BLOB input;
    input.pbData =
        const_cast<BYTE*>(reinterpret_cast<const BYTE*>(plaintext.data()));
-@@ -60,6 +65,11 @@ bool EncryptStringWithDPAPI(const std::s
+@@ -66,6 +71,11 @@ bool EncryptStringWithDPAPI(const std::s
  
  bool DecryptStringWithDPAPI(const std::string& ciphertext,
                              std::string* plaintext) {

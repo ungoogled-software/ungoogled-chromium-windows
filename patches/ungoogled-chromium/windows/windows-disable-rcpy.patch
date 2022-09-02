@@ -3,7 +3,7 @@
 
 --- a/build/toolchain/win/tool_wrapper.py
 +++ b/build/toolchain/win/tool_wrapper.py
-@@ -167,10 +167,12 @@ class WinTool(object):
+@@ -168,10 +168,12 @@ class WinTool(object):
      """Converts .rc files to .res files."""
      env = self._GetEnv(arch)
      args = list(args)

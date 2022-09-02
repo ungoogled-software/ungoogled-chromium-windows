@@ -1,4 +1,4 @@
-# The "-no-opaque-pointers" and "-ffile-reproducible" commandline parameters has been added by clang-15. Once clang-15 is available for windows, this patch can be removed.
+# The "-ffile-reproducible" commandline parameter has been added by clang-15. Once clang-15 is available for windows, this patch can be removed.
 
 --- a/base/location.cc
 +++ b/base/location.cc
@@ -13,7 +13,7 @@
  #else
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1420,10 +1420,6 @@ config("default_warnings") {
+@@ -1419,10 +1419,6 @@ config("default_warnings") {
      if (treat_warnings_as_errors) {
        cflags += [ "/WX" ]
      }
@@ -24,15 +24,6 @@
      defines = [
        # Without this, Windows headers warn that functions like wcsnicmp
        # should be spelled _wcsnicmp. But all other platforms keep spelling
-@@ -1544,8 +1540,6 @@ config("default_warnings") {
-                         default_toolchain == "//build/toolchain/cros:target")) {
-         # TODO(https://crbug.com/1322823): Remove flags once potential miscompile is investigated.
-         cflags += [
--          "-Xclang",
--          "-no-opaque-pointers",
-         ]
-       }
- 
 --- a/build/config/win/BUILD.gn
 +++ b/build/config/win/BUILD.gn
 @@ -78,7 +78,7 @@ config("compiler") {

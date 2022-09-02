@@ -30,7 +30,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -224,10 +208,6 @@
+@@ -223,10 +207,6 @@
  #define IDC_CHROME_TIPS                40263
  #define IDC_CHROME_WHATS_NEW           40264
  
@@ -41,7 +41,7 @@
  // Spell-check
  // Insert any additional suggestions before _LAST; these have to be consecutive.
  #define IDC_SPELLCHECK_SUGGESTION_0     41000
-@@ -442,12 +422,6 @@
+@@ -441,12 +421,6 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
@@ -52,5 +52,5 @@
 -#endif
 -
  #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
- // Screen AI Visual Annotations
+ // Screen AI Visual Annotations.
  #define IDC_RUN_SCREEN_AI_VISUAL_ANNOTATIONS 52420

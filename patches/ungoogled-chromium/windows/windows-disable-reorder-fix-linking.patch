@@ -32,7 +32,7 @@
  # This does not currently work. See crbug.com/1311822.
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
-@@ -126,20 +103,12 @@ if (!is_android && !is_mac) {
+@@ -136,10 +113,6 @@ if (!is_android && !is_mac) {
      # Windows-only deps are OK because chrome_initial uses initialexe/chrome as
      # the output name for that platform.
      # See crbug.com/1146571.
@@ -43,8 +43,10 @@
    }
  
    executable("chrome_initial") {
-     configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
-     configs += [ "//build/config/compiler:thinlto_optimize_max" ]
+@@ -150,11 +123,7 @@ if (!is_android && !is_mac) {
+     # the limit on the bots raised.
+     configs += [ ":disable_thinlto_cache_flags" ]
+ 
 -    if (is_win) {
 -      output_name = "initialexe/chrome"
 -    } else {
