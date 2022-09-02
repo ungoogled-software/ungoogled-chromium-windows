@@ -20,4 +20,3 @@ ungoogled-chromium/windows/windows-fix-rc-terminating-error.patch
 ungoogled-chromium/windows/windows-fix-building-without-safebrowsing.patch
 ungoogled-chromium/windows/windows-fix-unknown-clang-parameters.patch
 ungoogled-chromium/windows/windows-fix-generate-resource-allowed-list.patch
-ungoogled-chromium/windows/windows-fix-polymer-html-minifier.patch
