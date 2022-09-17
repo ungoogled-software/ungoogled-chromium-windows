@@ -113,8 +113,8 @@ async function syncRepo(token) {
     await exec.exec('git', ['clone', `https://x-access-token:${token}@github.com/Nifury/winget-pkgs.git`]);
     await exec.exec('git', ['remote', 'add', 'upstream', 'https://github.com/microsoft/winget-pkgs.git'], {cwd: '.\\winget-pkgs'});
     await exec.exec('git', ['fetch', 'upstream', 'master'], {cwd: '.\\winget-pkgs'});
-    await exec.exec('git', ['merge', 'upstream/master'], {cwd: '.\\winget-pkgs'});
-    await exec.exec('git', ['push', 'origin', 'master'], {cwd: '.\\winget-pkgs'});
+    await exec.exec('git', ['reset', '--hard', 'upstream/master'], {cwd: '.\\winget-pkgs'});
+    await exec.exec('git', ['push', 'origin', 'master', '--force'], {cwd: '.\\winget-pkgs'});
 }
 
 run().catch(err => core.setFailed(err.message));
