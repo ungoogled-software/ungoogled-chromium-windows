@@ -35,7 +35,7 @@ async function run() {
         }
     }
 
-    await exec.exec('git', ['clone', `https://github.com/microsoft/winget-pkgs.git`]);
+    await syncRepo(token);
     const globber = await glob.create('.\\winget-pkgs\\manifests\\e\\eloston\\ungoogled-chromium\\*', {matchDirectories: true, implicitDescendants: false});
     const pathList = await globber.glob();
     const ucPath = path.dirname(pathList[0]);
@@ -107,6 +107,14 @@ function calculateSHA256(url) {
             resp.on('end', () => resolve(hash.digest('hex').toUpperCase()));
         }).on('error', reject);
     });
+}
+
+async function syncRepo(token) {
+    await exec.exec('git', ['clone', `https://x-access-token:${token}@github.com/Nifury/winget-pkgs.git`]);
+    await exec.exec('git', ['remote', 'add', 'upstream', 'https://github.com/microsoft/winget-pkgs.git'], {cwd: '.\\winget-pkgs'});
+    await exec.exec('git', ['fetch', 'upstream', 'master'], {cwd: '.\\winget-pkgs'});
+    await exec.exec('git', ['reset', '--hard', 'upstream/master'], {cwd: '.\\winget-pkgs'});
+    await exec.exec('git', ['push', 'origin', 'master', '--force'], {cwd: '.\\winget-pkgs'});
 }
 
 run().catch(err => core.setFailed(err.message));
