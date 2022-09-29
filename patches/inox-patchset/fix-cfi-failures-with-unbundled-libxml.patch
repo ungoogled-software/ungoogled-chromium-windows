@@ -93,7 +93,7 @@
  }
 --- a/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
-@@ -104,7 +104,7 @@ static xmlDocPtr DocLoaderFunc(const xml
+@@ -110,7 +110,7 @@ static xmlDocPtr DocLoaderFunc(const xml
        xmlChar* base = xmlNodeGetBase(context->document->doc, context->node);
        KURL url(KURL(reinterpret_cast<const char*>(base)),
                 reinterpret_cast<const char*>(uri));

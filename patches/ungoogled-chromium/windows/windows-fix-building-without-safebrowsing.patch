@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_browser_main_win.cc
 +++ b/chrome/browser/chrome_browser_main_win.cc
-@@ -395,15 +395,6 @@ void ShowCloseBrowserFirstMessageBox() {
+@@ -394,15 +394,6 @@ void ShowCloseBrowserFirstMessageBox() {
        l10n_util::GetStringUTF16(IDS_UNINSTALL_CLOSE_APP));
  }
  
@@ -33,7 +33,7 @@
  // Updates all Progressive Web App launchers in |profile_dir| to the latest
  // version.
  void UpdatePwaLaunchersForProfile(const base::FilePath& profile_dir) {
-@@ -631,23 +622,6 @@ void ChromeBrowserMainPartsWin::PostBrow
+@@ -630,23 +621,6 @@ void ChromeBrowserMainPartsWin::PostBrow
  
    InitializeChromeElf();
  
@@ -59,7 +59,7 @@
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1232,8 +1232,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1200,8 +1200,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
@@ -68,7 +68,7 @@
    MediaFoundationServiceMonitor::RegisterPrefs(registry);
    os_crypt::RegisterLocalStatePrefs(registry);
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -1551,12 +1549,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1517,12 +1515,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);
@@ -80,7 +80,7 @@
 -  safe_browsing::PostCleanupSettingsResetter::RegisterProfilePrefs(registry);
  #endif
  
- // TODO(crbug.com/1052397): Revisit the macro expression once build flag switch
+ #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn
 @@ -7,6 +7,7 @@ import("//components/safe_browsing/build
