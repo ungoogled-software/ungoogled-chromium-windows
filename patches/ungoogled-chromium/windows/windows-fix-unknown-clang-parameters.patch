@@ -2,7 +2,7 @@
 
 --- a/base/location.cc
 +++ b/base/location.cc
-@@ -73,7 +73,7 @@ constexpr bool StrEndsWith(const char* n
+@@ -64,7 +64,7 @@ constexpr bool StrEndsWith(const char* n
    return true;
  }
  
@@ -13,7 +13,7 @@
  #else
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1419,10 +1419,6 @@ config("default_warnings") {
+@@ -1410,10 +1410,6 @@ config("default_warnings") {
      if (treat_warnings_as_errors) {
        cflags += [ "/WX" ]
      }
