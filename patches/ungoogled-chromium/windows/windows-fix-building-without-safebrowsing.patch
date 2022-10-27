@@ -3,7 +3,7 @@
 
 --- a/chrome/app/BUILD.gn
 +++ b/chrome/app/BUILD.gn
-@@ -42,10 +42,7 @@ source_set("chrome_dll_resources") {
+@@ -43,10 +43,7 @@ source_set("chrome_dll_resources") {
    deps = [ ":command_ids" ]
  
    if (is_win) {
@@ -59,7 +59,7 @@
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1200,8 +1200,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1227,8 +1227,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
@@ -68,7 +68,7 @@
    MediaFoundationServiceMonitor::RegisterPrefs(registry);
    os_crypt::RegisterLocalStatePrefs(registry);
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -1517,12 +1515,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1547,12 +1545,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);
@@ -103,27 +103,25 @@
  PostCleanupSettingsResetter::PostCleanupSettingsResetter() = default;
 --- a/chrome/browser/safe_browsing/chrome_cleaner/srt_client_info_win.cc
 +++ b/chrome/browser/safe_browsing/chrome_cleaner/srt_client_info_win.cc
-@@ -34,22 +34,11 @@ int ChannelAsInt() {
+@@ -34,20 +34,11 @@ int ChannelAsInt() {
  }
  
  bool SafeBrowsingExtendedReportingEnabled() {
 -  // Check all profiles registered with the manager.
 -  std::vector<Profile*> profiles =
 -      g_browser_process->profile_manager()->GetLoadedProfiles();
--  return std::any_of(profiles.begin(), profiles.end(),
--                     [](const Profile* profile) {
--                       return IsExtendedReportingEnabled(*profile->GetPrefs());
--                     });
+-  return base::ranges::any_of(profiles, [](const Profile* profile) {
+-    return IsExtendedReportingEnabled(*profile->GetPrefs());
+-  });
 +  return false;
  }
  
  bool SafeBrowsingExtendedReportingScoutEnabled() {
 -  std::vector<Profile*> profiles = ProfileManager::GetLastOpenedProfiles();
--  return std::any_of(
--      profiles.begin(), profiles.end(), [](const Profile* profile) {
--        return profile && GetExtendedReportingLevel(*profile->GetPrefs()) ==
--                              SBER_LEVEL_SCOUT;
--      });
+-  return base::ranges::any_of(profiles, [](const Profile* profile) {
+-    return profile &&
+-           GetExtendedReportingLevel(*profile->GetPrefs()) == SBER_LEVEL_SCOUT;
+-  });
 +  return false;
  }
  

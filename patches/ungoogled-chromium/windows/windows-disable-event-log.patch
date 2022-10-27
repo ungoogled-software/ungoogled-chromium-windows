@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -420,7 +420,6 @@ static_library("common_lib") {
+@@ -418,7 +418,6 @@ static_library("common_lib") {
      ]
      deps += [
        "//chrome/chrome_elf:chrome_elf_main_include",
@@ -13,7 +13,7 @@
  
 --- a/chrome/common/logging_chrome.cc
 +++ b/chrome/common/logging_chrome.cc
-@@ -63,7 +63,6 @@
+@@ -64,7 +64,6 @@
  #include <initguid.h>
  #include "base/logging_win.h"
  #include "base/syslog_logging.h"
@@ -21,7 +21,7 @@
  #include "chrome/install_static/install_details.h"
  #endif
  
-@@ -442,11 +441,6 @@ void InitChromeLogging(const base::Comma
+@@ -447,11 +446,6 @@ void InitChromeLogging(const base::Comma
  #if BUILDFLAG(IS_WIN)
    // Enable trace control and transport through event tracing for Windows.
    LogEventProvider::Initialize(kChromeTraceProviderName);

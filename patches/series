@@ -18,5 +18,6 @@ ungoogled-chromium/windows/windows-fix-command-ids.patch
 ungoogled-chromium/windows/windows-disable-download-warning-prompt.patch
 ungoogled-chromium/windows/windows-fix-rc-terminating-error.patch
 ungoogled-chromium/windows/windows-fix-building-without-safebrowsing.patch
-ungoogled-chromium/windows/windows-fix-unknown-clang-parameters.patch
 ungoogled-chromium/windows/windows-fix-generate-resource-allowed-list.patch
+ungoogled-chromium/windows/windows-disable-clang-version-check.patch
+ungoogled-chromium/windows/windows-disable-nodebug_assertion.patch
