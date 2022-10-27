@@ -11,23 +11,3 @@
  #define BUILD_BUILD_CONFIG_H_
  
  #include "build/buildflag.h"  // IWYU pragma: export
---- a/chrome/app/chrome_command_ids.h
-+++ b/chrome/app/chrome_command_ids.h
-@@ -387,7 +387,7 @@
- #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
- 
- // Context menu items for media toolbar button
--#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-+#if (0)
- #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
- #endif
- #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -421,7 +421,7 @@
- #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
- #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
- 
--#if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-+#if (0)
- // Screen AI Visual Annotations.
- #define IDC_RUN_SCREEN_AI_VISUAL_ANNOTATIONS 52420
- #endif

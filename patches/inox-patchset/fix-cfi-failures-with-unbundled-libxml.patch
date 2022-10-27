@@ -51,7 +51,7 @@
      parser->HandleError(type_, reinterpret_cast<char*>(message_),
 --- a/third_party/blink/renderer/core/xml/xsl_style_sheet_libxslt.cc
 +++ b/third_party/blink/renderer/core/xml/xsl_style_sheet_libxslt.cc
-@@ -196,7 +196,7 @@ void XSLStyleSheet::LoadChildSheets() {
+@@ -190,7 +190,7 @@ void XSLStyleSheet::LoadChildSheets() {
          xmlChar* uri_ref =
              xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);
          LoadChildSheet(String::FromUTF8((const char*)uri_ref));
@@ -60,7 +60,7 @@
        } else {
          break;
        }
-@@ -210,7 +210,7 @@ void XSLStyleSheet::LoadChildSheets() {
+@@ -204,7 +204,7 @@ void XSLStyleSheet::LoadChildSheets() {
          xmlChar* uri_ref =
              xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);
          LoadChildSheet(String::FromUTF8((const char*)uri_ref));
@@ -69,7 +69,7 @@
        }
        curr = curr->next;
      }
-@@ -300,8 +300,8 @@ xmlDocPtr XSLStyleSheet::LocateStyleshee
+@@ -294,8 +294,8 @@ xmlDocPtr XSLStyleSheet::LocateStyleshee
        xmlChar* child_uri =
            xmlBuildURI((const xmlChar*)import_href.c_str(), base);
        bool equal_ur_is = xmlStrEqual(uri, child_uri);
@@ -82,7 +82,7 @@
          return child->GetDocument();
 --- a/third_party/blink/renderer/core/xml/xslt_extensions.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_extensions.cc
-@@ -68,7 +68,7 @@ static void ExsltNodeSetFunction(xmlXPat
+@@ -69,7 +69,7 @@ static void ExsltNodeSetFunction(xmlXPat
    CHECK(ret);
  
    if (strval)

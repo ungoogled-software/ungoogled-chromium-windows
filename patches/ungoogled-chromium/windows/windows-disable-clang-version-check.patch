@@ -1,0 +1,22 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -1303,7 +1303,7 @@ config("compiler_deterministic") {
+ }
+ 
+ config("clang_revision") {
+-  if (is_clang && clang_base_path == default_clang_base_path) {
++  if (false) {
+     update_args = [
+       "--print-revision",
+       "--verify-version=$clang_version",
+--- a/build/toolchain/toolchain.gni
++++ b/build/toolchain/toolchain.gni
+@@ -33,7 +33,7 @@ if (generate_linker_map) {
+ }
+ 
+ declare_args() {
+-  clang_version = "16.0.0"
++  clang_version = "15.0.3"
+ }
+ 
+ # Extension for shared library files (including leading dot).
