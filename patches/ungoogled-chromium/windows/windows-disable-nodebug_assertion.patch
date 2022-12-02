@@ -1,10 +1,10 @@
 # Windows does not support weak symbols
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -1550,7 +1550,7 @@ mixed_component("base") {
-   # Windows cannot use the nodebug assertion handler because it doesn't support
-   # weak symbols, which are required to override the default libc++
-   # implementation.
+@@ -1552,7 +1552,7 @@ mixed_component("base") {
+     "//third_party/abseil-cpp:absl",
+   ]
+ 
 -  if (use_custom_libcxx && !is_debug) {
 +  if (!is_win && use_custom_libcxx && !is_debug) {
      public_deps += [ ":nodebug_assertion" ]
