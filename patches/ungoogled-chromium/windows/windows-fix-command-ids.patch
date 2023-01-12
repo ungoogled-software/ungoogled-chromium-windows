@@ -62,7 +62,7 @@
  #endif
  
 -#if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-+#if (0)
++#if (1)
  // Screen AI Visual Annotations.
  #define IDC_RUN_SCREEN_AI_VISUAL_ANNOTATIONS 52420
  #endif

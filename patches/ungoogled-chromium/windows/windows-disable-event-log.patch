@@ -21,7 +21,7 @@
  #include "chrome/install_static/install_details.h"
  #endif
  
-@@ -447,11 +446,6 @@ void InitChromeLogging(const base::Comma
+@@ -455,11 +454,6 @@ void InitChromeLogging(const base::Comma
  #if BUILDFLAG(IS_WIN)
    // Enable trace control and transport through event tracing for Windows.
    LogEventProvider::Initialize(kChromeTraceProviderName);

@@ -1,0 +1,11 @@
+--- a/tools/licenses.py
++++ b/tools/licenses.py
+@@ -622,7 +622,7 @@ def _GnBinary():
+   elif sys.platform == 'darwin':
+     subdir = 'mac'
+   elif sys.platform == 'win32':
+-    subdir, exe = 'win', 'gn.exe'
++    subdir, exe = os.path.join('..', 'out', 'Release', 'gn_build'), 'gn.exe'
+   else:
+     raise RuntimeError("Unsupported platform '%s'." % sys.platform)
+ 
