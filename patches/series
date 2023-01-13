@@ -3,7 +3,6 @@ ungoogled-chromium/windows/windows-disable-reorder-fix-linking.patch
 ungoogled-chromium/windows/windows-fix-missing-include-es_parser_adts-cc.patch
 ungoogled-chromium/windows/windows-disable-win-build-output.patch
 ungoogled-chromium/windows/windows-disable-rcpy.patch
-ungoogled-chromium/windows/windows-fix-enum-conflict.patch
 ungoogled-chromium/windows/windows-fix-building-gn.patch
 ungoogled-chromium/windows/windows-disable-encryption.patch
 ungoogled-chromium/windows/windows-disable-machine-id.patch
@@ -21,3 +20,4 @@ ungoogled-chromium/windows/windows-fix-building-without-safebrowsing.patch
 ungoogled-chromium/windows/windows-fix-generate-resource-allowed-list.patch
 ungoogled-chromium/windows/windows-disable-clang-version-check.patch
 ungoogled-chromium/windows/windows-disable-nodebug_assertion.patch
+ungoogled-chromium/windows/windows-fix-licenses-gn-path.patch
