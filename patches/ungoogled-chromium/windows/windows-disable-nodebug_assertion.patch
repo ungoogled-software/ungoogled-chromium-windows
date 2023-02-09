@@ -1,9 +1,9 @@
 # Windows does not support weak symbols
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -1562,7 +1562,7 @@ mixed_component("base") {
-     "//third_party/abseil-cpp:absl",
-   ]
+@@ -1543,7 +1543,7 @@ component("base") {
+     public_deps += [ "//build/rust:cxx_cppdeps" ]
+   }
  
 -  if (use_custom_libcxx && enable_safe_libcxx && !is_debug) {
 +  if (!is_win && use_custom_libcxx && enable_safe_libcxx && !is_debug) {
