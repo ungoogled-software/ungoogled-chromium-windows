@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1359,7 +1359,7 @@ config("compiler_deterministic") {
+@@ -1374,7 +1374,7 @@ config("compiler_deterministic") {
  }
  
  config("clang_revision") {
@@ -15,8 +15,8 @@
  }
  
  declare_args() {
--  clang_version = "16.0.0"
-+  clang_version = "15.0.3"
+-  clang_version = "16"
++  clang_version = "15"
  }
  
  # Extension for shared library files (including leading dot).
