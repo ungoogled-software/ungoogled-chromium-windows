@@ -6,6 +6,8 @@ Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromi
 
 [Download binaries from the Contributor Binaries website](//ungoogled-software.github.io/ungoogled-chromium-binaries/).
 
+Or install using `winget install --id=eloston.ungoogled-chromium -e`.
+
 **Source Code**: It is recommended to use a tag via `git checkout` (see building instructions below). You may also use `master`, but it is for development and may not be stable.
 
 ## Building
