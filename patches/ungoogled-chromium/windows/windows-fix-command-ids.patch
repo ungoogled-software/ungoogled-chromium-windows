@@ -1,8 +1,13 @@
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -66,12 +66,6 @@
+@@ -65,16 +65,10 @@
+ #define IDC_MAXIMIZE_WINDOW             34047
  #define IDC_ALL_WINDOWS_FRONT           34048
  #define IDC_NAME_WINDOW                 34049
+-#if BUILDFLAG(IS_CHROMEOS)
++#if (0)
+ #define IDC_TOGGLE_MULTITASK_MENU       34050
+ #endif
  
 -// TODO(crbug.com/1052397): Revisit the macro expression once build flag switch of lacros-chrome is complete.
 -#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
@@ -13,7 +18,7 @@
  #define IDC_OPEN_IN_PWA_WINDOW          34053
  #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
  
-@@ -81,16 +75,6 @@
+@@ -84,16 +78,6 @@
  #define IDC_SITE_SETTINGS               34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
@@ -30,7 +35,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -223,10 +207,6 @@
+@@ -226,10 +210,6 @@
  #define IDC_CHROME_TIPS                40263
  #define IDC_CHROME_WHATS_NEW           40264
  
@@ -41,7 +46,7 @@
  #define IDC_PERFORMANCE                40266
  
  // Spell-check
-@@ -411,7 +391,7 @@
+@@ -416,7 +396,7 @@
  #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
  
  // Context menu items for media toolbar button
@@ -50,7 +55,7 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -445,13 +425,13 @@
+@@ -450,13 +430,13 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
@@ -65,4 +70,4 @@
 +#if (1)
  // Screen AI Visual Annotations.
  #define IDC_RUN_SCREEN_AI_VISUAL_ANNOTATIONS 52420
- #endif
+ #endif  // BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
