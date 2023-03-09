@@ -4,7 +4,7 @@
 
 --- a/build/toolchain/win/midl.py
 +++ b/build/toolchain/win/midl.py
-@@ -7,6 +7,7 @@ from __future__ import print_function
+@@ -6,6 +6,7 @@ from __future__ import division
  
  import array
  import difflib
@@ -12,7 +12,7 @@
  import filecmp
  import io
  import operator
-@@ -445,41 +446,13 @@ def main(arch, gendir, outdir, dynamic_g
+@@ -444,41 +445,13 @@ def main(arch, gendir, outdir, dynamic_g
    if returncode != 0:
      return returncode
  
@@ -58,7 +58,7 @@
  
 --- a/build/win/message_compiler.py
 +++ b/build/win/message_compiler.py
-@@ -119,24 +119,6 @@ def main():
+@@ -118,24 +118,6 @@ def main():
          header_contents += sorted(define_block, key=lambda s: s.split()[-1])
        with open(header_file, 'wb') as f:
          f.write(''.join(header_contents))

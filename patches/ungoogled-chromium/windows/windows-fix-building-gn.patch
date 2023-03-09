@@ -12,17 +12,16 @@
    gn_build_dir = os.path.join(out_dir, 'gn_build')
    ninja_binary = os.environ.get('NINJA', 'ninja')
  
-@@ -125,11 +125,11 @@ def main(argv):
+@@ -123,11 +123,11 @@ def main(argv):
+ 
+   shutil.copy2(
        os.path.join(BOOTSTRAP_DIR, 'last_commit_position.h'), gn_build_dir)
+-  cmd = [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', 'gn']
++  cmd = [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', 'gn.exe']
    if options.jobs:
-     subprocess.check_call(
--        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', '-j'+str(options.jobs), 'gn'])
-+        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', '-j'+str(options.jobs), 'gn.exe'])
-   else:
-     subprocess.check_call(
--        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', 'gn'])
+     cmd += ['-j', str(options.jobs)]
+   subprocess.check_call(cmd)
 -  shutil.copy2(os.path.join(gn_build_dir, 'gn'), gn_path)
-+        [ninja_binary, '-C', gn_build_dir, '-w', 'dupbuild=err', 'gn.exe'])
 +  shutil.copy2(os.path.join(gn_build_dir, 'gn.exe'), gn_path)
  
    if not options.skip_generate_buildfiles:

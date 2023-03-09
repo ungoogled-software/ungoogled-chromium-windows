@@ -13,4 +13,3 @@ dcheck_always_on=false
 blink_symbol_level=0
 v8_symbol_level=0
 symbol_level=0
-skip_archive_compression=false
