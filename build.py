@@ -139,7 +139,6 @@ def main():
     # Set common variables
     source_tree = _ROOT_DIR / 'build' / 'src'
     downloads_cache = _ROOT_DIR / 'build' / 'download_cache'
-    domsubcache = _ROOT_DIR / 'build' / 'domsubcache.tar.gz'
 
     if not args.ci or not (source_tree / 'BUILD.gn').exists():
         # Setup environment
@@ -199,7 +198,7 @@ def main():
             _ROOT_DIR / 'ungoogled-chromium' / 'domain_regex.list',
             _ROOT_DIR / 'ungoogled-chromium' / 'domain_substitution.list',
             source_tree,
-            domsubcache
+            None
         )
 
     if not args.ci or not (source_tree / 'out/Default').exists():
