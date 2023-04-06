@@ -59,7 +59,7 @@
    content::GetUIThreadTaskRunner({})->PostDelayedTask(
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1331,8 +1331,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1275,8 +1275,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
@@ -68,7 +68,7 @@
    MediaFoundationServiceMonitor::RegisterPrefs(registry);
    os_crypt::RegisterLocalStatePrefs(registry);
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -1668,12 +1666,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1608,12 +1606,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);
@@ -93,7 +93,7 @@
      "chrome_controller_client.cc",
 --- a/chrome/browser/safe_browsing/chrome_cleaner/settings_resetter_win.cc
 +++ b/chrome/browser/safe_browsing/chrome_cleaner/settings_resetter_win.cc
-@@ -193,7 +193,6 @@ PostCleanupSettingsResetter::Delegate::~
+@@ -192,7 +192,6 @@ PostCleanupSettingsResetter::Delegate::~
  
  void PostCleanupSettingsResetter::Delegate::FetchDefaultSettings(
      DefaultSettingsFetcher::SettingsCallback callback) {
