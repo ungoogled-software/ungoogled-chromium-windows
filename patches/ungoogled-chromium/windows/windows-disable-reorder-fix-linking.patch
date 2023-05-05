@@ -32,7 +32,7 @@
  # This does not currently work. See crbug.com/1311822.
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
-@@ -132,20 +109,12 @@ if (!is_android && !is_mac) {
+@@ -132,10 +109,6 @@ if (!is_android && !is_mac) {
      # Windows-only deps are OK because chrome_initial uses initialexe/chrome as
      # the output name for that platform.
      # See crbug.com/1146571.
@@ -42,18 +42,20 @@
 -    }
    }
  
-   executable("chrome_initial") {
-     configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
-     configs += [ "//build/config/compiler:thinlto_optimize_max" ]
--    if (is_win) {
--      output_name = "initialexe/chrome"
--    } else {
--      output_name = "chrome"
--    }
-+    output_name = "chrome"
+   template("_chrome_exe") {
+@@ -147,11 +120,7 @@ if (!is_android && !is_mac) {
+     target(_type, target_name) {
+       configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
+       configs += [ "//build/config/compiler:thinlto_optimize_max" ]
+-      if (is_win) {
+-        output_name = "initialexe/chrome"
+-      } else {
+-        output_name = "chrome"
+-      }
++      output_name = "chrome"
  
-     # Because the sources list varies so significantly per-platform, generally
-     # each platform lists its own files rather than relying on filtering or
+       # Because the sources list varies so significantly per-platform, generally
+       # each platform lists its own files rather than relying on filtering or
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
 @@ -429,11 +429,6 @@ python_library("chromedriver_py_tests")
