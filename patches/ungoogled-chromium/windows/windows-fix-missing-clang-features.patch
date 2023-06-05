@@ -1,0 +1,19 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -685,7 +685,6 @@ config("compiler") {
+         "/lldltocache:" +
+             rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
+         "/lldltocachepolicy:$cache_policy",
+-        "-mllvm:-disable-auto-upgrade-debug-info",
+       ]
+     } else {
+       ldflags += [ "-flto=thin" ]
+@@ -732,7 +731,7 @@ config("compiler") {
+         # toolchain has this flag.
+         # We only use one version of LLVM within a build so there's no need to
+         # upgrade debug info, which can be expensive since it runs the verifier.
+-        ldflags += [ "-Wl,-mllvm,-disable-auto-upgrade-debug-info" ]
++        ldflags += [ "-Wl,-mllvm" ]
+       }
+     }
+ 

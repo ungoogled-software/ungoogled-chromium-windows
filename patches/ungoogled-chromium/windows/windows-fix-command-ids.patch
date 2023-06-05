@@ -19,7 +19,7 @@
  #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
  
 @@ -84,16 +78,6 @@
- #define IDC_SITE_SETTINGS               34062
+ #define IDC_WEB_APP_SETTINGS            34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
 -#if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -35,7 +35,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -227,7 +211,7 @@
+@@ -234,7 +218,7 @@
  #define IDC_CHROME_TIPS                40263
  #define IDC_CHROME_WHATS_NEW           40264
  
@@ -44,7 +44,7 @@
  #define IDC_LACROS_DATA_MIGRATION      40265
  #endif
  
-@@ -422,7 +406,7 @@
+@@ -434,7 +418,7 @@
  #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
  
  // Context menu items for media toolbar button
@@ -53,7 +53,7 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -456,13 +440,13 @@
+@@ -468,13 +452,13 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  

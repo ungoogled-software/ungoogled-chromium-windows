@@ -72,7 +72,7 @@
  python_library("chromedriver_replay_unittests") {
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
-@@ -41,10 +41,6 @@ group("telemetry_chrome_test") {
+@@ -43,10 +43,6 @@ group("telemetry_chrome_test") {
      data_deps += [ "//chrome" ]
    }
  
