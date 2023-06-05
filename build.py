@@ -180,12 +180,6 @@ def main():
             parser.exit(1)
 
         # Apply patches
-        # Apply temporary patches
-        patches.apply_patches(
-            patches.generate_patches_from_series(_ROOT_DIR / 'patches' / 'temp-patches', resolve=True),
-            _ROOT_DIR,
-            patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
-        )
         # First, ungoogled-chromium-patches
         patches.apply_patches(
             patches.generate_patches_from_series(_ROOT_DIR / 'ungoogled-chromium' / 'patches', resolve=True),

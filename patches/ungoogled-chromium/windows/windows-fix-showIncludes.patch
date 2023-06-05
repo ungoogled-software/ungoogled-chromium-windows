@@ -1,6 +1,6 @@
 --- a/build/toolchain/win/toolchain.gni
 +++ b/build/toolchain/win/toolchain.gni
-@@ -57,6 +57,9 @@ template("single_msvc_toolchain") {
+@@ -58,6 +58,9 @@ template("single_msvc_toolchain") {
        toolchain_is_clang = is_clang
      }
  
@@ -10,7 +10,7 @@
      # When the invoker has explicitly overridden use_goma or cc_wrapper in the
      # toolchain args, use those values, otherwise default to the global one.
      # This works because the only reasonable override that toolchains might
-@@ -191,15 +194,11 @@ template("single_msvc_toolchain") {
+@@ -192,15 +195,11 @@ template("single_msvc_toolchain") {
  
      # Disabled with cc_wrapper because of
      # https://github.com/mozilla/sccache/issues/1013
