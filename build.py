@@ -171,7 +171,7 @@ def main():
         downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
 
         # Prune binaries
-        unremovable_files = prune_binaries.prune_dir(
+        unremovable_files = prune_binaries.prune_files(
             source_tree,
             (_ROOT_DIR / 'ungoogled-chromium' / 'pruning.list').read_text(encoding=ENCODING).splitlines()
         )
