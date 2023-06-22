@@ -33,26 +33,21 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 #### Other build requirements
 
-**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (v1607 or newer) with the official installer for Python 3.6 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for other Windows versions.
+**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (v1607 or newer) with the official installer for Python 3.6 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for older Windows versions.
 
 1. Setup the following:
     * 7-Zip
     * Python 3.6 - 3.9 or 3.10.2+ (for build and packaging scripts used below); Python 3.11 and above is not supported.
-    * If Python is not installed from the Microsoft Store:
+    * If you don't plan on using the Microsoft Store version of Python:
     	* Check "Add python.exe to PATH" before install.	
-        * Click the button to lift the `MAX_PATH` length restriction at the end of the Python installer.
         * Check that your `PATH` does not contain the `python3` wrapper shipped by Windows, as it will only prompt you to install Python from the Microsoft Store and exit. See [this question on stackoverflow.com](https://stackoverflow.com/questions/57485491/python-python3-executes-in-command-prompt-but-does-not-run-correctly)
-        * Create a symlink called "python3.exe" in your python directory ny running the following command in `cmd.exe` (as administrator)
-
-          ```cmd
-          mklink C:\<your python directory>\python3.exe C:\<your python directory>\python.exe
-          ``` 
+        * Ensure that your Python directory either has a copy of Python named "python3.exe" or a symlink linking to the Python executable.
+   * Make sure to lift the `MAX_PATH` length restriction, either by clicking the button at the end of the Python installer or by [following these instructions](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry#:~:text=Enable,Later).
     * Git (to fetch all required ungoogled-chromium scripts)
         * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
 
 ### Building
 
-NOTE: The commands below assume the `py` command was installed by Python 3 into `PATH`.
 Run in `cmd.exe` (as administrator):
 
 ```cmd
@@ -60,8 +55,8 @@ git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-c
 cd ungoogled-chromium-windows
 # Replace TAG_OR_BRANCH_HERE with a tag or branch name
 git checkout --recurse-submodules TAG_OR_BRANCH_HERE
-py build.py
-py package.py
+python3 build.py
+python3 package.py
 ```
 
 A zip archive and an installer will be created under `build`.
