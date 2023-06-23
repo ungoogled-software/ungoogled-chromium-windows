@@ -39,7 +39,8 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
     * 7-Zip
     * Python 3.6 - 3.9 or 3.10.2+ (for build and packaging scripts used below); Python 3.11 and above is not supported.
     * If you don't plan on using the Microsoft Store version of Python:
-    	* Check "Add python.exe to PATH" before install.	
+    	* Check "Add python.exe to PATH" before install.
+      	* At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.  
         * Check that your `PATH` does not contain the `python3` wrapper shipped by Windows, as it will only prompt you to install Python from the Microsoft Store and exit. See [this question on stackoverflow.com](https://stackoverflow.com/questions/57485491/python-python3-executes-in-command-prompt-but-does-not-run-correctly)
         * Ensure that your Python directory either has a copy of Python named "python3.exe" or a symlink linking to the Python executable.
    * Make sure to lift the `MAX_PATH` length restriction, either by clicking the button at the end of the Python installer or by [following these instructions](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry#:~:text=Enable,Later).
