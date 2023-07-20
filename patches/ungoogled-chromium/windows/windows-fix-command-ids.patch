@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -65,16 +65,10 @@
+@@ -66,16 +66,16 @@
  #define IDC_MAXIMIZE_WINDOW             34047
  #define IDC_ALL_WINDOWS_FRONT           34048
  #define IDC_NAME_WINDOW                 34049
@@ -9,16 +9,18 @@
  #define IDC_TOGGLE_MULTITASK_MENU       34050
  #endif
  
--// TODO(crbug.com/1052397): Revisit the macro expression once build flag switch of lacros-chrome is complete.
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
--#define IDC_USE_SYSTEM_TITLE_BAR        34051
--#define IDC_RESTORE_WINDOW              34052
--#endif
--
- #define IDC_OPEN_IN_PWA_WINDOW          34053
- #define IDC_MOVE_TAB_TO_NEW_WINDOW          34054
+-#if BUILDFLAG(IS_LINUX)
++#if (0)
+ #define IDC_USE_SYSTEM_TITLE_BAR        34051
+ #endif
  
-@@ -84,16 +78,6 @@
+ // TODO(crbug.com/1052397): Revisit the macro expression once build flag switch of lacros-chrome is complete.
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
++#if (0)
+ #define IDC_RESTORE_WINDOW              34052
+ #endif
+ 
+@@ -88,16 +88,6 @@
  #define IDC_WEB_APP_SETTINGS            34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
@@ -35,7 +37,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -234,7 +218,7 @@
+@@ -239,7 +229,7 @@
  #define IDC_CHROME_TIPS                40263
  #define IDC_CHROME_WHATS_NEW           40264
  
@@ -44,7 +46,7 @@
  #define IDC_LACROS_DATA_MIGRATION      40265
  #endif
  
-@@ -434,7 +418,7 @@
+@@ -441,7 +431,7 @@
  #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
  
  // Context menu items for media toolbar button
@@ -53,7 +55,7 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -468,13 +452,13 @@
+@@ -475,13 +465,13 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  

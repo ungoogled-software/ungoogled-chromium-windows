@@ -3,7 +3,7 @@
 
 --- a/build/config/win/BUILD.gn
 +++ b/build/config/win/BUILD.gn
-@@ -69,6 +69,7 @@ config("compiler") {
+@@ -70,6 +70,7 @@ config("compiler") {
    if (is_clang) {
      cflags += [
        "/Zc:twoPhase",
