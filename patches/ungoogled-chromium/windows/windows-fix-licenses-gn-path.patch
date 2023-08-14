@@ -1,6 +1,6 @@
 --- a/tools/licenses/licenses.py
 +++ b/tools/licenses/licenses.py
-@@ -621,7 +621,7 @@ def _GnBinary():
+@@ -687,7 +687,7 @@ def _GnBinary():
    elif sys.platform == 'darwin':
      subdir = 'mac'
    elif sys.platform == 'win32':
