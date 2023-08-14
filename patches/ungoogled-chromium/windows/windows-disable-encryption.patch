@@ -23,7 +23,7 @@
  #include "base/feature_list.h"
  #include "base/logging.h"
  #include "base/memory/singleton.h"
-@@ -44,6 +45,10 @@ constexpr char kNamedEncryptionSourceNam
+@@ -45,6 +46,10 @@ constexpr char kDPAPIKeyPrefix[] = "DPAP
  
  bool EncryptStringWithDPAPI(const std::string& plaintext,
                              std::string* ciphertext) {
@@ -34,7 +34,7 @@
    DATA_BLOB input;
    input.pbData =
        const_cast<BYTE*>(reinterpret_cast<const BYTE*>(plaintext.data()));
-@@ -85,6 +90,11 @@ bool EncryptStringWithDPAPI(const std::s
+@@ -79,6 +84,11 @@ bool EncryptStringWithDPAPI(const std::s
  
  bool DecryptStringWithDPAPI(const std::string& ciphertext,
                              std::string* plaintext) {

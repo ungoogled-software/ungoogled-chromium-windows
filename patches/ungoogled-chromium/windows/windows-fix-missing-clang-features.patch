@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -715,7 +715,6 @@ config("compiler") {
+@@ -718,7 +718,6 @@ config("compiler") {
          "/lldltocache:" +
              rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
          "/lldltocachepolicy:$cache_policy",
@@ -8,7 +8,7 @@
        ]
      } else {
        ldflags += [ "-flto=thin" ]
-@@ -762,7 +761,7 @@ config("compiler") {
+@@ -765,7 +764,7 @@ config("compiler") {
          # toolchain has this flag.
          # We only use one version of LLVM within a build so there's no need to
          # upgrade debug info, which can be expensive since it runs the verifier.
@@ -17,3 +17,16 @@
        }
      }
  
+--- a/net/dns/host_resolver_cache.cc
++++ b/net/dns/host_resolver_cache.cc
+@@ -159,8 +159,8 @@ void HostResolverCache::Set(
+ 
+   std::string domain_name = result->domain_name();
+   entries_.emplace(
+-      Key(std::move(domain_name), network_anonymization_key),
+-      Entry(std::move(result), source, secure, staleness_generation_));
++      Key({std::move(domain_name), network_anonymization_key}),
++      Entry({std::move(result), source, secure, staleness_generation_}));
+ 
+   if (entries_.size() > max_entries_) {
+     EvictEntries();
