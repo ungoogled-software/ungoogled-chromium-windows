@@ -85,6 +85,8 @@ def _run_build_process_timeout(*args, timeout):
         proc.stdin.close()
         try:
             proc.wait(timeout)
+            if proc.returncode != 0:
+                raise RuntimeError('Build failed!')
         except subprocess.TimeoutExpired:
             print('Sending keyboard interrupt')
             for _ in range(3):
@@ -226,7 +228,7 @@ def main():
     # Run ninja
     if args.ci:
         _run_build_process_timeout('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
-                                   'chromedriver', 'mini_installer', timeout=4.5*60*60)
+                                   'chromedriver', 'mini_installer', timeout=3.5*60*60)
         # package
         os.chdir(_ROOT_DIR)
         subprocess.run([sys.executable, 'package.py'])
