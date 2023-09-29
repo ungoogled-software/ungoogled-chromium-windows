@@ -255,6 +255,90 @@ jobs:
           from_artifact: true
     outputs:
       finished: ${{ steps.stage.outputs.finished }}
+  build-13:
+    needs: build-12
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-14:
+    needs: build-13
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-15:
+    needs: build-14
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-16:
+    needs: build-15
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
 
   build-x86-1:
     runs-on: windows-2019
@@ -519,22 +603,110 @@ jobs:
           x86: true
     outputs:
       finished: ${{ steps.stage.outputs.finished }}
+  build-x86-13:
+    needs: build-x86-12
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          x86: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-x86-14:
+    needs: build-x86-13
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          x86: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-x86-15:
+    needs: build-x86-14
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          x86: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-x86-16:
+    needs: build-x86-15
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          x86: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
 
   publish-release:
-    needs: [build-12, build-x86-12]
+    needs: [build-16, build-x86-16]
     runs-on: ubuntu-latest
     steps:
       - name: Download package
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: chromium
       - name: Download x86 package
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: chromium-x86
       - name: Publish release
         id: publish
-        uses: softprops/action-gh-release@cd28b0f5ee8571b76cfdaa62a30d51d752317477
+        uses: softprops/action-gh-release@v1
         with:
           fail_on_unmatched_files: true
           files: |

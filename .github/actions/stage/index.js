@@ -39,9 +39,9 @@ async function run() {
             {matchDirectories: false});
         let packageList = await globber.glob();
         packageList = await Promise.all(packageList.map(async x => {
-            const part1 = x.substr(0, x.length - 4);
+            const part1 = x.substring(0, x.length - 4);
             const part2 = x86 ? '_x86' : '_x64';
-            const part3 = x.substr(x.length - 4, 4);
+            const part3 = x.substring(x.length - 4, x.length);
             const newPath = part1 + part2 + part3;
             await io.mv(x, newPath);
             return newPath;
