@@ -59,7 +59,7 @@
    if (base::FeatureList::IsEnabled(features::kAppBoundEncryptionMetrics) &&
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1605,8 +1605,6 @@ void RegisterLocalState(PrefRegistrySimp
+@@ -1501,8 +1501,6 @@ void RegisterLocalState(PrefRegistrySimp
                                  true);
    registry->RegisterBooleanPref(
        policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
@@ -68,7 +68,7 @@
    MediaFoundationServiceMonitor::RegisterPrefs(registry);
    os_crypt::RegisterLocalStatePrefs(registry);
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -1948,12 +1946,8 @@ void RegisterProfilePrefs(user_prefs::Pr
+@@ -1847,12 +1845,8 @@ void RegisterProfilePrefs(user_prefs::Pr
  
  #if BUILDFLAG(IS_WIN)
    CdmPrefServiceHelper::RegisterProfilePrefs(registry);
