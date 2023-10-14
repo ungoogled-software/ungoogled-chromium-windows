@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -717,7 +717,6 @@ config("compiler") {
+@@ -726,7 +726,6 @@ config("compiler") {
          "/lldltocache:" +
              rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
          "/lldltocachepolicy:$cache_policy",
@@ -8,7 +8,7 @@
        ]
      } else {
        ldflags += [ "-flto=thin" ]
-@@ -764,7 +763,7 @@ config("compiler") {
+@@ -773,7 +772,7 @@ config("compiler") {
          # toolchain has this flag.
          # We only use one version of LLVM within a build so there's no need to
          # upgrade debug info, which can be expensive since it runs the verifier.
@@ -17,47 +17,3 @@
        }
      }
  
---- a/content/browser/renderer_host/render_frame_host_impl.cc
-+++ b/content/browser/renderer_host/render_frame_host_impl.cc
-@@ -8509,7 +8509,7 @@ void RenderFrameHostImpl::SendFencedFram
-   for (const blink::FencedFrame::ReportingDestination& destination :
-        destinations) {
-     SendFencedFrameReportingBeaconInternal(
--        DestinationEnumEvent(event_type, event_data), destination,
-+        DestinationEnumEvent({event_type, event_data}), destination,
-         /*from_renderer=*/true, attribution_reporting_runtime_features,
-         GetFrameTreeNodeId());
-   }
-@@ -8545,7 +8545,7 @@ void RenderFrameHostImpl::SendFencedFram
-   }
- 
-   SendFencedFrameReportingBeaconInternal(
--      DestinationURLEvent(destination_url),
-+      DestinationURLEvent({destination_url}),
-       blink::FencedFrame::ReportingDestination::kBuyer,
-       /*from_renderer=*/true, attribution_reporting_runtime_features,
-       GetFrameTreeNodeId());
-@@ -8617,8 +8617,8 @@ void RenderFrameHostImpl::MaybeSendFence
-   for (blink::FencedFrame::ReportingDestination destination :
-        info->destinations) {
-     initiator_rfh->SendFencedFrameReportingBeaconInternal(
--        DestinationEnumEvent(blink::kFencedFrameTopNavigationBeaconType,
--                             info->data),
-+        DestinationEnumEvent({blink::kFencedFrameTopNavigationBeaconType,
-+                             info->data}),
-         destination,
-         /*from_renderer=*/false, info->attribution_reporting_runtime_features,
-         GetFrameTreeNodeId(), navigation_request.GetNavigationId());
---- a/net/dns/host_resolver_cache.cc
-+++ b/net/dns/host_resolver_cache.cc
-@@ -161,8 +161,8 @@ void HostResolverCache::Set(
- 
-   std::string domain_name = result->domain_name();
-   entries_.emplace(
--      Key(std::move(domain_name), network_anonymization_key),
--      Entry(std::move(result), source, secure, staleness_generation_));
-+      Key({std::move(domain_name), network_anonymization_key}),
-+      Entry({std::move(result), source, secure, staleness_generation_}));
- 
-   if (entries_.size() > max_entries_) {
-     EvictEntries();
