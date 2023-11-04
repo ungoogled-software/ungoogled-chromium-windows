@@ -15,72 +15,6 @@
  
      deps += [
        "//build:branding_buildflags",
---- a/chrome/browser/chrome_browser_main_win.cc
-+++ b/chrome/browser/chrome_browser_main_win.cc
-@@ -325,15 +325,6 @@ void ShowCloseBrowserFirstMessageBox() {
-       l10n_util::GetStringUTF16(IDS_UNINSTALL_CLOSE_APP));
- }
- 
--void MaybePostSettingsResetPrompt() {
--  if (base::FeatureList::IsEnabled(safe_browsing::kSettingsResetPrompt)) {
--    content::GetUIThreadTaskRunner({base::TaskPriority::BEST_EFFORT})
--        ->PostTask(FROM_HERE,
--                   base::BindOnce(
--                       safe_browsing::MaybeShowSettingsResetPromptWithDelay));
--  }
--}
--
- // Updates all Progressive Web App launchers in |profile_dir| to the latest
- // version.
- void UpdatePwaLaunchersForProfile(const base::FilePath& profile_dir) {
-@@ -557,23 +548,6 @@ void ChromeBrowserMainPartsWin::PostBrow
- 
-   InitializeChromeElf();
- 
--  // Reset settings for the current profile if it's tagged to be reset after a
--  // complete run of the Chrome Cleanup tool. If post-cleanup settings reset is
--  // enabled, we delay checks for settings reset prompt until the scheduled
--  // reset is finished.
--  if (safe_browsing::PostCleanupSettingsResetter::IsEnabled() &&
--      !base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kAppId)) {
--    // Using last opened profiles, because we want to find reset the profile
--    // that was open in the last Chrome run, which may not be open yet in
--    // the current run.
--    safe_browsing::PostCleanupSettingsResetter().ResetTaggedProfiles(
--        g_browser_process->profile_manager()->GetLastOpenedProfiles(),
--        base::BindOnce(&MaybePostSettingsResetPrompt),
--        std::make_unique<
--            safe_browsing::PostCleanupSettingsResetter::Delegate>());
--  } else {
--    MaybePostSettingsResetPrompt();
--  }
- 
-   // Query feature first, to include full population in field trial.
-   if (base::FeatureList::IsEnabled(features::kAppBoundEncryptionMetrics) &&
---- a/chrome/browser/prefs/browser_prefs.cc
-+++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1501,8 +1501,6 @@ void RegisterLocalState(PrefRegistrySimp
-                                 true);
-   registry->RegisterBooleanPref(
-       policy::policy_prefs::kNativeWindowOcclusionEnabled, true);
--  component_updater::RegisterPrefsForSwReporter(registry);
--  safe_browsing::RegisterChromeCleanerScanCompletionTimePref(registry);
-   MediaFoundationServiceMonitor::RegisterPrefs(registry);
-   os_crypt::RegisterLocalStatePrefs(registry);
- #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -1847,12 +1845,8 @@ void RegisterProfilePrefs(user_prefs::Pr
- 
- #if BUILDFLAG(IS_WIN)
-   CdmPrefServiceHelper::RegisterProfilePrefs(registry);
--  component_updater::RegisterProfilePrefsForSwReporter(registry);
-   FontPrewarmerTabHelper::RegisterProfilePrefs(registry);
-   NetworkProfileBubble::RegisterProfilePrefs(registry);
--  safe_browsing::SettingsResetPromptPrefsManager::RegisterProfilePrefs(
--      registry);
--  safe_browsing::PostCleanupSettingsResetter::RegisterProfilePrefs(registry);
- #endif
- 
- #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn
 @@ -7,6 +7,7 @@ import("//components/safe_browsing/build
@@ -91,41 +25,6 @@
    if (false) {
    sources = [
      "chrome_controller_client.cc",
---- a/chrome/browser/safe_browsing/chrome_cleaner/settings_resetter_win.cc
-+++ b/chrome/browser/safe_browsing/chrome_cleaner/settings_resetter_win.cc
-@@ -192,7 +192,6 @@ PostCleanupSettingsResetter::Delegate::~
- 
- void PostCleanupSettingsResetter::Delegate::FetchDefaultSettings(
-     DefaultSettingsFetcher::SettingsCallback callback) {
--  DefaultSettingsFetcher::FetchDefaultSettings(std::move(callback));
- }
- 
- PostCleanupSettingsResetter::PostCleanupSettingsResetter() = default;
---- a/chrome/browser/safe_browsing/chrome_cleaner/srt_client_info_win.cc
-+++ b/chrome/browser/safe_browsing/chrome_cleaner/srt_client_info_win.cc
-@@ -34,20 +34,11 @@ int ChannelAsInt() {
- }
- 
- bool SafeBrowsingExtendedReportingEnabled() {
--  // Check all profiles registered with the manager.
--  std::vector<Profile*> profiles =
--      g_browser_process->profile_manager()->GetLoadedProfiles();
--  return base::ranges::any_of(profiles, [](const Profile* profile) {
--    return IsExtendedReportingEnabled(*profile->GetPrefs());
--  });
-+  return false;
- }
- 
- bool SafeBrowsingExtendedReportingScoutEnabled() {
--  std::vector<Profile*> profiles = ProfileManager::GetLastOpenedProfiles();
--  return base::ranges::any_of(profiles, [](const Profile* profile) {
--    return profile &&
--           GetExtendedReportingLevel(*profile->GetPrefs()) == SBER_LEVEL_SCOUT;
--  });
-+  return false;
- }
- 
- }  // namespace safe_browsing
 --- /dev/null
 +++ b/chrome/browser/safe_browsing/safe_browsing_dummy.cc
 @@ -0,0 +1,3 @@
