@@ -83,3 +83,30 @@
    except subprocess.CalledProcessError as e:
      print(e.output)
      sys.exit(e.returncode)
+--- a/third_party/dawn/third_party/gn/dxc/build/message_compiler.py
++++ b/third_party/dawn/third_party/gn/dxc/build/message_compiler.py
+@@ -124,24 +124,6 @@ def main():
+                                           key=lambda s: s.split()[-1])
+             with open(header_file, 'w') as f:
+                 f.write(''.join(header_contents))
+-
+-        # mc.exe invocation and post-processing are complete, now compare the output
+-        # in tmp_dir to the checked-in outputs.
+-        diff = filecmp.dircmp(tmp_dir, source)
+-        if diff.diff_files or set(diff.left_list) != set(diff.right_list):
+-            print('mc.exe output different from files in %s, see %s' %
+-                  (source, tmp_dir))
+-            diff.report()
+-            for f in diff.diff_files:
+-                if f.endswith('.bin'): continue
+-                fromfile = os.path.join(source, f)
+-                tofile = os.path.join(tmp_dir, f)
+-                print(''.join(
+-                    difflib.unified_diff(
+-                        open(fromfile).readlines(),
+-                        open(tofile).readlines(), fromfile, tofile)))
+-            delete_tmp_dir = False
+-            sys.exit(1)
+     except subprocess.CalledProcessError as e:
+         print(e.output)
+         sys.exit(e.returncode)
