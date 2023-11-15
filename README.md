@@ -49,7 +49,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 ### Building
 
-Run in `cmd.exe` (as administrator):
+Run in `Developer Command Prompt for VS` (as administrator):
 
 ```cmd
 git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git
@@ -82,28 +82,37 @@ pacman -S quilt python3 vim tar
 ln -s /usr/bin/vim /usr/bin/vi
 ```
 
-### Updating patches
+### Updating patches and pruning list
 
-**IMPORTANT**: Run the following in a "MSYS2 MSYS" shell:
-
-1. Navigate to the repo path: `cd /path/to/repo/ungoogled-chromium-windows`
-    * You can use Git Bash to determine the path to this repo
-    * Or, you can find it yourself via `/<drive letter>/<path with forward slashes>`
-2. Setup patches and shell to update patches
-    1. `./devutils/update_patches.sh merge`
-    2. `source devutils/set_quilt_vars.sh`
-3. Setup Chromium source
-    1. `mkdir -p build/{src,download_cache}`
-    2. `./ungoogled-chromium/utils/downloads.py retrieve -i ungoogled-chromium/downloads.ini -c build/download_cache`
-    3. `./ungoogled-chromium/utils/downloads.py unpack -i ungoogled-chromium/downloads.ini -c build/download_cache build/src`
-4. Go into the source tree: `cd build/src`
-5. Use quilt to refresh patches. See ungoogled-chromium's [docs/developing.md](https://github.com/Eloston/ungoogled-chromium/blob/master/docs/developing.md#updating-patches) section "Updating patches" for more details
-6. Go back to repo root: `cd ../..`
-7. Remove all patches introduced by ungoogled-chromium: `./devutils/update_patches.sh unmerge`
-    * Ensure patches/series is formatted correctly, e.g. blank lines
-8. Sanity checking for consistency in series file: `./devutils/check_patch_files.sh`
-9. Check for esbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
-10. Use git to add changes and commit
+1. Start `Developer Command Prompt for VS` and `MSYS2 MSYS` shell and navigate to source folder
+	1. `Developer Command Prompt for VS`
+		* `cd c:\path\to\repo\ungoogled-chromium-windows`
+	1. `MSYS2 MSYS`
+		* `cd /path/to/repo/ungoogled-chromium-windows`
+		* You can use Git Bash to determine the path to this repo
+		* Or, you can find it yourself via `/<drive letter>/<path with forward slashes>`
+1. Clone sources
+	**`Developer Command Prompt for VS`**
+	* `python3 ungoogled-chromium\utils\clone.py -o build\src`
+1. Update pruning list
+	**`Developer Command Prompt for VS`**
+	* `python3 ungoogled-chromium\devutils\update_lists.py -t build\src --domain-regex ungoogled-chromium\domain_regex.list`
+1. Update patches
+	**`MSYS2 MSYS`**
+	1. Setup patches and shell to update patches
+		* `./devutils/update_patches.sh merge`
+		* `source devutils/set_quilt_vars.sh`
+	1. Go into the source tree
+		* `cd build/src`
+	1. Use quilt to refresh patches. See ungoogled-chromium's [docs/developing.md](https://github.com/Eloston/ungoogled-chromium/blob/master/docs/developing.md#updating-patches) section "Updating patches" for more details
+	1. Go back to repo root
+		* `cd ../..`
+	1. Remove all patches introduced by ungoogled-chromium
+		* `./devutils/update_patches.sh unmerge`
+	1. Sanity checking for consistency in series file
+		* `./devutils/check_patch_files.sh`
+1. Check for esbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
+1. Use git to add changes and commit
 
 ## License
 

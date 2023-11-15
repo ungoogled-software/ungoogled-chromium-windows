@@ -29,6 +29,10 @@ async function run() {
     const args = ['build.py', '--ci']
     if (x86)
         args.push('--x86')
+    await exec.exec('python', ['-m', 'pip', 'install', 'httplib2'], {
+        cwd: 'C:\\ungoogled-chromium-windows',
+        ignoreReturnCode: true
+    });
     const retCode = await exec.exec('python', args, {
         cwd: 'C:\\ungoogled-chromium-windows',
         ignoreReturnCode: true

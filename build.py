@@ -136,6 +136,10 @@ def main():
         '--x86',
         action='store_true'
     )
+    parser.add_argument(
+        '--tarball',
+        action='store_true'
+    )
     args = parser.parse_args()
 
     # Set common variables
@@ -149,10 +153,15 @@ def main():
         _make_tmp_paths()
 
         # Get download metadata (DownloadInfo)
-        download_info = downloads.DownloadInfo([
-            _ROOT_DIR / 'downloads.ini',
-            _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
-        ])
+        if args.tarball:
+            download_info = downloads.DownloadInfo([
+                _ROOT_DIR / 'downloads.ini',
+                _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
+            ])
+        else:
+            download_info = downloads.DownloadInfo([
+                _ROOT_DIR / 'downloads.ini',
+            ])
 
         # Retrieve downloads
         get_logger().info('Downloading required files...')
@@ -164,6 +173,11 @@ def main():
             get_logger().error('File checksum does not match: %s', exc)
             exit(1)
 
+        # Prepare source folder
+        if not args.tarball:
+            # Clone sources
+            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
+
         # Unpack downloads
         extractors = {
             ExtractorEnum.SEVENZIP: args.sevenz_path,
@@ -173,9 +187,10 @@ def main():
         downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
 
         # Prune binaries
+        pruning_list = (_ROOT_DIR / 'ungoogled-chromium' / 'pruning.list') if args.tarball else (_ROOT_DIR  / 'pruning.list')
         unremovable_files = prune_binaries.prune_files(
             source_tree,
-            (_ROOT_DIR / 'ungoogled-chromium' / 'pruning.list').read_text(encoding=ENCODING).splitlines()
+            pruning_list.read_text(encoding=ENCODING).splitlines()
         )
         if unremovable_files:
             get_logger().error('Files could not be pruned: %s', unremovable_files)
@@ -196,9 +211,10 @@ def main():
         )
 
         # Substitute domains
+        domain_substitution_list = (_ROOT_DIR / 'ungoogled-chromium' / 'domain_substitution.list') if args.tarball else (_ROOT_DIR  / 'domain_substitution.list')
         domain_substitution.apply_substitution(
             _ROOT_DIR / 'ungoogled-chromium' / 'domain_regex.list',
-            _ROOT_DIR / 'ungoogled-chromium' / 'domain_substitution.list',
+            domain_substitution_list,
             source_tree,
             None
         )
