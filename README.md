@@ -77,7 +77,7 @@ An efficient way to delete large amounts of files is using `Remove-Item PATH -Re
 2. Run the following in a "MSYS2 MSYS" shell:
 
 ```sh
-pacman -S quilt python3 vim tar
+pacman -S quilt python3 vim tar dos2unix
 # By default, there doesn't seem to be a vi command for less, quilt edit, etc.
 ln -s /usr/bin/vim /usr/bin/vi
 ```
@@ -91,24 +91,33 @@ ln -s /usr/bin/vim /usr/bin/vi
 		* `cd /path/to/repo/ungoogled-chromium-windows`
 		* You can use Git Bash to determine the path to this repo
 		* Or, you can find it yourself via `/<drive letter>/<path with forward slashes>`
+1. Retrieve downloads
+	**`Developer Command Prompt for VS`**
+	* `mkdir "build\download_cache"`
+	* `python3 ungoogled-chromium\utils\downloads.py retrieve -i downloads.ini -c build\download_cache`
 1. Clone sources
 	**`Developer Command Prompt for VS`**
 	* `python3 ungoogled-chromium\utils\clone.py -o build\src`
 1. Update pruning list
 	**`Developer Command Prompt for VS`**
 	* `python3 ungoogled-chromium\devutils\update_lists.py -t build\src --domain-regex ungoogled-chromium\domain_regex.list`
-1. Update patches
+1. Unpack downloads
+	**`Developer Command Prompt for VS`**
+	* `python3 ungoogled-chromium\utils\downloads.py unpack -i downloads.ini -c build\download_cache build\src`
+1. Apply ungoogled-chromium patches
+	**`Developer Command Prompt for VS`**
+	* `python3 ungoogled-chromium\utils\patches.py apply --patch-bin build\src\third_party\git\usr\bin\patch.exe build\src ungoogled-chromium\patches`
+1. Update windows patches
 	**`MSYS2 MSYS`**
-	1. Setup patches and shell to update patches
-		* `./devutils/update_patches.sh merge`
+	1. Setup shell to update patches
 		* `source devutils/set_quilt_vars.sh`
 	1. Go into the source tree
 		* `cd build/src`
+	1. Fix line breaks of files to patch
+		* `grep -r ../../patches/ -e "^+++" | awk '{print substr($2,3)}' | xargs dos2unix`
 	1. Use quilt to refresh patches. See ungoogled-chromium's [docs/developing.md](https://github.com/Eloston/ungoogled-chromium/blob/master/docs/developing.md#updating-patches) section "Updating patches" for more details
 	1. Go back to repo root
 		* `cd ../..`
-	1. Remove all patches introduced by ungoogled-chromium
-		* `./devutils/update_patches.sh unmerge`
 	1. Sanity checking for consistency in series file
 		* `./devutils/check_patch_files.sh`
 1. Check for esbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
