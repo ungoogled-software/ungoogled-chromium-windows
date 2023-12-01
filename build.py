@@ -11,8 +11,8 @@ ungoogled-chromium build script for Microsoft Windows
 import sys
 import time
 
-if sys.version_info.major < 3 or sys.version_info.minor < 6:
-    raise RuntimeError('Python 3.6+ is required for this script. You have: {}.{}'.format(
+if sys.version_info.major != 3 or sys.version_info.minor < 8 or sys.version_info.minor > 10:
+    raise RuntimeError('Python 3.8 to 3.10 is required for this script. You have: {}.{}'.format(
         sys.version_info.major, sys.version_info.minor))
 
 import argparse
