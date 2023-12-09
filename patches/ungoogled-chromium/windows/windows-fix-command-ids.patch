@@ -37,7 +37,7 @@
  // Page-related commands
  #define IDC_BOOKMARK_THIS_TAB           35000
  #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -249,7 +239,7 @@
+@@ -251,7 +241,7 @@
  #define IDC_CHROME_TIPS                40263
  #define IDC_CHROME_WHATS_NEW           40264
  
@@ -46,7 +46,7 @@
  #define IDC_LACROS_DATA_MIGRATION      40265
  #endif
  
-@@ -455,7 +445,7 @@
+@@ -461,7 +451,7 @@
  #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
  
  // Context menu items for media toolbar button
@@ -55,7 +55,7 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -489,7 +479,7 @@
+@@ -495,7 +485,7 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
