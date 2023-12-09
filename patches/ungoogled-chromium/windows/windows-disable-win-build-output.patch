@@ -85,7 +85,7 @@
      sys.exit(e.returncode)
 --- a/third_party/dawn/third_party/gn/dxc/build/message_compiler.py
 +++ b/third_party/dawn/third_party/gn/dxc/build/message_compiler.py
-@@ -124,24 +124,6 @@ def main():
+@@ -137,24 +137,6 @@ def main():
                                            key=lambda s: s.split()[-1])
              with open(header_file, 'w') as f:
                  f.write(''.join(header_contents))
