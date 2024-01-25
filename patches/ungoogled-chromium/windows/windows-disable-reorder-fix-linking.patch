@@ -58,7 +58,7 @@
        # each platform lists its own files rather than relying on filtering or
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -476,11 +476,6 @@ python_library("chromedriver_py_tests")
+@@ -474,11 +474,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }
@@ -69,7 +69,7 @@
 -  }
  }
  
- python_library("chromedriver_replay_unittests") {
+ python_library("chromedriver_py_tests_headless_shell") {
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
 @@ -43,10 +43,6 @@ group("telemetry_chrome_test") {

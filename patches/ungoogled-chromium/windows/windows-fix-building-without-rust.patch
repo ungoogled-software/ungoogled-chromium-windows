@@ -1,0 +1,82 @@
+--- a/components/qr_code_generator/BUILD.gn
++++ b/components/qr_code_generator/BUILD.gn
+@@ -39,21 +39,11 @@ source_set("qr_code_generator") {
+   ]
+   deps = [
+     ":qr_code_generator_features",
+-    ":qr_code_generator_ffi_glue",
+     "//base",
+   ]
+   public_deps = [ "//base" ]
+ }
+ 
+-rust_static_library("qr_code_generator_ffi_glue") {
+-  allow_unsafe = true  # Needed for FFI that underpins the `cxx` crate.
+-  crate_root = "qr_code_generator_ffi_glue.rs"
+-  sources = [ "qr_code_generator_ffi_glue.rs" ]
+-  cxx_bindings = [ "qr_code_generator_ffi_glue.rs" ]
+-  visibility = [ ":qr_code_generator" ]
+-  deps = [ "//third_party/rust/qr_code/v2:lib" ]
+-}
+-
+ source_set("unit_tests") {
+   testonly = true
+   sources = [ "qr_code_generator_unittest.cc" ]
+--- a/components/qr_code_generator/qr_code_generator.cc
++++ b/components/qr_code_generator/qr_code_generator.cc
+@@ -11,12 +11,10 @@
+ #include <vector>
+ 
+ #include "base/check_op.h"
+-#include "base/containers/span_rust.h"
+ #include "base/memory/raw_ptr.h"
+ #include "base/notreached.h"
+ #include "base/numerics/safe_conversions.h"
+ #include "components/qr_code_generator/features.h"
+-#include "components/qr_code_generator/qr_code_generator_ffi_glue.rs.h"
+ 
+ namespace qr_code_generator {
+ 
+@@ -572,31 +570,6 @@ size_t SegmentSpanLength(base::span<cons
+   return sum;
+ }
+ 
+-absl::optional<QRCodeGenerator::GeneratedCode> GenerateQrCodeUsingRust(
+-    base::span<const uint8_t> in,
+-    absl::optional<int> min_version) {
+-  rust::Slice<const uint8_t> rs_in = base::SpanToRustSlice(in);
+-
+-  // `min_version` might come from a fuzzer and therefore we use a lenient
+-  // `saturated_cast` instead of a `checked_cast`.
+-  int16_t rs_min_version =
+-      base::saturated_cast<int16_t>(min_version.value_or(0));
+-
+-  std::vector<uint8_t> result_pixels;
+-  size_t result_width = 0;
+-  bool result_is_success = generate_qr_code_using_rust(
+-      rs_in, rs_min_version, result_pixels, result_width);
+-
+-  if (!result_is_success) {
+-    return absl::nullopt;
+-  }
+-  QRCodeGenerator::GeneratedCode code;
+-  code.data = std::move(result_pixels);
+-  code.qr_size = base::checked_cast<int>(result_width);
+-  CHECK_EQ(code.data.size(), static_cast<size_t>(code.qr_size * code.qr_size));
+-  return code;
+-}
+-
+ }  // namespace
+ 
+ QRCodeGenerator::QRCodeGenerator() = default;
+@@ -617,10 +590,6 @@ absl::optional<QRCodeGenerator::Generate
+     return absl::nullopt;
+   }
+ 
+-  if (IsRustyQrCodeGeneratorFeatureEnabled()) {
+-    return GenerateQrCodeUsingRust(in, min_version);
+-  }
+-
+   std::vector<Segment> segments;
+   const QRVersionInfo* version_info = nullptr;
+ 
