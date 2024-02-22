@@ -33,7 +33,7 @@
 +#endif
 --- a/chrome/browser/signin/signin_util_win.cc
 +++ b/chrome/browser/signin/signin_util_win.cc
-@@ -276,12 +276,6 @@ bool IsGCPWUsedInOtherProfile(Profile* p
+@@ -274,12 +274,6 @@ bool IsGCPWUsedInOtherProfile(Profile* p
  }
  
  void SigninWithCredentialProviderIfPossible(Profile* profile) {
