@@ -1,6 +1,6 @@
 --- a/components/qr_code_generator/BUILD.gn
 +++ b/components/qr_code_generator/BUILD.gn
-@@ -39,21 +39,11 @@ source_set("qr_code_generator") {
+@@ -40,21 +40,11 @@ source_set("qr_code_generator") {
    ]
    deps = [
      ":qr_code_generator_features",
@@ -69,14 +69,13 @@
  }  // namespace
  
  QRCodeGenerator::QRCodeGenerator() = default;
-@@ -617,10 +590,6 @@ absl::optional<QRCodeGenerator::Generate
-     return absl::nullopt;
-   }
- 
+@@ -613,9 +586,6 @@ QRCodeGenerator::GeneratedCode::~Generat
+ absl::optional<QRCodeGenerator::GeneratedCode> QRCodeGenerator::Generate(
+     base::span<const uint8_t> in,
+     absl::optional<int> min_version) {
 -  if (IsRustyQrCodeGeneratorFeatureEnabled()) {
 -    return GenerateQrCodeUsingRust(in, min_version);
 -  }
--
-   std::vector<Segment> segments;
-   const QRVersionInfo* version_info = nullptr;
  
+   if (in.size() > kMaxInputSize) {
+     return absl::nullopt;
