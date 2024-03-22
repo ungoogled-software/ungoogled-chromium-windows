@@ -9,14 +9,3 @@
      update_args = [
        "--print-revision",
        "--verify-version=$clang_version",
---- a/build/toolchain/toolchain.gni
-+++ b/build/toolchain/toolchain.gni
-@@ -47,7 +47,7 @@ declare_args() {
-   if (llvm_android_mainline) {  # https://crbug.com/1481060
-     clang_version = "17"
-   } else {
--    clang_version = "18"
-+    clang_version = "17"
-   }
- }
- 

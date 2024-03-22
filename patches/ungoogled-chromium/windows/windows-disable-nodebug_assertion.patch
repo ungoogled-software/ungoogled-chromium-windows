@@ -1,7 +1,7 @@
 # Windows does not support weak symbols
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -1111,7 +1111,7 @@ component("base") {
+@@ -1119,7 +1119,7 @@ component("base") {
      public_deps += [ "//build/rust:cxx_cppdeps" ]
    }
  

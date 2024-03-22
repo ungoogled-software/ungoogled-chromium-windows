@@ -100,6 +100,7 @@ ln -s /usr/bin/vim /usr/bin/vi
 1. Clone sources
 	**`Developer Command Prompt for VS`**
 	* `python3 ungoogled-chromium\utils\clone.py -o build\src`
+1. Check for rust version change (see below)
 1. Update pruning list
 	**`Developer Command Prompt for VS`**
 	* `python3 ungoogled-chromium\devutils\update_lists.py -t build\src --domain-regex ungoogled-chromium\domain_regex.list`
@@ -124,6 +125,18 @@ ln -s /usr/bin/vim /usr/bin/vi
 		* `./devutils/check_patch_files.sh`
 1. Check for esbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
 1. Use git to add changes and commit
+
+### Update rust
+1. Check `RUST_REVISION` constant in file `tools/rust/update_rust.py` in build root.
+	1. Current revision is `340bb19fea20fd5f9357bbfac542fad84fc7ea2b`
+1. Get date for nightly rust build from rust github page: `https://github.com/rust-lang/rust/commit/340bb19fea20fd5f9357bbfac542fad84fc7ea2b`
+	1. In this case, the corresponding nightly build date is `2024-02-14`
+	1. Adapt `downloads.ini` accordingly
+1. Download nightly rust build from: https://static.rust-lang.org/dist/2024-02-14/rust-nightly-x86_64-pc-windows-msvc.tar.gz
+	1. Extract archive
+	1. Execute `rustc\bin\rustc.exe -V` to get rust version string
+	1. Adapt `build.py` accordingly
+	1. Adapt `patches\ungoogled-chromium\windows\windows-fix-building-with-rust.patch` accordingly
 
 ## License
 
