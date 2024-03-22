@@ -219,6 +219,42 @@ def main():
             None
         )
 
+    # Check if rust-toolchain folder has been populated
+    HOST_CPU_IS_64BIT = sys.maxsize > 2**32
+    RUST_DIR_DST = source_tree / 'third_party' / 'rust-toolchain'
+    RUST_DIR_SRC64 = source_tree / 'third_party' / 'rust-toolchain-x64'
+    RUST_DIR_SRC86 = source_tree / 'third_party' / 'rust-toolchain-x86'
+    RUST_FLAG_FILE = RUST_DIR_DST / 'INSTALLED_VERSION'
+    if not args.ci or not RUST_FLAG_FILE.exists():
+        # Directories to copy from source to target folder
+        DIRS_TO_COPY = ['bin', 'lib']
+
+        # Loop over all source folders
+        for rust_dir_src in [RUST_DIR_SRC64, RUST_DIR_SRC86]:
+            # Loop over all dirs to copy
+            for dir_to_copy in DIRS_TO_COPY:
+                # Copy bin folder for host architecture
+                if (dir_to_copy == 'bin') and (HOST_CPU_IS_64BIT != (rust_dir_src == RUST_DIR_SRC64)):
+                    continue
+
+                # Create target dir
+                target_dir = RUST_DIR_DST / dir_to_copy
+                if not os.path.isdir(target_dir):
+                    os.makedirs(target_dir)
+
+                # Loop over all subfolders of the rust source dir
+                for cp_src in rust_dir_src.glob(f'*/{dir_to_copy}/*'):
+                    cp_dst = target_dir / cp_src.name
+                    if cp_src.is_dir():
+                        shutil.copytree(cp_src, cp_dst, dirs_exist_ok=True)
+                    else:
+                        shutil.copy2(cp_src, cp_dst)
+
+        # Generate version file
+        with open(RUST_FLAG_FILE, 'w') as f:
+            f.write('rustc 1.78.0-nightly (a84bb95a1 2024-02-13)')
+            f.write('\n')
+
     if not args.ci or not (source_tree / 'out/Default').exists():
         # Output args.gn
         (source_tree / 'out/Default').mkdir(parents=True)
