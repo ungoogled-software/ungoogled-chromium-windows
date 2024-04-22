@@ -1,0 +1,38 @@
+--- a/chrome/browser/enterprise/connectors/connectors_prefs.cc
++++ b/chrome/browser/enterprise/connectors/connectors_prefs.cc
+@@ -69,10 +69,6 @@ void RegisterProfilePrefs(PrefRegistrySi
+ #endif
+   registry->RegisterIntegerPref(kOnSecurityEventScopePref, 0);
+   RegisterDeviceTrustConnectorProfilePrefs(registry);
+-
+-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-  client_certificates::RegisterProfilePrefs(registry);
+-#endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+ }
+ 
+ void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
+--- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
++++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
+@@ -1641,9 +1641,6 @@ const PolicyToPreferenceMapEntry kSimple
+   { key::kRendererAppContainerEnabled,
+     prefs::kRendererAppContainerEnabled,
+     base::Value::Type::BOOLEAN },
+-  { key::kBoundSessionCredentialsEnabled,
+-    prefs::kBoundSessionCredentialsEnabled,
+-    base::Value::Type::BOOLEAN },
+   { key::kBrowserLegacyExtensionPointsBlocked,
+     prefs::kBlockBrowserLegacyExtensionPoints,
+     base::Value::Type::BOOLEAN },
+@@ -2112,12 +2109,6 @@ const PolicyToPreferenceMapEntry kSimple
+     prefs::kCAPlatformIntegrationEnabled,
+     base::Value::Type::BOOLEAN },
+ #endif // BUILDFLAG(CHROME_CERTIFICATE_POLICIES_SUPPORTED)
+-
+-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-  { key::kProvisionManagedClientCertificateForUser,
+-    client_certificates::prefs::kProvisionManagedClientCertificateForUserPrefs,
+-    base::Value::Type::INTEGER },
+-#endif  //
+ };
+ // clang-format on
+ 

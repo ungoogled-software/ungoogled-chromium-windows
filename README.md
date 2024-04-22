@@ -128,11 +128,11 @@ ln -s /usr/bin/vim /usr/bin/vi
 
 ### Update rust
 1. Check `RUST_REVISION` constant in file `tools/rust/update_rust.py` in build root.
-	1. Current revision is `340bb19fea20fd5f9357bbfac542fad84fc7ea2b`
-1. Get date for nightly rust build from rust github page: `https://github.com/rust-lang/rust/commit/340bb19fea20fd5f9357bbfac542fad84fc7ea2b`
-	1. In this case, the corresponding nightly build date is `2024-02-14`
+	1. Current revision is `7168c13579a550f2c47f7eea22f5e226a436cd00`
+1. Get date for nightly rust build from rust github page: `https://github.com/rust-lang/rust/commit/7168c13579a550f2c47f7eea22f5e226a436cd00`
+	1. In this case, the corresponding nightly build date is `2024-02-21`
 	1. Adapt `downloads.ini` accordingly
-1. Download nightly rust build from: https://static.rust-lang.org/dist/2024-02-14/rust-nightly-x86_64-pc-windows-msvc.tar.gz
+1. Download nightly rust build from: https://static.rust-lang.org/dist/2024-02-21/rust-nightly-x86_64-pc-windows-msvc.tar.gz
 	1. Extract archive
 	1. Execute `rustc\bin\rustc.exe -V` to get rust version string
 	1. Adapt `build.py` accordingly
