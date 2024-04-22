@@ -58,7 +58,7 @@
  
 --- a/build/win/message_compiler.py
 +++ b/build/win/message_compiler.py
-@@ -118,24 +118,6 @@ def main():
+@@ -121,24 +121,6 @@ def main():
          header_contents += sorted(define_block, key=lambda s: s.split()[-1])
        with open(header_file, 'wb') as f:
          f.write(''.join(header_contents))
@@ -85,7 +85,7 @@
      sys.exit(e.returncode)
 --- a/third_party/dawn/third_party/gn/dxc/build/message_compiler.py
 +++ b/third_party/dawn/third_party/gn/dxc/build/message_compiler.py
-@@ -137,24 +137,6 @@ def main():
+@@ -140,24 +140,6 @@ def main():
                                            key=lambda s: s.split()[-1])
              with open(header_file, 'w') as f:
                  f.write(''.join(header_contents))

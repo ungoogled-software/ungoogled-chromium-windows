@@ -3,7 +3,7 @@
 
 --- a/chrome/app/BUILD.gn
 +++ b/chrome/app/BUILD.gn
-@@ -43,10 +43,7 @@ source_set("chrome_dll_resources") {
+@@ -44,10 +44,7 @@ source_set("chrome_dll_resources") {
    deps = [ ":command_ids" ]
  
    if (is_win) {
@@ -15,34 +15,6 @@
  
      deps += [
        "//build:branding_buildflags",
---- a/chrome/browser/enterprise/connectors/connectors_prefs.cc
-+++ b/chrome/browser/enterprise/connectors/connectors_prefs.cc
-@@ -69,10 +69,6 @@ void RegisterProfilePrefs(PrefRegistrySi
- #endif
-   registry->RegisterIntegerPref(kOnSecurityEventScopePref, 0);
-   RegisterDeviceTrustConnectorProfilePrefs(registry);
--
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
--  client_certificates::RegisterProfilePrefs(registry);
--#endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
- }
- 
- void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
---- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-+++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2083,12 +2083,6 @@ const PolicyToPreferenceMapEntry kSimple
-     prefs::kCAPlatformIntegrationEnabled,
-     base::Value::Type::BOOLEAN },
- #endif // BUILDFLAG(CHROME_CERTIFICATE_POLICIES_SUPPORTED)
--
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
--  { key::kProvisionManagedClientCertificateForUser,
--    client_certificates::prefs::kProvisionManagedClientCertificateForUserPrefs,
--    base::Value::Type::INTEGER },
--#endif  //
- };
- // clang-format on
- 
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn
 @@ -7,6 +7,7 @@ import("//components/safe_browsing/build
