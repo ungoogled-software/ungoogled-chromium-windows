@@ -2,7 +2,7 @@
 
 --- a/build/build_config.h
 +++ b/build/build_config.h
-@@ -49,7 +49,7 @@
+@@ -51,7 +51,7 @@
  //    ARCH_CPU_31_BITS / ARCH_CPU_32_BITS / ARCH_CPU_64_BITS
  //    ARCH_CPU_BIG_ENDIAN / ARCH_CPU_LITTLE_ENDIAN
  

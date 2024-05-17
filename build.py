@@ -252,7 +252,7 @@ def main():
 
         # Generate version file
         with open(RUST_FLAG_FILE, 'w') as f:
-            f.write('rustc 1.78.0-nightly (bb594538f 2024-02-20)')
+            f.write('rustc 1.79.0-nightly (a07f3eb43 2024-04-11)')
             f.write('\n')
 
     if not args.ci or not (source_tree / 'out/Default').exists():
