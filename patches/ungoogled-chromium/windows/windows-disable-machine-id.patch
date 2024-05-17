@@ -14,7 +14,7 @@
  #endif  // CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
 --- a/components/metrics/machine_id_provider_win.cc
 +++ b/components/metrics/machine_id_provider_win.cc
-@@ -9,6 +9,7 @@
+@@ -10,6 +10,7 @@
  #include <winioctl.h>
  
  #include "base/base_paths.h"
@@ -22,7 +22,7 @@
  #include "base/files/file_path.h"
  #include "base/notreached.h"
  #include "base/path_service.h"
-@@ -19,6 +20,9 @@ namespace metrics {
+@@ -20,6 +21,9 @@ namespace metrics {
  
  // static
  bool MachineIdProvider::HasId() {
@@ -32,7 +32,7 @@
    return true;
  }
  
-@@ -26,6 +30,10 @@ bool MachineIdProvider::HasId() {
+@@ -27,6 +31,10 @@ bool MachineIdProvider::HasId() {
  // is running from.
  // static
  std::string MachineIdProvider::GetMachineId() {

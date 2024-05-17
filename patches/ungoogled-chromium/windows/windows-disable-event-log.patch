@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -426,7 +426,6 @@ static_library("common_lib") {
+@@ -425,7 +425,6 @@ static_library("common_lib") {
      ]
      deps += [
        "//chrome/chrome_elf:chrome_elf_main_include",
@@ -33,3 +33,36 @@
  #endif
  
    base::StatisticsRecorder::InitLogOnShutdown();
+--- a/chrome/elevation_service/BUILD.gn
++++ b/chrome/elevation_service/BUILD.gn
+@@ -53,7 +53,6 @@ executable("elevation_service") {
+     ":version_resources",
+     "//base",
+     "//build/win:default_exe_manifest",
+-    "//chrome/common/win:eventlog_provider",
+     "//chrome/install_static:install_static_util",
+     "//chrome/install_static:primary_module",
+     "//components/crx_file",
+--- a/chrome/elevation_service/elevation_service.cc
++++ b/chrome/elevation_service/elevation_service.cc
+@@ -12,7 +12,6 @@
+ #include "base/syslog_logging.h"
+ #include "base/win/process_startup_helper.h"
+ #include "base/win/scoped_com_initializer.h"
+-#include "chrome/common/win/eventlog_messages.h"
+ #include "chrome/elevation_service/service_main.h"
+ #include "chrome/install_static/install_details.h"
+ #include "chrome/install_static/product_install_details.h"
+@@ -34,12 +33,6 @@ extern "C" int WINAPI wWinMain(HINSTANCE
+ 
+   install_static::InitializeProductDetailsForPrimaryModule();
+ 
+-  // Enable logging to the Windows Event Log.
+-  logging::SetEventSource(
+-      base::WideToUTF8(
+-          install_static::InstallDetails::Get().install_full_name()),
+-      ELEVATION_SERVICE_CATEGORY, MSG_ELEVATION_SERVICE_LOG_MESSAGE);
+-
+   // Make sure the process exits cleanly on unexpected errors.
+   base::EnableTerminationOnHeapCorruption();
+   base::EnableTerminationOnOutOfMemory();

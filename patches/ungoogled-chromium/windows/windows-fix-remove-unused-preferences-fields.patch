@@ -13,7 +13,7 @@
  void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -1641,9 +1641,6 @@ const PolicyToPreferenceMapEntry kSimple
+@@ -1646,9 +1646,6 @@ const PolicyToPreferenceMapEntry kSimple
    { key::kRendererAppContainerEnabled,
      prefs::kRendererAppContainerEnabled,
      base::Value::Type::BOOLEAN },
@@ -23,7 +23,7 @@
    { key::kBrowserLegacyExtensionPointsBlocked,
      prefs::kBlockBrowserLegacyExtensionPoints,
      base::Value::Type::BOOLEAN },
-@@ -2112,12 +2109,6 @@ const PolicyToPreferenceMapEntry kSimple
+@@ -2118,12 +2115,6 @@ const PolicyToPreferenceMapEntry kSimple
      prefs::kCAPlatformIntegrationEnabled,
      base::Value::Type::BOOLEAN },
  #endif // BUILDFLAG(CHROME_CERTIFICATE_POLICIES_SUPPORTED)
