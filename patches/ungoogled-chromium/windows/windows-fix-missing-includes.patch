@@ -1,0 +1,10 @@
+--- a/third_party/blink/renderer/core/xml/xslt_extensions.cc
++++ b/third_party/blink/renderer/core/xml/xslt_extensions.cc
+@@ -30,6 +30,7 @@
+ #include <libxslt/extensions.h>
+ #include <libxslt/extra.h>
+ #include <libxslt/xsltutils.h>
++#include <cstdlib>
+ 
+ #include "base/check.h"
+ 
