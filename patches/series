@@ -18,7 +18,6 @@ ungoogled-chromium/windows/windows-fix-rc-terminating-error.patch
 ungoogled-chromium/windows/windows-fix-building-without-safebrowsing.patch
 ungoogled-chromium/windows/windows-fix-generate-resource-allowed-list.patch
 ungoogled-chromium/windows/windows-disable-clang-version-check.patch
-ungoogled-chromium/windows/windows-disable-nodebug_assertion.patch
 ungoogled-chromium/windows/windows-fix-licenses-gn-path.patch
 ungoogled-chromium/windows/windows-fix-building-with-rust.patch
 ungoogled-chromium/windows/windows-fix-remove-unused-preferences-fields.patch

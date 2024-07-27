@@ -152,39 +152,40 @@ def main():
         downloads_cache.mkdir(parents=True, exist_ok=True)
         _make_tmp_paths()
 
-        # Get download metadata (DownloadInfo)
-        if args.tarball:
-            download_info = downloads.DownloadInfo([
-                _ROOT_DIR / 'downloads.ini',
-                _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
-            ])
-        else:
-            download_info = downloads.DownloadInfo([
-                _ROOT_DIR / 'downloads.ini',
-            ])
-
-        # Retrieve downloads
-        get_logger().info('Downloading required files...')
-        downloads.retrieve_downloads(download_info, downloads_cache, True,
-                                              args.disable_ssl_verification)
-        try:
-            downloads.check_downloads(download_info, downloads_cache)
-        except downloads.HashMismatchError as exc:
-            get_logger().error('File checksum does not match: %s', exc)
-            exit(1)
-
-        # Prepare source folder
-        if not args.tarball:
-            # Clone sources
-            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
-
-        # Unpack downloads
+        # Extractors
         extractors = {
             ExtractorEnum.SEVENZIP: args.sevenz_path,
             ExtractorEnum.WINRAR: args.winrar_path,
         }
-        get_logger().info('Unpacking downloads...')
-        downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
+
+        # Prepare source folder
+        if args.tarball:
+            # Download chromium tarball
+            get_logger().info('Downloading chromium tarball...')
+            download_info = downloads.DownloadInfo([_ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini'])
+            downloads.retrieve_downloads(download_info, downloads_cache, True, args.disable_ssl_verification)
+            try:
+                downloads.check_downloads(download_info, downloads_cache)
+            except downloads.HashMismatchError as exc:
+                get_logger().error('File checksum does not match: %s', exc)
+                exit(1)
+
+            # Unpack chromium tarball
+            get_logger().info('Unpacking chromium tarball...')
+            downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
+        else:
+            # Clone sources
+            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
+
+        # Retrieve windows downloads
+        get_logger().info('Downloading required files...')
+        download_info_win = downloads.DownloadInfo([_ROOT_DIR / 'downloads.ini'])
+        downloads.retrieve_downloads(download_info_win, downloads_cache, True, args.disable_ssl_verification)
+        try:
+            downloads.check_downloads(download_info_win, downloads_cache)
+        except downloads.HashMismatchError as exc:
+            get_logger().error('File checksum does not match: %s', exc)
+            exit(1)
 
         # Prune binaries
         pruning_list = (_ROOT_DIR / 'ungoogled-chromium' / 'pruning.list') if args.tarball else (_ROOT_DIR  / 'pruning.list')
@@ -195,6 +196,10 @@ def main():
         if unremovable_files:
             get_logger().error('Files could not be pruned: %s', unremovable_files)
             parser.exit(1)
+
+        # Unpack downloads
+        get_logger().info('Unpacking downloads...')
+        downloads.unpack_downloads(download_info_win, downloads_cache, source_tree, extractors)
 
         # Apply patches
         # First, ungoogled-chromium-patches
@@ -252,7 +257,7 @@ def main():
 
         # Generate version file
         with open(RUST_FLAG_FILE, 'w') as f:
-            f.write('rustc 1.79.0-nightly (ef8b9dcf2 2024-04-24)')
+            f.write('rustc 1.80.0-nightly (faefc618c 2024-05-07)')
             f.write('\n')
 
     if not args.ci or not (source_tree / 'out/Default').exists():
@@ -277,6 +282,13 @@ def main():
 
         # Run gn gen
         _run_build_process('out\\Default\\gn.exe', 'gen', 'out\\Default', '--fail-on-unused-args')
+
+    if not args.ci or not os.path.exists('third_party\\rust-toolchain\\bin\\bindgen.exe'):
+        # Build bindgen
+        _run_build_process(
+            sys.executable,
+            'tools\\rust\\build_bindgen.py')
+
     # Run ninja
     if args.ci:
         _run_build_process_timeout('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',

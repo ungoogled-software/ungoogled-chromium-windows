@@ -124,6 +124,8 @@ ln -s /usr/bin/vim /usr/bin/vi
 	1. Sanity checking for consistency in series file
 		* `./devutils/check_patch_files.sh`
 1. Check for esbuild dependency changes in file `build/src/DEPS` and adapt `downloads.ini` accordingly
+1. Check for commit hash changes of `src` submodule in `third_party/microsoft_dxheaders` (e.g. using GitHub https://github.com/chromium/chromium/tree/127.0.6533.72/third_party/microsoft_dxheaders) and adapt `downloads.ini` accordingly
+1. Check for version changes of windows rust crate (`third_party/rust/windows_x86_64_msvc/`) and adapt `downloads.ini` and `patches/ungoogled-chromium/windows\windows-fix-building-with-rust.patch` accordingly
 1. Use git to add changes and commit
 
 ### Update rust

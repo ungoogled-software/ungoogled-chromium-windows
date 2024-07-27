@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -229,8 +229,6 @@ clang_lib("compiler_builtins") {
+@@ -245,8 +245,6 @@ clang_lib("compiler_builtins") {
      } else {
        libname = "ios"
      }
@@ -11,19 +11,132 @@
  
 --- a/build/config/rust.gni
 +++ b/build/config/rust.gni
-@@ -54,13 +54,13 @@ declare_args() {
+@@ -54,7 +54,7 @@ declare_args() {
    # To use a custom toolchain instead, specify an absolute path to the root of
    # a Rust sysroot, which will have a 'bin' directory and others. Commonly
    # <home dir>/.rustup/toolchains/nightly-<something>-<something>
 -  rust_sysroot_absolute = ""
-+  rust_sysroot_absolute = "../../third_party/rust-toolchain"
++  rust_sysroot_absolute = "//third_party/rust-toolchain"
  
-   # If you're using a Rust toolchain as specified by rust_sysroot_absolute,
+   # Directory under which to find `bin/bindgen` (a `bin` directory containing
+   # the bindgen exectuable).
+@@ -64,7 +64,7 @@ declare_args() {
    # set this to the output of `rustc -V`. Changing this string will cause all
    # Rust targets to be rebuilt, which allows you to update your toolchain and
    # not break incremental builds.
 -  rustc_version = ""
-+  rustc_version = "rustc 1.79.0-nightly (ef8b9dcf2 2024-04-24)"
++  rustc_version = "rustc 1.80.0-nightly (faefc618c 2024-05-07)"
  
    # If you're using a Rust toolchain as specified by rust_sysroot_absolute,
    # you can specify whether it supports nacl here.
+--- a/third_party/rust/windows_i686_msvc/v0_52/BUILD.gn
++++ b/third_party/rust/windows_i686_msvc/v0_52/BUILD.gn
+@@ -12,13 +12,13 @@ cargo_crate("lib") {
+   crate_name = "windows_i686_msvc"
+   epoch = "0.52"
+   crate_type = "rlib"
+-  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/src/lib.rs"
+-  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/src/lib.rs" ]
++  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/src/lib.rs"
++  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/src/lib.rs" ]
+   inputs = []
+ 
+   build_native_rust_unit_tests = false
+   edition = "2021"
+-  cargo_pkg_version = "0.52.5"
++  cargo_pkg_version = "0.52.0"
+   cargo_pkg_authors = "Microsoft"
+   cargo_pkg_name = "windows_i686_msvc"
+   cargo_pkg_description = "Import lib for Windows"
+@@ -28,9 +28,9 @@ cargo_crate("lib") {
+   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
+   proc_macro_configs -= [ "//build/config/compiler:chromium_code" ]
+   proc_macro_configs += [ "//build/config/compiler:no_chromium_code" ]
+-  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/build.rs"
+-  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/build.rs" ]
+-  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/src/../lib/windows.0.52.0.lib" ]
++  build_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/build.rs"
++  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/build.rs" ]
++  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/lib/windows.0.52.0.lib" ]
+ 
+   # Only for usage from third-party crates. Add the crate to
+   # //third_party/rust/chromium_crates_io/Cargo.toml to use
+--- a/third_party/rust/windows_x86_64_msvc/v0_52/BUILD.gn
++++ b/third_party/rust/windows_x86_64_msvc/v0_52/BUILD.gn
+@@ -12,13 +12,13 @@ cargo_crate("lib") {
+   crate_name = "windows_x86_64_msvc"
+   epoch = "0.52"
+   crate_type = "rlib"
+-  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/src/lib.rs"
+-  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/src/lib.rs" ]
++  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/src/lib.rs"
++  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/src/lib.rs" ]
+   inputs = []
+ 
+   build_native_rust_unit_tests = false
+   edition = "2021"
+-  cargo_pkg_version = "0.52.5"
++  cargo_pkg_version = "0.52.0"
+   cargo_pkg_authors = "Microsoft"
+   cargo_pkg_name = "windows_x86_64_msvc"
+   cargo_pkg_description = "Import lib for Windows"
+@@ -28,9 +28,9 @@ cargo_crate("lib") {
+   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
+   proc_macro_configs -= [ "//build/config/compiler:chromium_code" ]
+   proc_macro_configs += [ "//build/config/compiler:no_chromium_code" ]
+-  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/build.rs"
+-  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/build.rs" ]
+-  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/src/../lib/windows.0.52.0.lib" ]
++  build_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/build.rs"
++  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/build.rs" ]
++  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/lib/windows.0.52.0.lib" ]
+ 
+   # Only for usage from third-party crates. Add the crate to
+   # //third_party/rust/chromium_crates_io/Cargo.toml to use
+--- a/tools/rust/build_bindgen.py
++++ b/tools/rust/build_bindgen.py
+@@ -28,8 +28,7 @@ from update import (RmTree)
+ 
+ # The git hash to use.
+ BINDGEN_GIT_VERSION = 'f93d5dfa6d5d7409bea584f3eab38e1fc52b8360'
+-BINDGEN_GIT_REPO = ('https://chromium.googlesource.com/external/' +
+-                    'github.com/rust-lang/rust-bindgen')
++BINDGEN_GIT_REPO = ('https://github.com/rust-lang/rust-bindgen')
+ 
+ BINDGEN_SRC_DIR = os.path.join(THIRD_PARTY_DIR, 'rust-toolchain-intermediate',
+                                'bindgen-src')
+@@ -102,15 +101,8 @@ def RunCargo(cargo_args):
+               f'the build_rust.py script builds rustc that is needed here.')
+         sys.exit(1)
+ 
+-    clang_bins_dir = os.path.join(RUST_HOST_LLVM_INSTALL_DIR, 'bin')
+-    llvm_dir = RUST_HOST_LLVM_INSTALL_DIR
+-
+-    if not os.path.exists(os.path.join(llvm_dir, 'bin', f'llvm-config{EXE}')):
+-        print(f'Missing llvm-config in {llvm_dir}. This '
+-              f'script expects to be run after build_rust.py is run as '
+-              f'the build_rust.py script produces the LLVM libraries that '
+-              f'are needed here.')
+-        sys.exit(1)
++    clang_bins_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts', 'bin')
++    llvm_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts')
+ 
+     env = collections.defaultdict(str, os.environ)
+     # Cargo normally stores files in $HOME. Override this.
+@@ -120,7 +112,6 @@ def RunCargo(cargo_args):
+     env['RUSTC'] = rustc_bin
+ 
+     # Use the LLVM libs and clang compiler from the rustc build.
+-    env['LLVM_CONFIG_PATH'] = os.path.join(llvm_dir, 'bin', 'llvm-config')
+     if sys.platform == 'win32':
+         env['LIBCLANG_PATH'] = os.path.join(llvm_dir, 'bin')
+     else:
+@@ -207,7 +198,7 @@ def main():
+     install_dir = os.path.join(RUST_TOOLCHAIN_OUT_DIR)
+     print(f'Installing bindgen to {install_dir} ...')
+ 
+-    llvm_dir = RUST_HOST_LLVM_INSTALL_DIR
++    llvm_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts')
+     shutil.copy(
+         os.path.join(build_dir, RustTargetTriple(), 'release',
+                      f'bindgen{EXE}'), os.path.join(install_dir, 'bin'))
