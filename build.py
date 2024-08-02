@@ -172,7 +172,7 @@ def main():
 
             # Unpack chromium tarball
             get_logger().info('Unpacking chromium tarball...')
-            downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
+            downloads.unpack_downloads(download_info, downloads_cache, source_tree, None, extractors)
         else:
             # Clone sources
             subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
@@ -199,7 +199,7 @@ def main():
 
         # Unpack downloads
         get_logger().info('Unpacking downloads...')
-        downloads.unpack_downloads(download_info_win, downloads_cache, source_tree, extractors)
+        downloads.unpack_downloads(download_info_win, downloads_cache, source_tree, None, extractors)
 
         # Apply patches
         # First, ungoogled-chromium-patches
