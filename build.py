@@ -175,13 +175,13 @@ def main():
             downloads.unpack_downloads(download_info, downloads_cache, source_tree, None, extractors)
         else:
             # Clone sources
-            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
+            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
 
             # Setup GN
             get_logger().info('Setting up GN...')
             gnpath = source_tree / 'uc_staging' / 'gn_win'
             gnpath.mkdir(parents=True, exist_ok=True)
-            subprocess.run(['git', 'clone', "https://gn.googlesource.com/gn", str(gnpath)], check=True)
+            subprocess.run(['git', 'clone', 'https://gn.googlesource.com/gn', str(gnpath)], check=True)
             subprocess.run(['git', 'reset', '--hard', 'b2afae122eeb6ce09c52d63f67dc53fc517dbdc8'], cwd=gnpath, check=True)
             subprocess.run(['git', 'clean', '-ffdx'], cwd=gnpath, check=True)
             subprocess.run([sys.executable, str(gnpath / 'build' / 'gen.py')], check=True)
