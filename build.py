@@ -172,10 +172,28 @@ def main():
 
             # Unpack chromium tarball
             get_logger().info('Unpacking chromium tarball...')
-            downloads.unpack_downloads(download_info, downloads_cache, source_tree, extractors)
+            downloads.unpack_downloads(download_info, downloads_cache, source_tree, None, extractors)
         else:
             # Clone sources
-            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
+            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
+
+            # Setup GN
+            get_logger().info('Setting up GN...')
+            gnpath = source_tree / 'uc_staging' / 'gn_win'
+            gnpath.mkdir(parents=True, exist_ok=True)
+            subprocess.run(['git', 'clone', 'https://gn.googlesource.com/gn', str(gnpath)], check=True)
+            subprocess.run(['git', 'reset', '--hard', 'b2afae122eeb6ce09c52d63f67dc53fc517dbdc8'], cwd=gnpath, check=True)
+            subprocess.run(['git', 'clean', '-ffdx'], cwd=gnpath, check=True)
+            subprocess.run([sys.executable, str(gnpath / 'build' / 'gen.py')], check=True)
+            for item in gnpath.iterdir():
+                if not item.is_dir():
+                    shutil.copy(item, source_tree / 'tools' / 'gn')
+                elif item.name != '.git' and item.name != 'out':
+                    shutil.copytree(item, source_tree / 'tools' / 'gn' / item.name, dirs_exist_ok=True)
+            last_commit_position = source_tree / 'tools' / 'gn' / 'bootstrap' / 'last_commit_position.h'
+            if last_commit_position.exists():
+                last_commit_position.unlink()
+            shutil.move(str(gnpath / 'out' / 'last_commit_position.h'), str(last_commit_position))
 
         # Retrieve windows downloads
         get_logger().info('Downloading required files...')
@@ -199,7 +217,7 @@ def main():
 
         # Unpack downloads
         get_logger().info('Unpacking downloads...')
-        downloads.unpack_downloads(download_info_win, downloads_cache, source_tree, extractors)
+        downloads.unpack_downloads(download_info_win, downloads_cache, source_tree, None, extractors)
 
         # Apply patches
         # First, ungoogled-chromium-patches
