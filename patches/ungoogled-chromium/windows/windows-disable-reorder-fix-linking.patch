@@ -58,7 +58,7 @@
        # each platform lists its own files rather than relying on filtering or
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -478,11 +478,6 @@ python_library("chromedriver_py_tests")
+@@ -480,11 +480,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }
@@ -81,5 +81,5 @@
 -  }
 -
    if (is_linux || is_chromeos) {
-     data_deps += [ "//third_party/breakpad:dump_syms($host_toolchain)" ]
+     data_deps += [ "//third_party/breakpad:dump_syms" ]
  

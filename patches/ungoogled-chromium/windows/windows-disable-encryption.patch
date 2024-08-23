@@ -35,15 +35,15 @@
    input.cbData = static_cast<DWORD>(ciphertext.size());
 --- a/components/os_crypt/sync/os_crypt_win.cc
 +++ b/components/os_crypt/sync/os_crypt_win.cc
-@@ -7,6 +7,7 @@
- #include <windows.h>
- 
+@@ -9,6 +9,7 @@
  #include "base/base64.h"
+ #include "base/check.h"
+ #include "base/check_op.h"
 +#include "base/command_line.h"
  #include "base/containers/span.h"
  #include "base/feature_list.h"
  #include "base/logging.h"
-@@ -47,6 +48,10 @@ constexpr char kDPAPIKeyPrefix[] = "DPAP
+@@ -49,6 +50,10 @@ constexpr char kDPAPIKeyPrefix[] = "DPAP
  
  bool EncryptStringWithDPAPI(const std::string& plaintext,
                              std::string* ciphertext) {
@@ -54,7 +54,7 @@
    DATA_BLOB input;
    input.pbData =
        const_cast<BYTE*>(reinterpret_cast<const BYTE*>(plaintext.data()));
-@@ -81,6 +86,11 @@ bool EncryptStringWithDPAPI(const std::s
+@@ -83,6 +88,11 @@ bool EncryptStringWithDPAPI(const std::s
  
  bool DecryptStringWithDPAPI(const std::string& ciphertext,
                              std::string* plaintext) {

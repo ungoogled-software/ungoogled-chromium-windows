@@ -48,9 +48,11 @@
  
 --- a/components/safe_browsing/buildflags.gni
 +++ b/components/safe_browsing/buildflags.gni
-@@ -19,4 +19,5 @@ declare_args() {
+@@ -19,6 +19,7 @@ declare_args() {
    } else {
      safe_browsing_mode = 1
    }
 +  safe_browsing_mode = 0
- }
+ 
+   # Allows building without //third_party/unrar included, for license reasons
+   safe_browsing_use_unrar = true
