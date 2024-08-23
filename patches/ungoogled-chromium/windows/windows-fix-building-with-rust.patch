@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -245,8 +245,6 @@ clang_lib("compiler_builtins") {
+@@ -252,8 +252,6 @@ clang_lib("compiler_builtins") {
      } else {
        libname = "ios"
      }
@@ -35,15 +35,15 @@
    crate_name = "windows_i686_msvc"
    epoch = "0.52"
    crate_type = "rlib"
--  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/src/lib.rs"
--  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/src/lib.rs" ]
+-  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.6/src/lib.rs"
+-  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.6/src/lib.rs" ]
 +  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/src/lib.rs"
 +  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/src/lib.rs" ]
    inputs = []
  
    build_native_rust_unit_tests = false
    edition = "2021"
--  cargo_pkg_version = "0.52.5"
+-  cargo_pkg_version = "0.52.6"
 +  cargo_pkg_version = "0.52.0"
    cargo_pkg_authors = "Microsoft"
    cargo_pkg_name = "windows_i686_msvc"
@@ -52,9 +52,9 @@
    executable_configs += [ "//build/config/compiler:no_chromium_code" ]
    proc_macro_configs -= [ "//build/config/compiler:chromium_code" ]
    proc_macro_configs += [ "//build/config/compiler:no_chromium_code" ]
--  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/build.rs"
--  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/build.rs" ]
--  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.5/src/../lib/windows.0.52.0.lib" ]
+-  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.6/build.rs"
+-  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.6/build.rs" ]
+-  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-0.52.6/src/../lib/windows.0.52.0.lib" ]
 +  build_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/build.rs"
 +  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/build.rs" ]
 +  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/lib/windows.0.52.0.lib" ]
@@ -67,15 +67,15 @@
    crate_name = "windows_x86_64_msvc"
    epoch = "0.52"
    crate_type = "rlib"
--  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/src/lib.rs"
--  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/src/lib.rs" ]
+-  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.6/src/lib.rs"
+-  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.6/src/lib.rs" ]
 +  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/src/lib.rs"
 +  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/src/lib.rs" ]
    inputs = []
  
    build_native_rust_unit_tests = false
    edition = "2021"
--  cargo_pkg_version = "0.52.5"
+-  cargo_pkg_version = "0.52.6"
 +  cargo_pkg_version = "0.52.0"
    cargo_pkg_authors = "Microsoft"
    cargo_pkg_name = "windows_x86_64_msvc"
@@ -84,9 +84,9 @@
    executable_configs += [ "//build/config/compiler:no_chromium_code" ]
    proc_macro_configs -= [ "//build/config/compiler:chromium_code" ]
    proc_macro_configs += [ "//build/config/compiler:no_chromium_code" ]
--  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/build.rs"
--  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/build.rs" ]
--  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.5/src/../lib/windows.0.52.0.lib" ]
+-  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.6/build.rs"
+-  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.6/build.rs" ]
+-  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-0.52.6/src/../lib/windows.0.52.0.lib" ]
 +  build_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/build.rs"
 +  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/build.rs" ]
 +  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/lib/windows.0.52.0.lib" ]

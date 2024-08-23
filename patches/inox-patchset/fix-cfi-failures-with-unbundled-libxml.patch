@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
 +++ b/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
-@@ -143,11 +143,11 @@ class PendingStartElementNSCallback fina
+@@ -148,11 +148,11 @@ class PendingStartElementNSCallback fina
          attribute_count_(attribute_count),
          defaulted_count_(defaulted_count) {
      namespaces_ = static_cast<xmlChar**>(
@@ -14,7 +14,7 @@
      for (int i = 0; i < attribute_count; ++i) {
        // Each attribute has 5 elements in the array:
        // name, prefix, uri, value and an end pointer.
-@@ -162,12 +162,12 @@ class PendingStartElementNSCallback fina
+@@ -167,12 +167,12 @@ class PendingStartElementNSCallback fina
  
    ~PendingStartElementNSCallback() override {
      for (int i = 0; i < namespace_count_ * 2; ++i)
@@ -31,7 +31,7 @@
    }
  
    void Call(XMLDocumentParser* parser) override {
-@@ -215,7 +215,7 @@ class PendingCharactersCallback final
+@@ -220,7 +220,7 @@ class PendingCharactersCallback final
          chars_(xmlStrndup(chars, length)),
          length_(length) {}
  
@@ -40,7 +40,7 @@
  
    void Call(XMLDocumentParser* parser) override {
      parser->Characters(chars_, length_);
-@@ -299,7 +299,7 @@ class PendingErrorCallback final : publi
+@@ -304,7 +304,7 @@ class PendingErrorCallback final : publi
          type_(type),
          message_(xmlStrdup(message)) {}
  
@@ -93,7 +93,7 @@
  }
 --- a/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
-@@ -114,7 +114,7 @@ static xmlDocPtr DocLoaderFunc(const xml
+@@ -119,7 +119,7 @@ static xmlDocPtr DocLoaderFunc(const xml
        xmlChar* base = xmlNodeGetBase(context->document->doc, context->node);
        KURL url(KURL(reinterpret_cast<const char*>(base)),
                 reinterpret_cast<const char*>(uri));
@@ -104,7 +104,7 @@
        fetch_options.initiator_info.name = fetch_initiator_type_names::kXml;
 --- a/third_party/blink/renderer/core/xml/xslt_unicode_sort.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_unicode_sort.cc
-@@ -327,18 +327,18 @@ void XsltUnicodeSortFunction(xsltTransfo
+@@ -332,18 +332,18 @@ void XsltUnicodeSortFunction(xsltTransfo
      comp = static_cast<xsltStylePreComp*>(sorts[j]->psvi);
      if (tempstype[j] == 1) {
        // The data-type needs to be recomputed each time.
