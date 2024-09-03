@@ -35,3 +35,13 @@
    description = CXX $out
    deps = msvc
  
+--- a/tools/gn/build/gen.py
++++ b/tools/gn/build/gen.py
+@@ -575,6 +575,7 @@ def WriteGNNinja(path, platform, host, o
+         '/D_SCL_SECURE_NO_DEPRECATE',
+         '/D_UNICODE',
+         '/D_WIN32_WINNT=0x0A00',
++        '/D_LEGACY_CODE_ASSUMES_STRING_VIEW_INCLUDES_XSTRING',
+         '/FS',
+         '/W4',
+         '/Zi',
