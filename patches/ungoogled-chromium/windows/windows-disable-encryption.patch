@@ -15,7 +15,7 @@
  #endif  // CHROME_BROWSER_UNGOOGLED_PLATFORM_FLAG_ENTRIES_H_
 --- a/components/os_crypt/async/browser/dpapi_key_provider.cc
 +++ b/components/os_crypt/async/browser/dpapi_key_provider.cc
-@@ -9,6 +9,7 @@
+@@ -14,6 +14,7 @@
  #include <wincrypt.h>
  
  #include "base/base64.h"
@@ -23,7 +23,7 @@
  #include "base/logging.h"
  #include "base/metrics/histogram_functions.h"
  #include "base/types/expected.h"
-@@ -35,6 +36,9 @@ constexpr uint8_t kDPAPIKeyPrefix[] = {'
+@@ -40,6 +41,9 @@ constexpr uint8_t kDPAPIKeyPrefix[] = {'
  
  std::optional<std::vector<uint8_t>> DecryptKeyWithDPAPI(
      base::span<const uint8_t> ciphertext) {
