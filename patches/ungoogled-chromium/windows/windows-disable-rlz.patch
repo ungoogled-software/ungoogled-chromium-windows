@@ -10,7 +10,7 @@
  
 --- a/chrome/installer/setup/uninstall.cc
 +++ b/chrome/installer/setup/uninstall.cc
-@@ -62,8 +62,6 @@
+@@ -68,8 +68,6 @@
  #include "chrome/installer/util/util_constants.h"
  #include "chrome/installer/util/work_item.h"
  #include "content/public/common/result_codes.h"
@@ -19,7 +19,7 @@
  
  using base::win::RegKey;
  
-@@ -106,22 +104,6 @@ void ProcessChromeWorkItems(const Instal
+@@ -112,22 +110,6 @@ void ProcessChromeWorkItems(const Instal
    work_item_list->Do();
  }
  
@@ -42,7 +42,7 @@
  // Removes all files from the installer directory. Returns false in case of an
  // error.
  bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
-@@ -845,11 +827,6 @@ InstallStatus UninstallProduct(const Mod
+@@ -886,11 +868,6 @@ InstallStatus UninstallProduct(const Mod
      }
    }
  

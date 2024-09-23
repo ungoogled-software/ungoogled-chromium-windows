@@ -182,7 +182,7 @@ def main():
             gnpath = source_tree / 'uc_staging' / 'gn_win'
             gnpath.mkdir(parents=True, exist_ok=True)
             subprocess.run(['git', 'clone', 'https://gn.googlesource.com/gn', str(gnpath)], check=True)
-            subprocess.run(['git', 'reset', '--hard', 'b2afae122eeb6ce09c52d63f67dc53fc517dbdc8'], cwd=gnpath, check=True)
+            subprocess.run(['git', 'reset', '--hard', 'd010e218ca7077928ad7c9e9cc02fe43b5a8a0ad'], cwd=gnpath, check=True)
             subprocess.run(['git', 'clean', '-ffdx'], cwd=gnpath, check=True)
             subprocess.run([sys.executable, str(gnpath / 'build' / 'gen.py')], check=True)
             for item in gnpath.iterdir():
@@ -275,7 +275,7 @@ def main():
 
         # Generate version file
         with open(RUST_FLAG_FILE, 'w') as f:
-            f.write('rustc 1.81.0-nightly (f8e566053 2024-06-14)')
+            f.write('rustc 1.82.0-nightly (612a33f20 2024-07-29)')
             f.write('\n')
 
     if not args.ci or not (source_tree / 'out/Default').exists():

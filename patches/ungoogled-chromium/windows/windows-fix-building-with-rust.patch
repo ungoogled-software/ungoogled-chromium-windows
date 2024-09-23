@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -252,8 +252,6 @@ clang_lib("compiler_builtins") {
+@@ -247,8 +247,6 @@ clang_lib("compiler_builtins") {
      } else {
        libname = "ios"
      }
