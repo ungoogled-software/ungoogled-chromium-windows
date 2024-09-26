@@ -8,14 +8,3 @@
  
  #include "base/check.h"
  
---- a/third_party/re2/src/re2/re2.h
-+++ b/third_party/re2/src/re2/re2.h
-@@ -220,7 +220,7 @@
- #include "absl/base/call_once.h"
- #include "absl/strings/string_view.h"
- #include "absl/types/optional.h"
--#include "re2/stringpiece.h"
-+#include "stringpiece.h"
- 
- #if defined(__APPLE__)
- #include <TargetConditionals.h>
