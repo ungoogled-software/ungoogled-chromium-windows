@@ -163,16 +163,16 @@ def main():
             # Download chromium tarball
             get_logger().info('Downloading chromium tarball...')
             download_info = downloads.DownloadInfo([_ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini'])
-            downloads.retrieve_downloads(download_info, downloads_cache, True, args.disable_ssl_verification)
+            downloads.retrieve_downloads(download_info, downloads_cache, None, True, args.disable_ssl_verification)
             try:
-                downloads.check_downloads(download_info, downloads_cache)
+                downloads.check_downloads(download_info, downloads_cache, None)
             except downloads.HashMismatchError as exc:
                 get_logger().error('File checksum does not match: %s', exc)
                 exit(1)
 
             # Unpack chromium tarball
             get_logger().info('Unpacking chromium tarball...')
-            downloads.unpack_downloads(download_info, downloads_cache, source_tree, None, extractors)
+            downloads.unpack_downloads(download_info, downloads_cache, None, source_tree, False, None, extractors)
         else:
             # Clone sources
             subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
@@ -198,9 +198,9 @@ def main():
         # Retrieve windows downloads
         get_logger().info('Downloading required files...')
         download_info_win = downloads.DownloadInfo([_ROOT_DIR / 'downloads.ini'])
-        downloads.retrieve_downloads(download_info_win, downloads_cache, True, args.disable_ssl_verification)
+        downloads.retrieve_downloads(download_info_win, downloads_cache, None, True, args.disable_ssl_verification)
         try:
-            downloads.check_downloads(download_info_win, downloads_cache)
+            downloads.check_downloads(download_info_win, downloads_cache, None)
         except downloads.HashMismatchError as exc:
             get_logger().error('File checksum does not match: %s', exc)
             exit(1)
@@ -217,7 +217,7 @@ def main():
 
         # Unpack downloads
         get_logger().info('Unpacking downloads...')
-        downloads.unpack_downloads(download_info_win, downloads_cache, source_tree, None, extractors)
+        downloads.unpack_downloads(download_info_win, downloads_cache, None, source_tree, False, None, extractors)
 
         # Apply patches
         # First, ungoogled-chromium-patches
