@@ -1,6 +1,6 @@
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -2908,7 +2908,6 @@ source_set("browser") {
+@@ -2896,7 +2896,6 @@ source_set("browser") {
      deps += [
        "//components/app_launch_prefetch",
        "//content/utility:delegate_data",

@@ -3,14 +3,22 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -380,7 +380,6 @@ static_library("common_lib") {
+@@ -129,7 +129,6 @@ source_set("request_code_constants") {
+ static_library("common_lib") {
+   visibility = [
+     ":*",
+-    "//chrome/common/win:eventlog_messages",
+   ]
+   sources = [
+     "all_messages.h",
+@@ -380,7 +379,6 @@ static_library("common_lib") {
+       "conflicts/remote_module_watcher_win.cc",
+       "conflicts/remote_module_watcher_win.h",
      ]
-     deps += [
-       "//chrome/chrome_elf:chrome_elf_main_include",
--      "//chrome/common/win:eventlog_messages",
-       "//components/crash/core/app:crash_export_thunk_include",
-     ]
+-    deps += [ "//chrome/common/win:eventlog_messages" ]
  
+     public_deps += [
+       "//components/dom_distiller/core",  # Needed by chrome_content_client.cc.
 --- a/chrome/common/logging_chrome.cc
 +++ b/chrome/common/logging_chrome.cc
 @@ -72,7 +72,6 @@

@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
 +++ b/third_party/blink/renderer/core/xml/parser/xml_document_parser.cc
-@@ -148,11 +148,11 @@ class PendingStartElementNSCallback fina
+@@ -149,11 +149,11 @@ class PendingStartElementNSCallback fina
          attribute_count_(attribute_count),
          defaulted_count_(defaulted_count) {
      namespaces_ = static_cast<xmlChar**>(
@@ -14,7 +14,7 @@
      for (int i = 0; i < attribute_count; ++i) {
        // Each attribute has 5 elements in the array:
        // name, prefix, uri, value and an end pointer.
-@@ -167,12 +167,12 @@ class PendingStartElementNSCallback fina
+@@ -168,12 +168,12 @@ class PendingStartElementNSCallback fina
  
    ~PendingStartElementNSCallback() override {
      for (int i = 0; i < namespace_count_ * 2; ++i)
@@ -31,7 +31,7 @@
    }
  
    void Call(XMLDocumentParser* parser) override {
-@@ -220,7 +220,7 @@ class PendingCharactersCallback final
+@@ -221,7 +221,7 @@ class PendingCharactersCallback final
          chars_(xmlStrndup(chars, length)),
          length_(length) {}
  
@@ -40,7 +40,7 @@
  
    void Call(XMLDocumentParser* parser) override {
      parser->Characters(chars_, length_);
-@@ -304,7 +304,7 @@ class PendingErrorCallback final : publi
+@@ -305,7 +305,7 @@ class PendingErrorCallback final : publi
          type_(type),
          message_(xmlStrdup(message)) {}
  
@@ -104,7 +104,7 @@
        fetch_options.initiator_info.name = fetch_initiator_type_names::kXml;
 --- a/third_party/blink/renderer/core/xml/xslt_unicode_sort.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_unicode_sort.cc
-@@ -332,18 +332,18 @@ void XsltUnicodeSortFunction(xsltTransfo
+@@ -335,18 +335,18 @@ void XsltUnicodeSortFunction(xsltTransfo
      comp = static_cast<xsltStylePreComp*>(sorts[j]->psvi);
      if (tempstype[j] == 1) {
        // The data-type needs to be recomputed each time.

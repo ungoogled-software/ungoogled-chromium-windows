@@ -61,7 +61,7 @@
 @@ -121,24 +121,6 @@ def main():
          header_contents += sorted(define_block, key=lambda s: s.split()[-1])
        with open(header_file, 'wb') as f:
-         f.write(''.join(header_contents))
+         f.write(b''.join(header_contents))
 -
 -    # mc.exe invocation and post-processing are complete, now compare the output
 -    # in tmp_dir to the checked-in outputs.
@@ -76,8 +76,8 @@
 -        tofile = os.path.join(tmp_dir, f)
 -        print(''.join(
 -            difflib.unified_diff(
--                open(fromfile, 'U').readlines(),
--                open(tofile, 'U').readlines(), fromfile, tofile)))
+-                open(fromfile).readlines(),
+-                open(tofile).readlines(), fromfile, tofile)))
 -      delete_tmp_dir = False
 -      sys.exit(1)
    except subprocess.CalledProcessError as e:
