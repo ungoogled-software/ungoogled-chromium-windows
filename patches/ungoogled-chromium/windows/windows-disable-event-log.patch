@@ -11,7 +11,7 @@
    ]
    sources = [
      "all_messages.h",
-@@ -380,7 +379,6 @@ static_library("common_lib") {
+@@ -378,7 +377,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.cc",
        "conflicts/remote_module_watcher_win.h",
      ]
