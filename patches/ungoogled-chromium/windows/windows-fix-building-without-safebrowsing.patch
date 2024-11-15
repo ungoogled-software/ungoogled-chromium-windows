@@ -17,22 +17,22 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -5061,7 +5061,6 @@ std::wstring ChromeContentBrowserClient:
+@@ -5051,7 +5051,6 @@ std::wstring ChromeContentBrowserClient:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
      case sandbox::mojom::Sandbox::kAudio:
 -    case sandbox::mojom::Sandbox::kScreenAI:
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
      case sandbox::mojom::Sandbox::kVideoEffects:
-     case sandbox::mojom::Sandbox::kSpeechRecognition:
-     case sandbox::mojom::Sandbox::kPdfConversion:
-@@ -5163,7 +5162,6 @@ bool ChromeContentBrowserClient::PreSpaw
+ #endif
+@@ -5155,7 +5154,6 @@ bool ChromeContentBrowserClient::PreSpaw
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
  #if !BUILDFLAG(IS_ANDROID)
 -    case sandbox::mojom::Sandbox::kScreenAI:
  #endif
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
      case sandbox::mojom::Sandbox::kVideoEffects:
-     case sandbox::mojom::Sandbox::kAudio:
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn
 @@ -7,6 +7,7 @@ import("//components/safe_browsing/build
