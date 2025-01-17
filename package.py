@@ -38,7 +38,7 @@ def _get_target_cpu(build_outputs):
     if not _cached_target_cpu:
         with open(build_outputs / 'args.gn', 'r') as f:
             args_gn_text = f.read()
-            for cpu in ('x64', 'x86'):
+            for cpu in ('x64', 'x86', 'arm64'):
                 if f'target_cpu="{cpu}"' in args_gn_text:
                     _cached_target_cpu = cpu
                     break
