@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -220,8 +220,6 @@ clang_lib("compiler_builtins") {
+@@ -223,8 +223,6 @@ clang_lib("compiler_builtins") {
      } else {
        libname = "ios"
      }
@@ -11,7 +11,7 @@
  
 --- a/build/config/rust.gni
 +++ b/build/config/rust.gni
-@@ -54,7 +54,7 @@ declare_args() {
+@@ -59,7 +59,7 @@ declare_args() {
    # To use a custom toolchain instead, specify an absolute path to the root of
    # a Rust sysroot, which will have a 'bin' directory and others. Commonly
    # <home dir>/.rustup/toolchains/nightly-<something>-<something>
@@ -20,7 +20,7 @@
  
    # Directory under which to find `bin/bindgen` (a `bin` directory containing
    # the bindgen exectuable).
-@@ -64,7 +64,7 @@ declare_args() {
+@@ -69,7 +69,7 @@ declare_args() {
    # set this to the output of `rustc -V`. Changing this string will cause all
    # Rust targets to be rebuilt, which allows you to update your toolchain and
    # not break incremental builds.
