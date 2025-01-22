@@ -174,7 +174,7 @@ def main():
             downloads.unpack_downloads(download_info, downloads_cache, None, source_tree, extractors)
         else:
             # Clone sources
-            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
+            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win-arm64' if args.arm else 'win64'], check=True)
 
         # Retrieve windows downloads
         get_logger().info('Downloading required files...')
