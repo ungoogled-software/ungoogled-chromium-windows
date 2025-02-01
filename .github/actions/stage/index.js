@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const io = require('@actions/io');
 const exec = require('@actions/exec');
-const artifact = require('@actions/artifact');
+const {DefaultArtifactClient} = require('@actions/artifact');
 const glob = require('@actions/glob');
 
 async function run() {
@@ -16,11 +16,12 @@ async function run() {
         return;
     }
 
-    const artifactClient = artifact.create();
+    const artifact = new DefaultArtifactClient();
     const artifactName = x86 ? 'build-artifact-x86' : 'build-artifact';
 
     if (from_artifact) {
-        await artifactClient.downloadArtifact(artifactName, 'C:\\ungoogled-chromium-windows\\build');
+        const artifactInfo = await artifact.getArtifact(artifactName);
+        await artifact.downloadArtifact(artifactInfo.artifact.id, {path: 'C:\\ungoogled-chromium-windows\\build'});
         await exec.exec('7z', ['x', 'C:\\ungoogled-chromium-windows\\build\\artifacts.zip',
             '-oC:\\ungoogled-chromium-windows\\build', '-y']);
         await io.rmRF('C:\\ungoogled-chromium-windows\\build\\artifacts.zip');
@@ -42,10 +43,16 @@ async function run() {
         const globber = await glob.create('C:\\ungoogled-chromium-windows\\build\\ungoogled-chromium*',
             {matchDirectories: false});
         let packageList = await globber.glob();
+        const finalArtifactName = x86 ? 'chromium-x86' : 'chromium';
         for (let i = 0; i < 5; ++i) {
             try {
-                await artifactClient.uploadArtifact(x86 ? 'chromium-x86' : 'chromium', packageList,
-                    'C:\\ungoogled-chromium-windows\\build', {retentionDays: 3});
+                await artifact.deleteArtifact(finalArtifactName);
+            } catch (e) {
+                // ignored
+            }
+            try {
+                await artifact.uploadArtifact(finalArtifactName, packageList,
+                    'C:\\ungoogled-chromium-windows\\build', {retentionDays: 1, compressionLevel: 0});
                 break;
             } catch (e) {
                 console.error(`Upload artifact failed: ${e}`);
@@ -59,8 +66,13 @@ async function run() {
             'C:\\ungoogled-chromium-windows\\build\\src', '-mx=3', '-mtc=on'], {ignoreReturnCode: true});
         for (let i = 0; i < 5; ++i) {
             try {
-                await artifactClient.uploadArtifact(artifactName, ['C:\\ungoogled-chromium-windows\\artifacts.zip'],
-                    'C:\\ungoogled-chromium-windows', {retentionDays: 3});
+                await artifact.deleteArtifact(artifactName);
+            } catch (e) {
+                // ignored
+            }
+            try {
+                await artifact.uploadArtifact(artifactName, ['C:\\ungoogled-chromium-windows\\artifacts.zip'],
+                    'C:\\ungoogled-chromium-windows', {retentionDays: 1, compressionLevel: 0});
                 break;
             } catch (e) {
                 console.error(`Upload artifact failed: ${e}`);
