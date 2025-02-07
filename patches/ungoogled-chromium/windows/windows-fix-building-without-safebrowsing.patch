@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -5079,7 +5079,6 @@ std::wstring ChromeContentBrowserClient:
+@@ -4949,7 +4949,6 @@ std::wstring ChromeContentBrowserClient:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
      case sandbox::mojom::Sandbox::kAudio:
@@ -25,7 +25,7 @@
      case sandbox::mojom::Sandbox::kSpeechRecognition:
      case sandbox::mojom::Sandbox::kPdfConversion:
      case sandbox::mojom::Sandbox::kService:
-@@ -5176,7 +5175,6 @@ bool ChromeContentBrowserClient::PreSpaw
+@@ -5045,7 +5044,6 @@ bool ChromeContentBrowserClient::PreSpaw
      case sandbox::mojom::Sandbox::kPrintBackend:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
@@ -51,7 +51,7 @@
 +#endif
 --- a/chrome/browser/signin/signin_util_win.cc
 +++ b/chrome/browser/signin/signin_util_win.cc
-@@ -276,12 +276,6 @@ bool IsGCPWUsedInOtherProfile(Profile* p
+@@ -279,12 +279,6 @@ bool IsGCPWUsedInOtherProfile(Profile* p
  }
  
  void SigninWithCredentialProviderIfPossible(Profile* profile) {
