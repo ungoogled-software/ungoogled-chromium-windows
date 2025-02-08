@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
-@@ -64,16 +64,16 @@
+@@ -64,15 +64,15 @@
  #define IDC_MAXIMIZE_WINDOW             34047
  #define IDC_ALL_WINDOWS_FRONT           34048
  #define IDC_NAME_WINDOW                 34049
@@ -14,30 +14,21 @@
  #define IDC_USE_SYSTEM_TITLE_BAR        34051
  #endif
  
- // TODO(crbug.com/40118868): Revisit the macro expression once build flag switch of lacros-chrome is complete.
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
+-#if BUILDFLAG(IS_LINUX)
 +#if (0)
  #define IDC_RESTORE_WINDOW              34052
  #endif
  
-@@ -86,16 +86,6 @@
+@@ -85,7 +85,7 @@
  #define IDC_WEB_APP_SETTINGS            34062
  #define IDC_WEB_APP_MENU_APP_INFO    34063
  
--#if BUILDFLAG(IS_CHROMEOS_ASH)
--// Move window to other user commands
--#define IDC_VISIT_DESKTOP_OF_LRU_USER_2 34080
--#define IDC_VISIT_DESKTOP_OF_LRU_USER_3 34081
--#define IDC_VISIT_DESKTOP_OF_LRU_USER_4 34082
--#define IDC_VISIT_DESKTOP_OF_LRU_USER_5 34083
--#define IDC_VISIT_DESKTOP_OF_LRU_USER_NEXT IDC_VISIT_DESKTOP_OF_LRU_USER_2
--#define IDC_VISIT_DESKTOP_OF_LRU_USER_LAST IDC_VISIT_DESKTOP_OF_LRU_USER_5
--#endif
--
- // Page-related commands
- #define IDC_BOOKMARK_THIS_TAB           35000
- #define IDC_BOOKMARK_ALL_TABS           35001
-@@ -470,7 +460,7 @@
+-#if BUILDFLAG(IS_CHROMEOS)
++#if (0)
+ // Move window to other user commands
+ #define IDC_VISIT_DESKTOP_OF_LRU_USER_2 34080
+ #define IDC_VISIT_DESKTOP_OF_LRU_USER_3 34081
+@@ -473,7 +473,7 @@
  #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
  
  // Context menu items for media toolbar button
@@ -46,11 +37,11 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -507,7 +497,7 @@
+@@ -510,7 +510,7 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  
--#if BUILDFLAG(IS_CHROMEOS_ASH)
+-#if BUILDFLAG(IS_CHROMEOS)
 +#if (0)
  // Quick Answers context menu items.
  #define IDC_CONTENT_CONTEXT_QUICK_ANSWERS_INLINE_ANSWER 52413
