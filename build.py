@@ -199,7 +199,7 @@ def main():
 
         # Unpack downloads
         get_logger().info('Unpacking downloads...')
-        downloads.unpack_downloads(download_info_win, downloads_cache, None, source_tree, False, None, extractors)
+        downloads.unpack_downloads(download_info_win, downloads_cache, None, source_tree, extractors)
 
         # Apply patches
         # First, ungoogled-chromium-patches
@@ -257,7 +257,7 @@ def main():
 
         # Generate version file
         with open(RUST_FLAG_FILE, 'w') as f:
-            f.write('rustc 1.85.0-nightly (9e136a30a 2024-12-19)')
+            f.write('rustc 1.86.0-nightly (243d2ca4d 2025-01-06)')
             f.write('\n')
 
     if not args.ci or not (source_tree / 'out/Default').exists():
