@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -131,7 +131,6 @@ source_set("request_code_constants") {
+@@ -128,7 +128,6 @@ source_set("request_code_constants") {
  static_library("common_lib") {
    visibility = [
      ":*",
@@ -11,7 +11,7 @@
    ]
    sources = [
      "all_messages.h",
-@@ -379,7 +378,6 @@ static_library("common_lib") {
+@@ -375,7 +374,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.cc",
        "conflicts/remote_module_watcher_win.h",
      ]
@@ -77,7 +77,7 @@
  base::expected<base::HeapArray<FactoryAndClsid>, HRESULT>
 --- a/chrome/windows_services/elevated_tracing_service/BUILD.gn
 +++ b/chrome/windows_services/elevated_tracing_service/BUILD.gn
-@@ -77,7 +77,6 @@ source_set("service_lib") {
+@@ -94,7 +94,6 @@ source_set("service_lib") {
    ]
    deps = [
      ":lib",

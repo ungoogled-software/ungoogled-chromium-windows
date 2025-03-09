@@ -1,6 +1,6 @@
 --- a/chrome/installer/setup/BUILD.gn
 +++ b/chrome/installer/setup/BUILD.gn
-@@ -41,7 +41,6 @@ if (is_win) {
+@@ -42,7 +42,6 @@ if (is_win) {
        "//components/crash/core/app:crash_export_thunks",
        "//components/crash/core/app:run_as_crashpad_handler",
        "//content/public/common:static_switches",
@@ -10,16 +10,16 @@
  
 --- a/chrome/installer/setup/uninstall.cc
 +++ b/chrome/installer/setup/uninstall.cc
-@@ -68,8 +68,6 @@
- #include "chrome/installer/util/util_constants.h"
+@@ -69,8 +69,6 @@
  #include "chrome/installer/util/work_item.h"
+ #include "chrome/windows_services/elevated_tracing_service/service_integration.h"
  #include "content/public/common/result_codes.h"
 -#include "rlz/lib/rlz_lib_clear.h"
 -#include "rlz/lib/supplementary_branding.h"
  
  using base::win::RegKey;
  
-@@ -112,22 +110,6 @@ void ProcessChromeWorkItems(const Instal
+@@ -113,22 +111,6 @@ void ProcessChromeWorkItems(const Instal
    work_item_list->Do();
  }
  
@@ -42,7 +42,7 @@
  // Removes all files from the installer directory. Returns false in case of an
  // error.
  bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
-@@ -893,11 +875,6 @@ InstallStatus UninstallProduct(const Mod
+@@ -906,11 +888,6 @@ InstallStatus UninstallProduct(const Mod
      }
    }
  
