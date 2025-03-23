@@ -193,6 +193,14 @@ def main():
             parser.exit(1)
 
         # Unpack downloads
+        DIRECTX = source_tree / 'third_party' / 'microsoft_dxheaders' / 'src'
+        ESBUILD = source_tree / 'third_party' / 'devtools-frontend' / 'src' / 'third_party' / 'esbuild'
+        if DIRECTX.exists():
+            shutil.rmtree(DIRECTX)
+            DIRECTX.mkdir()
+        if ESBUILD.exists():
+            shutil.rmtree(ESBUILD)
+            ESBUILD.mkdir()
         get_logger().info('Unpacking downloads...')
         downloads.unpack_downloads(download_info_win, downloads_cache, None, source_tree, extractors)
 
