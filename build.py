@@ -10,11 +10,6 @@ ungoogled-chromium build script for Microsoft Windows
 
 import sys
 import time
-
-if sys.version_info.major != 3 or sys.version_info.minor < 8 or sys.version_info.minor > 10:
-    raise RuntimeError('Python 3.8 to 3.10 is required for this script. You have: {}.{}'.format(
-        sys.version_info.major, sys.version_info.minor))
-
 import argparse
 import os
 import re
@@ -198,6 +193,14 @@ def main():
             parser.exit(1)
 
         # Unpack downloads
+        DIRECTX = source_tree / 'third_party' / 'microsoft_dxheaders' / 'src'
+        ESBUILD = source_tree / 'third_party' / 'devtools-frontend' / 'src' / 'third_party' / 'esbuild'
+        if DIRECTX.exists():
+            shutil.rmtree(DIRECTX)
+            DIRECTX.mkdir()
+        if ESBUILD.exists():
+            shutil.rmtree(ESBUILD)
+            ESBUILD.mkdir()
         get_logger().info('Unpacking downloads...')
         downloads.unpack_downloads(download_info_win, downloads_cache, None, source_tree, extractors)
 
