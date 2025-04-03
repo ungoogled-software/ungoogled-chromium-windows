@@ -265,8 +265,7 @@ def main():
 
         # Generate version file
         with open(RUST_FLAG_FILE, 'w') as f:
-            f.write('rustc 1.86.0-nightly (243d2ca4d 2025-01-06)')
-            f.write('\n')
+            subprocess.run([source_tree / 'third_party' / 'rust-toolchain-x64' / 'rustc' / 'bin' / 'rustc.exe', '--version'], stdout=f)
 
     if not args.ci or not (source_tree / 'out/Default').exists():
         # Output args.gn
