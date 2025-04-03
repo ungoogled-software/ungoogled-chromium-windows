@@ -132,6 +132,10 @@ def main():
         action='store_true'
     )
     parser.add_argument(
+        '--arm',
+        action='store_true'
+    )
+    parser.add_argument(
         '--tarball',
         action='store_true'
     )
@@ -170,7 +174,7 @@ def main():
             downloads.unpack_downloads(download_info, downloads_cache, None, source_tree, extractors)
         else:
             # Clone sources
-            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win64'], check=True)
+            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win-arm64' if args.arm else 'win64'], check=True)
 
         # Retrieve windows downloads
         get_logger().info('Downloading required files...')
@@ -232,13 +236,14 @@ def main():
     RUST_DIR_DST = source_tree / 'third_party' / 'rust-toolchain'
     RUST_DIR_SRC64 = source_tree / 'third_party' / 'rust-toolchain-x64'
     RUST_DIR_SRC86 = source_tree / 'third_party' / 'rust-toolchain-x86'
+    RUST_DIR_SRCARM = source_tree / 'third_party' / 'rust-toolchain-arm'
     RUST_FLAG_FILE = RUST_DIR_DST / 'INSTALLED_VERSION'
     if not args.ci or not RUST_FLAG_FILE.exists():
         # Directories to copy from source to target folder
         DIRS_TO_COPY = ['bin', 'lib']
 
         # Loop over all source folders
-        for rust_dir_src in [RUST_DIR_SRC64, RUST_DIR_SRC86]:
+        for rust_dir_src in [RUST_DIR_SRC64, RUST_DIR_SRC86, RUST_DIR_SRCARM]:
             # Loop over all dirs to copy
             for dir_to_copy in DIRS_TO_COPY:
                 # Copy bin folder for host architecture
@@ -271,6 +276,8 @@ def main():
         windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
         if args.x86:
             windows_flags = windows_flags.replace('x64', 'x86')
+        elif args.arm:
+            windows_flags = windows_flags.replace('x64', 'arm64')
         gn_flags += windows_flags
         (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
 

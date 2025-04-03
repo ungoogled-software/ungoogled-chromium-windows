@@ -692,8 +692,360 @@ jobs:
     outputs:
       finished: ${{ steps.stage.outputs.finished }}
 
+  build-arm-1:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: false
+          from_artifact: false
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-2:
+    needs: build-arm-1
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-3:
+    needs: build-arm-2
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-4:
+    needs: build-arm-3
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-5:
+    needs: build-arm-4
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-6:
+    needs: build-arm-5
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-7:
+    needs: build-arm-6
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-8:
+    needs: build-arm-7
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-9:
+    needs: build-arm-8
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-10:
+    needs: build-arm-9
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-11:
+    needs: build-arm-10
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-12:
+    needs: build-arm-11
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-13:
+    needs: build-arm-12
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-14:
+    needs: build-arm-13
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-15:
+    needs: build-arm-14
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+  build-arm-16:
+    needs: build-arm-15
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Init
+        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+      - name: Setup Stage
+        run: npm install
+        working-directory: ./.github/actions/stage
+      - name: Run Stage
+        id: stage
+        uses: ./.github/actions/stage
+        with:
+          finished: ${{ join(needs.*.outputs.finished) }}
+          from_artifact: true
+          arm: true
+    outputs:
+      finished: ${{ steps.stage.outputs.finished }}
+
   publish-release:
-    needs: [build-16, build-x86-16]
+    needs: [build-16, build-x86-16, build-arm-16]
     runs-on: ubuntu-latest
     steps:
       - name: Download package
@@ -704,6 +1056,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: chromium-x86
+      - name: Download arm package
+        uses: actions/download-artifact@v4
+        with:
+          name: chromium-arm
       - name: Publish release
         id: publish
         uses: softprops/action-gh-release@v1
