@@ -10,8 +10,8 @@
 -  action("reorder_imports") {
 -    script = "//build/win/reorder-imports.py"
 -
--    # See comment in chrome_dll.gypi in the hardlink_to_output
--    # target for why this cannot be 'initial' like the DLL.
+-    # initialexe/ is used so that the we can reorder imports and write back to
+-    # the final destination at $root_out_dir/.
 -    inputs = [ "$root_out_dir/initialexe/chrome.exe" ]
 -    outputs = [
 -      "$root_out_dir/chrome.exe",
@@ -53,7 +53,7 @@
      configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -502,11 +502,6 @@ python_library("chromedriver_py_tests")
+@@ -500,11 +500,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }

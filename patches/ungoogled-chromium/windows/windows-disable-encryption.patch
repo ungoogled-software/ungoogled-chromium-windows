@@ -22,8 +22,8 @@
 +#include "base/command_line.h"
  #include "base/logging.h"
  #include "base/metrics/histogram_functions.h"
- #include "base/types/expected.h"
-@@ -40,6 +41,9 @@ constexpr uint8_t kDPAPIKeyPrefix[] = {'
+ #include "base/notreached.h"
+@@ -41,6 +42,9 @@ constexpr uint8_t kDPAPIKeyPrefix[] = {'
  
  std::optional<std::vector<uint8_t>> DecryptKeyWithDPAPI(
      base::span<const uint8_t> ciphertext) {

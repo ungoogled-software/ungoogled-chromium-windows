@@ -130,6 +130,8 @@ ln -s /usr/bin/vim /usr/bin/vi
 **NOTE:** For all steps, update `downloads.ini` accordingly.
 
 1. Check the [LLVM GitHub](https://github.com/llvm/llvm-project/releases/) for the latest version of LLVM.
+	1. Download `LLVM-*-win64.exe` file.
+	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
 1. Check the esbuild version in file `build/src/third_party/devtools-frontend/src/DEPS` and find the closest release in the [esbuild GitHub](https://github.com/evanw/esbuild/releases) to it.
 	* Example: `version:3@0.24.0.chromium.2` should be `0.24.0`
 1. Check the [ninja GitHub](https://github.com/ninja-build/ninja/releases/) for the latest version of ninja.
@@ -141,23 +143,31 @@ ln -s /usr/bin/vim /usr/bin/vi
 	1. Replace `version` with the Chromium version in `ungoogled-chromium/chromium_version.txt`.
 1. Check the [NodeJS website](https://nodejs.org/en/download) for the latest **LTS** version of NodeJS.
 	1. Download the "Standalone Binary" version.
-	1. Get the SHA-256 checksum using `sha256sum` in **`MSYS2 MSYS`**.
+	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
 1. Check for version changes of windows rust crate (`third_party/rust/windows_x86_64_msvc/`).
+	1. Download rust crate zip file.
+	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
 	1. Update `patches/ungoogled-chromium/windows/windows-fix-building-with-rust.patch` accordingly.
 
 ### Update rust
 1. Check `RUST_REVISION` constant in file `tools/rust/update_rust.py` in build root.
-	* Example: Revision could be `ab71ee7a9214c2793108a41efb065aa77aeb7326`
+	* Example: Revision could be `9fcc9cf4a202aadfe1f44722b39c83536eba3dba`
 1. Get date for nightly rust build from the Rust GitHub page: `https://github.com/rust-lang/rust/commit/<RUST_REVISION>`
 	1. Replace `RUST_REVISION` with the obtained value
 	1. Adapt `downloads.ini` accordingly
-	* Example: The above revision corresponds to the nightly build date `2024-04-12` (`YYYY-mm-dd`)
+	* Example: The above revision corresponds to the nightly build date `2025-02-13` (`YYYY-mm-dd`)
 1. Download nightly rust build from: `https://static.rust-lang.org/dist/<build-date>/rust-nightly-x86_64-pc-windows-msvc.tar.gz`
 	1. Replace `build-date` with the obtained value
+	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
 	1. Extract archive
 	1. Execute `rustc\bin\rustc.exe -V` to get rust version string
-	1. Adapt `build.py` and `patches\ungoogled-chromium\windows\windows-fix-building-with-rust.patch` accordingly
-
+	1. Adapt `patches\ungoogled-chromium\windows\windows-fix-building-with-rust.patch` accordingly
+1. Download nightly rust build from: `https://static.rust-lang.org/dist/<build-date>/rust-nightly-i686-pc-windows-msvc.tar.gz`
+	1. Replace `build-date` with the obtained value
+	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
+1. Download nightly rust build from: `https://static.rust-lang.org/dist/<build-date>/rust-nightly-aarch64-pc-windows-msvc.tar.gz`
+	1. Replace `build-date` with the obtained value
+	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
 ## License
 
 See [LICENSE](LICENSE)
