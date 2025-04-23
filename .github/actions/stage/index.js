@@ -17,6 +17,7 @@ async function run() {
         return;
     }
 
+    const startTime = Date.now();
     const artifact = new DefaultArtifactClient();
     const artifactName = x86 ? 'build-artifact-x86' : (arm ? 'build-artifact-arm' : 'build-artifact');
 
@@ -33,13 +34,20 @@ async function run() {
         args.push('--x86')
     if (arm)
         args.push('--arm')
+
+    const env = {
+        ...process.env,
+        GH_ACTIONS_START_TIME: startTime.toString()
+    };
+
     await exec.exec('python', ['-m', 'pip', 'install', 'httplib2'], {
         cwd: 'C:\\ungoogled-chromium-windows',
         ignoreReturnCode: true
     });
     const retCode = await exec.exec('python', args, {
         cwd: 'C:\\ungoogled-chromium-windows',
-        ignoreReturnCode: true
+        ignoreReturnCode: true,
+        env: env
     });
     if (retCode === 0) {
         core.setOutput('finished', true);

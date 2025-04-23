@@ -300,8 +300,32 @@ def main():
 
     # Run ninja
     if args.ci:
+        # Default timeout: 5.0 hours, 5.0*60*60=18000
+        timeout = 18000
+        try:
+            # Get current time in milliseconds
+            current_time = int(time.time() * 1000)
+            # GitHub Actions start time in milliseconds
+            gh_start_time = int(os.environ.get('GH_ACTIONS_START_TIME', '0'))
+            # GitHub Actions maximum runtime is 6 hours
+            gh_max_runtime = int(6 * 60 * 60 * 1000)
+            # Reserve 20 minutes as a buffer
+            gh_buffer_time = int(20 * 60 * 1000)
+
+            if gh_start_time > 0:
+                elapsed_ms = current_time - gh_start_time
+                available_ms = max(0, gh_max_runtime - elapsed_ms - gh_buffer_time)
+                timeout = int(available_ms / 1000)
+                get_logger().info(f"Calculated timeout: {timeout} seconds")
+            else:
+                get_logger().info(f"Using default timeout: {timeout} seconds")
+        except (ValueError, TypeError) as e:
+            get_logger().warning(f"Error calculating timeout from environment variables: {e}")
+            get_logger().info(f"Using default timeout: {timeout} seconds")
+
+        # Run ninja with timeout
         _run_build_process_timeout('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
-                                   'chromedriver', 'mini_installer', timeout=3.5*60*60)
+                                   'chromedriver', 'mini_installer', timeout=timeout)
         # package
         os.chdir(_ROOT_DIR)
         subprocess.run([sys.executable, 'package.py'])
