@@ -31,7 +31,7 @@
      "P",            IDC_BASIC_PRINT,            VIRTKEY, CONTROL, SHIFT
  #endif
      "D",            IDC_BOOKMARK_ALL_TABS,      VIRTKEY, CONTROL, SHIFT
-@@ -166,12 +166,12 @@ END
+@@ -167,12 +167,12 @@ END
  // the icon from the current module). We can perhaps work around this in the
  // future to get the icon from the .exe, which would save a copy.
  
@@ -48,7 +48,19 @@
  IDR_MAINFRAME       ICON                        "theme\chromium\win\chromium.ico"
 --- a/chrome/app/chrome_exe.rc
 +++ b/chrome/app/chrome_exe.rc
-@@ -36,7 +36,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_U
+@@ -24,9 +24,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_U
+ #pragma code_page(1252)
+ #endif //_WIN32
+ 
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
++#if 0
+ IDENTITY LIMITEDACCESSFEATURE {L"google-chrome_0qgpfzgh1edfy"}
+-#elif BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
++#elif 0
+ IDENTITY LIMITEDACCESSFEATURE {L"google-chrome_0qgpfzgh1edfy"}
+ #else
+ IDENTITY LIMITEDACCESSFEATURE {L"chromium_b06a12530me7r"}
+@@ -43,7 +43,7 @@ IDENTITY LIMITEDACCESSFEATURE {L"chromiu
  // Note: chrome/installer/util/shell_util.cc depends on the order and number of
  // icons.  To avoid breaking existing shortcuts, add new icons at the end
  // (following the ordering described above).
@@ -57,7 +69,7 @@
  IDR_MAINFRAME           ICON       "theme\\google_chrome\\win\\chrome.ico"
  // These three are no longer used, but remain as placeholders. (They cannot be
  // removed, or existing shortcuts to the later resources will break.)
-@@ -46,7 +46,7 @@ IDR_MAINFRAME_4         ICON       "them
+@@ -53,7 +53,7 @@ IDR_MAINFRAME_4         ICON       "them
  // The SXS icon must have an index of 4, the constant is used in Chrome code to
  // identify it.
  IDR_SXS                 ICON       "theme\\google_chrome\\win\\chrome_sxs.ico"
@@ -66,7 +78,7 @@
  IDR_MAINFRAME           ICON       "theme\\google_chrome\\google_chrome_for_testing\\win\\chrome.ico"
  #else
  IDR_MAINFRAME           ICON       "theme\\chromium\\win\\chromium.ico"
-@@ -57,7 +57,7 @@ IDR_MAINFRAME           ICON       "them
+@@ -64,7 +64,7 @@ IDR_MAINFRAME           ICON       "them
  // should be incremented when a new icon is added. The icon indices in
  // chrome_icon_resources_win.h should also be updated.
  
