@@ -37,7 +37,7 @@
  
 --- a/tools/gn/build/gen.py
 +++ b/tools/gn/build/gen.py
-@@ -575,6 +575,7 @@ def WriteGNNinja(path, platform, host, o
+@@ -578,6 +578,7 @@ def WriteGNNinja(path, platform, host, o
          '/D_SCL_SECURE_NO_DEPRECATE',
          '/D_UNICODE',
          '/D_WIN32_WINNT=0x0A00',

@@ -3,10 +3,10 @@
 
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
-@@ -192,7 +192,6 @@ action("mini_installer_archive") {
-     "//chrome",
+@@ -194,7 +194,6 @@ action("mini_installer_archive") {
      "//chrome:chrome_dll",
      "//chrome/browser/extensions/default_extensions",
+     "//chrome/chrome_elf",
 -    "//chrome/common/win:eventlog_provider",
      "//chrome/installer/setup",
      "//third_party/icu:icudata",
