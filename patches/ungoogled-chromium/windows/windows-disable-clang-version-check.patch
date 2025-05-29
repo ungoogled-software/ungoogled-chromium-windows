@@ -1,12 +1,12 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1619,8 +1619,7 @@ config("compiler_deterministic") {
+@@ -1634,8 +1634,7 @@ config("compiler_deterministic") {
  }
  
  config("clang_revision") {
 -  if (is_clang && clang_base_path == default_clang_base_path &&
 -      current_os != "zos") {
 +  if (false) {
-     update_args = [
-       "--print-revision",
-       "--verify-version=$clang_version",
+     _perform_consistency_checks = current_toolchain == default_toolchain
+     if (llvm_force_head_revision) {
+       _head_revision_stamp_path = "//third_party/llvm-build/force_head_revision"
