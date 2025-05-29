@@ -31,7 +31,7 @@
      "P",            IDC_BASIC_PRINT,            VIRTKEY, CONTROL, SHIFT
  #endif
      "D",            IDC_BOOKMARK_ALL_TABS,      VIRTKEY, CONTROL, SHIFT
-@@ -167,12 +167,12 @@ END
+@@ -166,12 +166,12 @@ END
  // the icon from the current module). We can perhaps work around this in the
  // future to get the icon from the .exe, which would save a copy.
  
