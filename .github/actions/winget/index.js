@@ -1,57 +1,143 @@
 const yaml = require('js-yaml');
 const exec = require('@actions/exec');
-const core = require("@actions/core");
-const glob = require('@actions/glob');
+const core = require('@actions/core');
 const path = require('path');
-const compareVersions = require('compare-versions');
 const fs = require('fs/promises');
 const fsSync = require('fs');
-const io = require('@actions/io');
-const crypto = require('crypto');
 const { https } = require('follow-redirects');
+
+function getInstallers(assets) {
+    const installers = []
+    for (const asset of assets) {
+        const installerUrl = asset.browser_download_url;
+        const installerSha256 = asset.digest.slice(7).toLocaleUpperCase();
+
+        const isExe = asset.name.endsWith('.exe');
+        const isZip = !isExe && asset.name.endsWith('.zip');
+        if (!isExe && !isZip) {
+            continue;
+        }
+
+        let architecture;
+        if (asset.name.includes('x86')) {
+            architecture = 'x86';
+        } else if (asset.name.includes('x64')) {
+            architecture = 'x64';
+        } else if (asset.name.includes('arm64')) {
+            architecture = 'arm64';
+        } else {
+            continue;
+        }
+
+        if (isExe) {
+            installers.push({
+                'Architecture': architecture,
+                'InstallerType': 'exe',
+                'Scope': 'machine',
+                'InstallerUrl': installerUrl,
+                'InstallerSha256': installerSha256,
+                'InstallerSwitches': {
+                    'Silent': '/silent /install',
+                    'SilentWithProgress': '/silent /install',
+                    'Custom': '--system-level'
+                }
+            }, {
+                'Architecture': architecture,
+                'InstallerType': 'exe',
+                'Scope': 'user',
+                'InstallerUrl': installerUrl,
+                'InstallerSha256': installerSha256,
+                'InstallerSwitches': {
+                    'Silent': '/silent /install',
+                    'SilentWithProgress': '/silent /install'
+                }
+            });
+        } else {
+            const folderName = asset.name.slice(0, -4);
+            installers.push({
+                'Architecture': architecture,
+                'InstallerType': 'zip',
+                'NestedInstallerType': 'portable',
+                'NestedInstallerFiles': [
+                    {
+                        'RelativeFilePath': `${folderName}\\chrome.exe`,
+                        'PortableCommandAlias': 'chrome'
+                    }
+                ],
+                'InstallerUrl': installerUrl,
+                'InstallerSha256': installerSha256,
+                'ArchiveBinariesDependOnPath': true
+            });
+        }
+    }
+    return installers;
+}
 
 async function run() {
     const token = core.getInput('token', {
         required: true,
         trimWhitespace: true
     });
-    let newVersion = core.getInput('version', {
+    let version = core.getInput('version', {
         required: true,
         trimWhitespace: true
     });
-    const idx = newVersion.lastIndexOf('-');
+    const idx = version.lastIndexOf('-');
     if (idx !== -1)
-        newVersion = newVersion.substr(0, idx);
+        version = version.substr(0, idx);
+
     const assets = JSON.parse(core.getInput('assets', {
         required: true,
     }));
-    let x86Url, x64Url;
-    for (const data of assets) {
-        if (data.browser_download_url.endsWith('.exe')) {
-            if (data.browser_download_url.includes('x86'))
-                x86Url = data.browser_download_url;
-            else
-                x64Url = data.browser_download_url;
-        }
-    }
+    const installers = getInstallers(assets);
 
-    await syncRepo(token);
-    const globber = await glob.create('.\\winget-pkgs\\manifests\\e\\eloston\\ungoogled-chromium\\*', {matchDirectories: true, implicitDescendants: false});
-    const pathList = await globber.glob();
-    const ucPath = path.dirname(pathList[0]);
-    const versionList = pathList.map(x => path.basename(x));
-    versionList.sort(compareVersions);
-    const latestVersion = versionList[versionList.length - 1];
-    const latestVersionPath = path.join(ucPath, latestVersion);
-    const newVersionPath = path.join(ucPath, newVersion);
-    try {
-        await io.mkdirP(newVersionPath);
-    } catch (e) {
-    }
+    const manifestPath = path.resolve('./manifest');
+    await fs.mkdir(manifestPath);
 
-    await updateInstaller(latestVersionPath, newVersionPath, latestVersion, newVersion, x86Url, x64Url);
-    await replaceContent(latestVersionPath, newVersionPath, latestVersion, newVersion, 'eloston.ungoogled-chromium.locale.en-US.yaml');
-    await replaceContent(latestVersionPath, newVersionPath, latestVersion, newVersion, 'eloston.ungoogled-chromium.yaml');
+    const installerManifest = yaml.dump({
+        'PackageIdentifier': 'eloston.ungoogled-chromium',
+        'PackageVersion': version,
+        'InstallerLocale': 'en-US',
+        'MinimumOSVersion': '10.0.0.0',
+        'UpgradeBehavior': 'install',
+        'Protocols': ['http', 'https'],
+        'FileExtensions': ['crx', 'htm', 'html', 'pdf', 'url'],
+        'Installers': installers,
+        'ManifestType': 'installer',
+        'ManifestVersion': '1.9.0',
+        'ReleaseDate': releaseDate
+    }, { noRefs: true });
+    await fs.writeFile(path.join(manifestPath, 'eloston.ungoogled-chromium.installer.yaml'), installerManifest, { encoding: 'utf-8' });
+    const defaultLocaleManifest = yaml.dump({
+        'PackageIdentifier': 'eloston.ungoogled-chromium',
+        'PackageVersion': version,
+        'PackageLocale': 'en-US',
+        'Publisher': 'The Chromium Authors',
+        'PublisherUrl': 'https://github.com/ungoogled-software/ungoogled-chromium-windows',
+        'PublisherSupportUrl': 'https://github.com/ungoogled-software/ungoogled-chromium-windows/issues',
+        'Author': 'Eloston',
+        'PackageName': 'Chromium',
+        'PackageUrl': 'https://github.com/ungoogled-software/ungoogled-chromium-windows/releases',
+        'License': 'BSD 3-Clause License',
+        'LicenseUrl': 'https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/LICENSE',
+        'Copyright': 'Copyright 2022 The ungoogled-chromium Authors',
+        'CopyrightUrl': 'https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/LICENSE',
+        'ShortDescription': 'ungoogled-chromium is Google Chromium without dependency on Google web services.',
+        'Description': "ungoogled-chromium is a set of configuration flags, patches, and custom scripts.\n\nThese components altogether strive to accomplish the following\n* Disable or remove offending services and features that communicate with Google or weaken privacy\n* Strip binaries from the source tree, and use those provided by the system or build them from source\n* Add, modify, or disable features that inhibit control and transparency (these changes are minor and do not have significant impacts on the general user experience)\n\nungoogled-chromium should not be considered a fork of Chromium.\nThe main reason for this is that a fork is associated with more significant deviations from the Chromium, such as branding, configuration formats, file locations, and other interface changes.\nungoogled-chromium will not modify the Chromium browser outside of the project's goals.\nSince these goals and requirements are not precise, unclear situations are discussed and decided on a case-by-case basis.",
+        'Moniker': 'ungoogled-chromium',
+        'Tags': ['browser', 'chromium', 'ungoogled'],
+        'ManifestType': 'defaultLocale',
+        'ManifestVersion': '1.9.0'
+    }, { noRefs: true });
+    await fs.writeFile(path.join(manifestPath, 'eloston.ungoogled-chromium.locale.en-US.yaml'), defaultLocaleManifest, { encoding: 'utf-8' });
+    const versionManifest = yaml.dump({
+        'PackageIdentifier': 'eloston.ungoogled-chromium',
+        'PackageVersion': version,
+        'DefaultLocale': 'en-US',
+        'ManifestType': 'version',
+        'ManifestVersion': '1.9.0'
+    }, { noRefs: true });
+    await fs.writeFile(path.join(manifestPath, 'eloston.ungoogled-chromium.yaml'), versionManifest, { encoding: 'utf-8' });
 
     await new Promise((resolve, reject) => {
         const file = fsSync.createWriteStream('wingetcreate.exe');
@@ -63,58 +149,7 @@ async function run() {
             });
         }).on('error', reject);
     });
-    await exec.exec('.\\wingetcreate.exe', ['submit', '-t', token, newVersionPath]);
-}
-
-async function replaceContent(latestVersionPath, newVersionPath, latestVersion, newVersion, fileName) {
-    const content = await fs.readFile(path.join(latestVersionPath, fileName), {encoding: 'utf-8'});
-    const newContent = content.replaceAll(latestVersion, newVersion);
-    await fs.writeFile(path.join(newVersionPath, fileName), newContent, {encoding: 'utf-8'});
-}
-
-async function updateInstaller(latestVersionPath, newVersionPath, latestVersion, newVersion, x86Url, x64Url) {
-    const x86Hash = await calculateSHA256(x86Url);
-    const x64Hash = await calculateSHA256(x64Url);
-    const content = await fs.readFile(path.join(latestVersionPath, 'eloston.ungoogled-chromium.installer.yaml'), {encoding: 'utf-8'});
-    const data = yaml.load(content);
-    let oldX86Url, oldX64Url, oldX86Hash, oldX64Hash;
-    for (const installer of data.Installers) {
-        if (installer.Architecture === 'x86') {
-            oldX86Url = installer.InstallerUrl;
-            oldX86Hash = installer.InstallerSha256;
-        } else {
-            oldX64Url = installer.InstallerUrl;
-            oldX64Hash = installer.InstallerSha256;
-        }
-    }
-
-    const newContent = content
-        .replaceAll(`PackageVersion: ${data.PackageVersion}`, `PackageVersion: ${newVersion}`)
-        .replaceAll(`ReleaseDate: ${data.ReleaseDate}`, `ReleaseDate: ${new Date().toLocaleDateString('en-CA')}`)
-        .replaceAll(oldX86Url, x86Url)
-        .replaceAll(oldX86Hash, x86Hash)
-        .replaceAll(oldX64Url, x64Url)
-        .replaceAll(oldX64Hash, x64Hash);
-
-    await fs.writeFile(path.join(newVersionPath, 'eloston.ungoogled-chromium.installer.yaml'), newContent, {encoding: 'utf-8'});
-}
-
-function calculateSHA256(url) {
-    const hash = crypto.createHash('sha256');
-    return new Promise((resolve, reject) => {
-        https.get(url, resp => {
-            resp.on('data', chunk => hash.update(chunk));
-            resp.on('end', () => resolve(hash.digest('hex').toUpperCase()));
-        }).on('error', reject);
-    });
-}
-
-async function syncRepo(token) {
-    await exec.exec('git', ['clone', `https://x-access-token:${token}@github.com/Nifury/winget-pkgs.git`]);
-    await exec.exec('git', ['remote', 'add', 'upstream', 'https://github.com/microsoft/winget-pkgs.git'], {cwd: '.\\winget-pkgs'});
-    await exec.exec('git', ['fetch', 'upstream', 'master'], {cwd: '.\\winget-pkgs'});
-    await exec.exec('git', ['reset', '--hard', 'upstream/master'], {cwd: '.\\winget-pkgs'});
-    await exec.exec('git', ['push', 'origin', 'master', '--force'], {cwd: '.\\winget-pkgs'});
+    await exec.exec('.\\wingetcreate.exe', ['submit', '-t', token, manifestPath]);
 }
 
 run().catch(err => core.setFailed(err.message));
