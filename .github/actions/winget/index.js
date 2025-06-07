@@ -94,6 +94,7 @@ async function run() {
     const manifestPath = path.resolve('./manifest');
     await fs.mkdir(manifestPath);
 
+    const releaseDate = new Date().toLocaleDateString('en-CA');
     const installerManifest = yaml.dump({
         'PackageIdentifier': 'eloston.ungoogled-chromium',
         'PackageVersion': version,
