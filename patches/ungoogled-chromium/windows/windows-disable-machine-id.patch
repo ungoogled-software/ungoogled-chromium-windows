@@ -22,20 +22,19 @@
  #include "base/files/file_path.h"
  #include "base/notreached.h"
  #include "base/path_service.h"
-@@ -20,6 +21,9 @@ namespace metrics {
+@@ -23,12 +24,19 @@ MachineIdProvider::MachineIdProvider() =
+ MachineIdProvider::~MachineIdProvider() = default;
  
- // static
- bool MachineIdProvider::HasId() {
+ bool MachineIdProvider::HasId() const {
 +  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
 +    return false;
 +  }
    return true;
  }
  
-@@ -27,6 +31,10 @@ bool MachineIdProvider::HasId() {
+ // On windows, the machine id is based on the serial number of the drive Chrome
  // is running from.
- // static
- std::string MachineIdProvider::GetMachineId() {
+ std::string MachineIdProvider::GetMachineId() const {
 +  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
 +    return std::string();
 +  }

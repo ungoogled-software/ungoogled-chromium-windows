@@ -3,11 +3,12 @@
 
 --- a/build/config/win/BUILD.gn
 +++ b/build/config/win/BUILD.gn
-@@ -69,6 +69,7 @@ config("compiler") {
+@@ -69,6 +69,8 @@ config("compiler") {
    if (is_clang) {
      cflags += [
        "/Zc:twoPhase",
 +      "-Wno-unknown-warning-option",
++      "-Wno-unknown-argument",
  
        # Consistently use backslash as the path separator when expanding the
        # __FILE__ macro when targeting Windows regardless of the build
