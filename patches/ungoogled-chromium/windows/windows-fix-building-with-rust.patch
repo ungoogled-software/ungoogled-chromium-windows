@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -276,8 +276,6 @@ clang_lib("compiler_builtins") {
+@@ -287,8 +287,6 @@ clang_lib("compiler_builtins") {
      } else {
        assert(false, "unsupported target_platform=$target_platform")
      }
@@ -11,7 +11,7 @@
  
 --- a/build/config/rust.gni
 +++ b/build/config/rust.gni
-@@ -59,7 +59,7 @@ declare_args() {
+@@ -52,7 +52,7 @@ declare_args() {
    # To use a custom toolchain instead, specify an absolute path to the root of
    # a Rust sysroot, which will have a 'bin' directory and others. Commonly
    # <home dir>/.rustup/toolchains/nightly-<something>-<something>
@@ -20,20 +20,20 @@
  
    # Directory under which to find `bin/bindgen` (a `bin` directory containing
    # the bindgen exectuable).
-@@ -69,7 +69,7 @@ declare_args() {
+@@ -62,7 +62,7 @@ declare_args() {
    # set this to the output of `rustc -V`. Changing this string will cause all
    # Rust targets to be rebuilt, which allows you to update your toolchain and
    # not break incremental builds.
 -  rustc_version = ""
-+  rustc_version = "rustc 1.88.0-nightly (b8c54d635 2025-04-20)"
++  rustc_version = "rustc 1.88.0-nightly (2e6882ac5 2025-05-05)"
  
    # If you're using a Rust toolchain as specified by rust_sysroot_absolute,
    # you can specify whether it supports nacl here.
 --- a/third_party/rust/windows_aarch64_msvc/v0_52/BUILD.gn
 +++ b/third_party/rust/windows_aarch64_msvc/v0_52/BUILD.gn
-@@ -12,13 +12,13 @@ cargo_crate("lib") {
-   crate_name = "windows_aarch64_msvc"
+@@ -13,8 +13,8 @@ cargo_crate("lib") {
    epoch = "0.52"
+   enabled = is_win && current_cpu == "arm64"
    crate_type = "rlib"
 -  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_aarch64_msvc-v0_52/src/lib.rs"
 -  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_aarch64_msvc-v0_52/src/lib.rs" ]
@@ -42,33 +42,29 @@
    inputs = []
  
    build_native_rust_unit_tests = false
-   edition = "2021"
--  cargo_pkg_version = "0.52.6"
-+  cargo_pkg_version = "0.52.0"
+@@ -22,13 +22,13 @@ cargo_crate("lib") {
    cargo_pkg_authors = "Microsoft"
    cargo_pkg_name = "windows_aarch64_msvc"
    cargo_pkg_description = "Import lib for Windows"
-@@ -29,12 +29,12 @@ cargo_crate("lib") {
-   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
-   proc_macro_configs -= [ "//build/config/compiler:chromium_code" ]
-   proc_macro_configs += [ "//build/config/compiler:no_chromium_code" ]
+-  cargo_pkg_version = "0.52.6"
++  cargo_pkg_version = "0.52.0"
+ 
+   allow_unsafe = false
+ 
 -  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_aarch64_msvc-v0_52/build.rs"
 -  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_aarch64_msvc-v0_52/build.rs" ]
+-  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_aarch64_msvc-v0_52/src/../lib/windows.0.52.0.lib" ]
 +  build_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/aarch64_msvc/build.rs"
 +  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/aarch64_msvc/build.rs" ]
-   rustflags = [
-     "--cap-lints=allow",  # Suppress all warnings in crates.io crates
-   ]
--  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_aarch64_msvc-v0_52/src/../lib/windows.0.52.0.lib" ]
 +  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/aarch64_msvc/lib/windows.0.52.0.lib" ]
  
    # Only for usage from third-party crates. Add the crate to
    # //third_party/rust/chromium_crates_io/Cargo.toml to use
 --- a/third_party/rust/windows_i686_msvc/v0_52/BUILD.gn
 +++ b/third_party/rust/windows_i686_msvc/v0_52/BUILD.gn
-@@ -12,13 +12,13 @@ cargo_crate("lib") {
-   crate_name = "windows_i686_msvc"
+@@ -13,8 +13,8 @@ cargo_crate("lib") {
    epoch = "0.52"
+   enabled = is_win && current_cpu == "x86"
    crate_type = "rlib"
 -  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-v0_52/src/lib.rs"
 -  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-v0_52/src/lib.rs" ]
@@ -77,33 +73,29 @@
    inputs = []
  
    build_native_rust_unit_tests = false
-   edition = "2021"
--  cargo_pkg_version = "0.52.6"
-+  cargo_pkg_version = "0.52.0"
+@@ -22,13 +22,13 @@ cargo_crate("lib") {
    cargo_pkg_authors = "Microsoft"
    cargo_pkg_name = "windows_i686_msvc"
    cargo_pkg_description = "Import lib for Windows"
-@@ -29,12 +29,12 @@ cargo_crate("lib") {
-   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
-   proc_macro_configs -= [ "//build/config/compiler:chromium_code" ]
-   proc_macro_configs += [ "//build/config/compiler:no_chromium_code" ]
+-  cargo_pkg_version = "0.52.6"
++  cargo_pkg_version = "0.52.0"
+ 
+   allow_unsafe = false
+ 
 -  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-v0_52/build.rs"
 -  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-v0_52/build.rs" ]
+-  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-v0_52/src/../lib/windows.0.52.0.lib" ]
 +  build_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/build.rs"
 +  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/build.rs" ]
-   rustflags = [
-     "--cap-lints=allow",  # Suppress all warnings in crates.io crates
-   ]
--  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_i686_msvc-v0_52/src/../lib/windows.0.52.0.lib" ]
 +  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/i686_msvc/lib/windows.0.52.0.lib" ]
  
    # Only for usage from third-party crates. Add the crate to
    # //third_party/rust/chromium_crates_io/Cargo.toml to use
 --- a/third_party/rust/windows_x86_64_msvc/v0_52/BUILD.gn
 +++ b/third_party/rust/windows_x86_64_msvc/v0_52/BUILD.gn
-@@ -12,13 +12,13 @@ cargo_crate("lib") {
-   crate_name = "windows_x86_64_msvc"
+@@ -13,8 +13,8 @@ cargo_crate("lib") {
    epoch = "0.52"
+   enabled = is_win && current_cpu == "x64"
    crate_type = "rlib"
 -  crate_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-v0_52/src/lib.rs"
 -  sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-v0_52/src/lib.rs" ]
@@ -112,24 +104,20 @@
    inputs = []
  
    build_native_rust_unit_tests = false
-   edition = "2021"
--  cargo_pkg_version = "0.52.6"
-+  cargo_pkg_version = "0.52.0"
+@@ -22,13 +22,13 @@ cargo_crate("lib") {
    cargo_pkg_authors = "Microsoft"
    cargo_pkg_name = "windows_x86_64_msvc"
    cargo_pkg_description = "Import lib for Windows"
-@@ -29,12 +29,12 @@ cargo_crate("lib") {
-   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
-   proc_macro_configs -= [ "//build/config/compiler:chromium_code" ]
-   proc_macro_configs += [ "//build/config/compiler:no_chromium_code" ]
+-  cargo_pkg_version = "0.52.6"
++  cargo_pkg_version = "0.52.0"
+ 
+   allow_unsafe = false
+ 
 -  build_root = "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-v0_52/build.rs"
 -  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-v0_52/build.rs" ]
+-  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-v0_52/src/../lib/windows.0.52.0.lib" ]
 +  build_root = "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/build.rs"
 +  build_sources = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/build.rs" ]
-   rustflags = [
-     "--cap-lints=allow",  # Suppress all warnings in crates.io crates
-   ]
--  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows_x86_64_msvc-v0_52/src/../lib/windows.0.52.0.lib" ]
 +  native_libs = [ "//third_party/rust/chromium_crates_io/vendor/windows-rs-0.52.0/crates/targets/x86_64_msvc/lib/windows.0.52.0.lib" ]
  
    # Only for usage from third-party crates. Add the crate to

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1634,8 +1634,7 @@ config("compiler_deterministic") {
+@@ -1683,8 +1683,7 @@ config("compiler_deterministic") {
  }
  
  config("clang_revision") {
