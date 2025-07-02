@@ -8,7 +8,7 @@
  
  import array
  import difflib
-+import distutils.file_util
++import shutil
  import filecmp
  import io
  import operator
@@ -52,7 +52,7 @@
 -    print(r'  copy /y %s\* %s' % (midl_output_dir, source))
 -    return 1
 -
-+      distutils.file_util.copy_file(os.path.join(midl_output_dir, f), outdir, preserve_times=False)
++      shutil.copy(os.path.join(midl_output_dir, f), outdir)
    return 0
  
  
