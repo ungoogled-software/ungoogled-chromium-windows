@@ -90,7 +90,7 @@ async function updateInstaller(latestVersionPath, newVersionPath, latestVersion,
     }
 
     // Update verions in RelativeFilePath
-    const newContent = yaml.dump(data, {noRefs: true}).replaceAll(latestVersion, newVersion);
+    const newContent = yaml.dump(data, {noRefs: true, lineWidth: -1, condenseFlow: true}).replaceAll(latestVersion, newVersion);
     await fs.writeFile(path.join(newVersionPath, 'eloston.ungoogled-chromium.installer.yaml'), newContent, {encoding: 'utf-8'});
 }
 
