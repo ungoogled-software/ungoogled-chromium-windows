@@ -3,7 +3,7 @@ const exec = require('@actions/exec');
 const core = require("@actions/core");
 const glob = require('@actions/glob');
 const path = require('path');
-const compareVersions = require('compare-versions');
+const compareVersions = require('compare-versions').compareVersions;
 const fs = require('fs/promises');
 const fsSync = require('fs');
 const io = require('@actions/io');
@@ -21,18 +21,17 @@ async function run() {
     });
     const idx = newVersion.lastIndexOf('-');
     if (idx !== -1)
-        newVersion = newVersion.substr(0, idx);
+        newVersion = newVersion.substring(0, idx);
     const assets = JSON.parse(core.getInput('assets', {
         required: true,
     }));
-    let x86Url, x64Url;
+    const typeToUrl = new Map();
     for (const data of assets) {
-        if (data.browser_download_url.endsWith('.exe')) {
-            if (data.browser_download_url.includes('x86'))
-                x86Url = data.browser_download_url;
-            else
-                x64Url = data.browser_download_url;
-        }
+        const type = data.name.split('_').pop();
+        typeToUrl.set(type, {
+            url: data.browser_download_url,
+            digest: data.digest,
+        });
     }
 
     await syncRepo(token);
@@ -49,7 +48,7 @@ async function run() {
     } catch (e) {
     }
 
-    await updateInstaller(latestVersionPath, newVersionPath, latestVersion, newVersion, x86Url, x64Url);
+    await updateInstaller(latestVersionPath, newVersionPath, latestVersion, newVersion, typeToUrl);
     await replaceContent(latestVersionPath, newVersionPath, latestVersion, newVersion, 'eloston.ungoogled-chromium.locale.en-US.yaml');
     await replaceContent(latestVersionPath, newVersionPath, latestVersion, newVersion, 'eloston.ungoogled-chromium.yaml');
 
@@ -72,30 +71,26 @@ async function replaceContent(latestVersionPath, newVersionPath, latestVersion, 
     await fs.writeFile(path.join(newVersionPath, fileName), newContent, {encoding: 'utf-8'});
 }
 
-async function updateInstaller(latestVersionPath, newVersionPath, latestVersion, newVersion, x86Url, x64Url) {
-    const x86Hash = await calculateSHA256(x86Url);
-    const x64Hash = await calculateSHA256(x64Url);
+async function updateInstaller(latestVersionPath, newVersionPath, latestVersion, newVersion, typeToUrl) {
     const content = await fs.readFile(path.join(latestVersionPath, 'eloston.ungoogled-chromium.installer.yaml'), {encoding: 'utf-8'});
     const data = yaml.load(content);
-    let oldX86Url, oldX64Url, oldX86Hash, oldX64Hash;
+    data.PackageVersion = newVersion;
+    data.ReleaseDate = new Date().toLocaleDateString('en-CA');
     for (const installer of data.Installers) {
-        if (installer.Architecture === 'x86') {
-            oldX86Url = installer.InstallerUrl;
-            oldX86Hash = installer.InstallerSha256;
+        const type = `${installer.Architecture}.${installer.InstallerType}`;
+        const {url, digest} = typeToUrl.get(type);
+        installer.InstallerUrl = url;
+        let sha256 = '';
+        if (digest.startsWith('sha256:')) {
+            sha256 = digest.slice(7).toUpperCase();
         } else {
-            oldX64Url = installer.InstallerUrl;
-            oldX64Hash = installer.InstallerSha256;
+            sha256 = await calculateSHA256(url);
         }
+        installer.InstallerSha256 = sha256;
     }
 
-    const newContent = content
-        .replaceAll(`PackageVersion: ${data.PackageVersion}`, `PackageVersion: ${newVersion}`)
-        .replaceAll(`ReleaseDate: ${data.ReleaseDate}`, `ReleaseDate: ${new Date().toLocaleDateString('en-CA')}`)
-        .replaceAll(oldX86Url, x86Url)
-        .replaceAll(oldX86Hash, x86Hash)
-        .replaceAll(oldX64Url, x64Url)
-        .replaceAll(oldX64Hash, x64Hash);
-
+    // Update verions in RelativeFilePath
+    const newContent = yaml.dump(data, {noRefs: true, lineWidth: -1, condenseFlow: true}).replaceAll(latestVersion, newVersion);
     await fs.writeFile(path.join(newVersionPath, 'eloston.ungoogled-chromium.installer.yaml'), newContent, {encoding: 'utf-8'});
 }
 
