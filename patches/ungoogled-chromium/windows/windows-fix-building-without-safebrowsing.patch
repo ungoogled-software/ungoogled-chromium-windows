@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -5009,7 +5009,6 @@ std::wstring ChromeContentBrowserClient:
+@@ -5131,7 +5131,6 @@ std::wstring ChromeContentBrowserClient:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
      case sandbox::mojom::Sandbox::kAudio:
@@ -25,7 +25,7 @@
      case sandbox::mojom::Sandbox::kSpeechRecognition:
      case sandbox::mojom::Sandbox::kPdfConversion:
      case sandbox::mojom::Sandbox::kService:
-@@ -5106,7 +5105,6 @@ bool ChromeContentBrowserClient::PreSpaw
+@@ -5228,7 +5227,6 @@ bool ChromeContentBrowserClient::PreSpaw
      case sandbox::mojom::Sandbox::kPrintBackend:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:

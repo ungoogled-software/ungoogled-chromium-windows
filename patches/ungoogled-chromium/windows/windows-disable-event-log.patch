@@ -11,7 +11,7 @@
    ]
    sources = [
      "all_messages.h",
-@@ -374,7 +373,6 @@ static_library("common_lib") {
+@@ -375,7 +374,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.cc",
        "conflicts/remote_module_watcher_win.h",
      ]
@@ -77,7 +77,7 @@
  base::expected<base::HeapArray<FactoryAndClsid>, HRESULT>
 --- a/chrome/windows_services/elevated_tracing_service/BUILD.gn
 +++ b/chrome/windows_services/elevated_tracing_service/BUILD.gn
-@@ -94,7 +94,6 @@ source_set("service_lib") {
+@@ -95,7 +95,6 @@ source_set("service_lib") {
    ]
    deps = [
      ":lib",
