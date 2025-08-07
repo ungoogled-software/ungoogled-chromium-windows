@@ -277,6 +277,8 @@ def main():
             windows_flags = windows_flags.replace('x64', 'x86')
         elif args.arm:
             windows_flags = windows_flags.replace('x64', 'arm64')
+        if args.tarball:
+            windows_flags += '\nchrome_pgo_phase=0\n'
         gn_flags += windows_flags
         (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
 
