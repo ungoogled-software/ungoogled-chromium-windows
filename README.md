@@ -44,7 +44,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 			* At the end of the Python installer, click the button to lift the `MAX_PATH` length restriction.
 			* Disable the `python3.exe` and `python.exe` aliases in `Settings > Apps > Advanced app settings > App execution aliases`. They will typically be referred to as "App Installer". See [this question on stackoverflow.com](https://stackoverflow.com/questions/57485491/python-python3-executes-in-command-prompt-but-does-not-run-correctly) to understand why.
 			* Ensure that your Python directory either has a copy of Python named "python3.exe" or a symlink linking to the Python executable.
-		* The `httplib2` module. This can be installed using `pip install`.
+		* The `httplib2` module at version 0.22.0. This can be installed using `pip install httplib2==0.22.0`.
     * Make sure to lift the `MAX_PATH` length restriction, either by clicking the button at the end of the Python installer or by [following these instructions](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry#:~:text=Enable,Later).
     * Git (to fetch all required ungoogled-chromium scripts)
         * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
