@@ -2,9 +2,9 @@
 
 --- a/build/build_config.h
 +++ b/build/build_config.h
-@@ -49,7 +49,7 @@
- //    ARCH_CPU_31_BITS / ARCH_CPU_32_BITS / ARCH_CPU_64_BITS
- //    ARCH_CPU_BIG_ENDIAN / ARCH_CPU_LITTLE_ENDIAN
+@@ -53,7 +53,7 @@
+ //
+ // * `#[cfg(unix)]` ~= `BUILDFLAG(IS_POSIX) || BUILDFLAG(IS_FUCHSIA)`
  
 -#ifndef BUILD_BUILD_CONFIG_H_
 +#if !defined(BUILD_BUILD_CONFIG_H_) && !defined(RC_INVOKED)

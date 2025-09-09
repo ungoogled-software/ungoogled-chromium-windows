@@ -1,10 +1,10 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -289,8 +289,6 @@ clang_lib("compiler_builtins") {
+@@ -292,8 +292,6 @@ clang_lib("compiler_builtins") {
      } else {
        assert(false, "unsupported target_platform=$target_platform")
      }
--  } else {
+-  } else if (current_cpu != "ppc64" && current_cpu != "s390x") {
 -    libname = "builtins"
    }
  }
@@ -25,10 +25,10 @@
    # Rust targets to be rebuilt, which allows you to update your toolchain and
    # not break incremental builds.
 -  rustc_version = ""
-+  rustc_version = "rustc 1.88.0-nightly (2e6882ac5 2025-05-05)"
++  rustc_version = "rustc 1.89.0-nightly (be19eda0d 2025-06-22)"
  
-   # If you're using a Rust toolchain as specified by rust_sysroot_absolute,
-   # you can specify whether it supports nacl here.
+   # Whether artifacts produced by the Rust compiler can participate in ThinLTO.
+   #
 --- a/third_party/rust/windows_aarch64_msvc/v0_52/BUILD.gn
 +++ b/third_party/rust/windows_aarch64_msvc/v0_52/BUILD.gn
 @@ -13,8 +13,8 @@ cargo_crate("lib") {
@@ -42,10 +42,10 @@
    inputs = []
  
    build_native_rust_unit_tests = false
-@@ -22,13 +22,13 @@ cargo_crate("lib") {
-   cargo_pkg_authors = "Microsoft"
+@@ -23,13 +23,13 @@ cargo_crate("lib") {
    cargo_pkg_name = "windows_aarch64_msvc"
    cargo_pkg_description = "Import lib for Windows"
+   cargo_pkg_repository = "https://github.com/microsoft/windows-rs"
 -  cargo_pkg_version = "0.52.6"
 +  cargo_pkg_version = "0.52.0"
  
@@ -73,10 +73,10 @@
    inputs = []
  
    build_native_rust_unit_tests = false
-@@ -22,13 +22,13 @@ cargo_crate("lib") {
-   cargo_pkg_authors = "Microsoft"
+@@ -23,13 +23,13 @@ cargo_crate("lib") {
    cargo_pkg_name = "windows_i686_msvc"
    cargo_pkg_description = "Import lib for Windows"
+   cargo_pkg_repository = "https://github.com/microsoft/windows-rs"
 -  cargo_pkg_version = "0.52.6"
 +  cargo_pkg_version = "0.52.0"
  
@@ -104,10 +104,10 @@
    inputs = []
  
    build_native_rust_unit_tests = false
-@@ -22,13 +22,13 @@ cargo_crate("lib") {
-   cargo_pkg_authors = "Microsoft"
+@@ -23,13 +23,13 @@ cargo_crate("lib") {
    cargo_pkg_name = "windows_x86_64_msvc"
    cargo_pkg_description = "Import lib for Windows"
+   cargo_pkg_repository = "https://github.com/microsoft/windows-rs"
 -  cargo_pkg_version = "0.52.6"
 +  cargo_pkg_version = "0.52.0"
  
@@ -124,17 +124,17 @@
    # //third_party/rust/chromium_crates_io/Cargo.toml to use
 --- a/tools/rust/build_bindgen.py
 +++ b/tools/rust/build_bindgen.py
-@@ -28,8 +28,7 @@ from update import (RmTree)
- 
- # The git hash to use.
- BINDGEN_GIT_VERSION = 'f93d5dfa6d5d7409bea584f3eab38e1fc52b8360'
+@@ -29,8 +29,7 @@ from update import (RmTree)
+ # The git hash to use.  See https://github.com/rust-lang/rust-bindgen/tags.
+ # The current hash below corresponds to version 0.72.0
+ BINDGEN_GIT_VERSION = 'd0e7d6b5b763e93dd38f9ece05230979ede95a0a'
 -BINDGEN_GIT_REPO = ('https://chromium.googlesource.com/external/' +
 -                    'github.com/rust-lang/rust-bindgen')
 +BINDGEN_GIT_REPO = ('https://github.com/rust-lang/rust-bindgen')
  
  BINDGEN_SRC_DIR = os.path.join(THIRD_PARTY_DIR, 'rust-toolchain-intermediate',
                                 'bindgen-src')
-@@ -102,15 +101,8 @@ def RunCargo(cargo_args):
+@@ -103,15 +102,8 @@ def RunCargo(cargo_args):
                f'the build_rust.py script builds rustc that is needed here.')
          sys.exit(1)
  
@@ -152,7 +152,7 @@
  
      env = collections.defaultdict(str, os.environ)
      # Cargo normally stores files in $HOME. Override this.
-@@ -120,7 +112,6 @@ def RunCargo(cargo_args):
+@@ -121,7 +113,6 @@ def RunCargo(cargo_args):
      env['RUSTC'] = rustc_bin
  
      # Use the LLVM libs and clang compiler from the rustc build.
@@ -160,7 +160,7 @@
      if sys.platform == 'win32':
          env['LIBCLANG_PATH'] = os.path.join(llvm_dir, 'bin')
      else:
-@@ -207,7 +198,7 @@ def main():
+@@ -209,7 +200,7 @@ def main():
      install_dir = os.path.join(RUST_TOOLCHAIN_OUT_DIR)
      print(f'Installing bindgen to {install_dir} ...')
  
