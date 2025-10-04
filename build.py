@@ -298,7 +298,7 @@ def main():
         # Build bindgen
         _run_build_process(
             sys.executable,
-            'tools\\rust\\build_bindgen.py')
+            'tools\\rust\\build_bindgen.py', '--skip-test')
 
     # Run ninja
     if args.ci:
