@@ -19,7 +19,7 @@
  #define IDC_RESTORE_WINDOW              34052
  #endif
  
-@@ -91,7 +91,7 @@
+@@ -92,7 +92,7 @@
  #define IDC_WEB_APP_MENU_APP_INFO       34063
  #define IDC_WEB_APP_UPGRADE_DIALOG      34064
  
@@ -28,7 +28,7 @@
  // Move window to other user commands
  #define IDC_VISIT_DESKTOP_OF_LRU_USER_2 34080
  #define IDC_VISIT_DESKTOP_OF_LRU_USER_3 34081
-@@ -500,7 +500,7 @@
+@@ -502,7 +502,7 @@
  #define IDC_MEDIA_ROUTER_TOGGLE_MEDIA_REMOTING 51208
  
  // Context menu items for media toolbar button
@@ -37,7 +37,7 @@
  #define IDC_MEDIA_TOOLBAR_CONTEXT_REPORT_CAST_ISSUE 51209
  #endif
  #define IDC_MEDIA_TOOLBAR_CONTEXT_SHOW_OTHER_SESSIONS 51210
-@@ -537,7 +537,7 @@
+@@ -539,7 +539,7 @@
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS 52411
  #define IDC_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_TOGGLE_ONCE 52412
  

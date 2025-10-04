@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -292,8 +292,6 @@ clang_lib("compiler_builtins") {
+@@ -248,8 +248,6 @@ clang_lib("compiler_builtins") {
      } else {
        assert(false, "unsupported target_platform=$target_platform")
      }
@@ -126,15 +126,15 @@
 +++ b/tools/rust/build_bindgen.py
 @@ -29,8 +29,7 @@ from update import (RmTree)
  # The git hash to use.  See https://github.com/rust-lang/rust-bindgen/tags.
- # The current hash below corresponds to version 0.72.0
- BINDGEN_GIT_VERSION = 'd0e7d6b5b763e93dd38f9ece05230979ede95a0a'
+ # The current hash below corresponds to something between 0.72.0 and 0.73.0.
+ BINDGEN_GIT_VERSION = '2426dd68cd12e0ac022bca18efb9c7d0acd27e12'
 -BINDGEN_GIT_REPO = ('https://chromium.googlesource.com/external/' +
 -                    'github.com/rust-lang/rust-bindgen')
 +BINDGEN_GIT_REPO = ('https://github.com/rust-lang/rust-bindgen')
  
  BINDGEN_SRC_DIR = os.path.join(THIRD_PARTY_DIR, 'rust-toolchain-intermediate',
                                 'bindgen-src')
-@@ -103,15 +102,8 @@ def RunCargo(cargo_args):
+@@ -96,15 +95,8 @@ def RunCargo(cargo_args):
                f'the build_rust.py script builds rustc that is needed here.')
          sys.exit(1)
  
@@ -152,7 +152,7 @@
  
      env = collections.defaultdict(str, os.environ)
      # Cargo normally stores files in $HOME. Override this.
-@@ -121,7 +113,6 @@ def RunCargo(cargo_args):
+@@ -114,7 +106,6 @@ def RunCargo(cargo_args):
      env['RUSTC'] = rustc_bin
  
      # Use the LLVM libs and clang compiler from the rustc build.
@@ -160,7 +160,7 @@
      if sys.platform == 'win32':
          env['LIBCLANG_PATH'] = os.path.join(llvm_dir, 'bin')
      else:
-@@ -209,7 +200,7 @@ def main():
+@@ -205,7 +196,7 @@ def main():
      install_dir = os.path.join(RUST_TOOLCHAIN_OUT_DIR)
      print(f'Installing bindgen to {install_dir} ...')
  
