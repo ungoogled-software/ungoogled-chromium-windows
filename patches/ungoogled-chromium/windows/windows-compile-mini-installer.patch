@@ -3,7 +3,7 @@
 
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
-@@ -194,7 +194,6 @@ action("mini_installer_archive") {
+@@ -192,7 +192,6 @@ action("mini_installer_archive") {
      "//chrome:chrome_dll",
      "//chrome/browser/extensions/default_extensions",
      "//chrome/chrome_elf",
