@@ -28,7 +28,7 @@ async function run() {
         await io.rmRF('C:\\ungoogled-chromium-windows\\build\\artifacts.zip');
     }
 
-    const args = ['build.py', '--ci']
+    const args = ['build.py', '--ci', '-j', '2']
     if (x86)
         args.push('--x86')
     if (arm)

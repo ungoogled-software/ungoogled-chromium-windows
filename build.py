@@ -124,6 +124,11 @@ def main():
         help=('Command or path to WinRAR\'s "winrar.exe" binary. If "_use_registry" is '
               'specified, determine the path from the registry. Default: %(default)s'))
     parser.add_argument(
+        '-j',
+        type=int,
+        dest='thread_count',
+        help=('Number of CPU threads to use for compiling'))
+    parser.add_argument(
         '--ci',
         action='store_true'
     )
@@ -300,16 +305,25 @@ def main():
             sys.executable,
             'tools\\rust\\build_bindgen.py', '--skip-test')
 
+    # Ninja commandline
+    ninja_commandline = ['third_party\\ninja\\ninja.exe']
+    if args.thread_count is not None:
+        ninja_commandline.append('-j')
+        ninja_commandline.append(args.thread_count)
+    ninja_commandline.append('-C')
+    ninja_commandline.append('out\\Default')
+    ninja_commandline.append('chrome')
+    ninja_commandline.append('chromedriver')
+    ninja_commandline.append('mini_installer')
+
     # Run ninja
     if args.ci:
-        _run_build_process_timeout('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
-                                   'chromedriver', 'mini_installer', timeout=3.5*60*60)
+        _run_build_process_timeout(*ninja_commandline, timeout=3.5*60*60)
         # package
         os.chdir(_ROOT_DIR)
         subprocess.run([sys.executable, 'package.py'])
     else:
-        _run_build_process('third_party\\ninja\\ninja.exe', '-C', 'out\\Default', 'chrome',
-                           'chromedriver', 'mini_installer')
+        _run_build_process(*ninja_commandline)
 
 
 if __name__ == '__main__':
