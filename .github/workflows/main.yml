@@ -3,8 +3,21 @@ on:
   push:
     tags:
       - '*'
+permissions:
+  contents: write
+
 jobs:
+  prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub Release Draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create ${{ github.ref_name }} --draft --title ${{ github.ref_name }}
   build-1:
+    needs: prerelease
     runs-on: windows-2022
     steps:
       - name: Checkout
@@ -401,10 +414,21 @@ jobs:
         with:
           finished: ${{ join(needs.*.outputs.finished) }}
           from_artifact: true
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: chromium
+      - name: Update Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release upload ${{ github.ref_name }} ungoogled-chromium*
     outputs:
       finished: ${{ steps.stage.outputs.finished }}
 
   build-x86-1:
+    needs: prerelease
     runs-on: windows-2022
     steps:
       - name: Checkout
@@ -817,10 +841,21 @@ jobs:
           finished: ${{ join(needs.*.outputs.finished) }}
           from_artifact: true
           x86: true
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: chromium
+      - name: Update Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release upload ${{ github.ref_name }} ungoogled-chromium*
     outputs:
       finished: ${{ steps.stage.outputs.finished }}
 
   build-arm-1:
+    needs: prerelease
     runs-on: windows-2022
     steps:
       - name: Checkout
@@ -1233,6 +1268,16 @@ jobs:
           finished: ${{ join(needs.*.outputs.finished) }}
           from_artifact: true
           arm: true
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: chromium
+      - name: Update Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release upload ${{ github.ref_name }} ungoogled-chromium*
     outputs:
       finished: ${{ steps.stage.outputs.finished }}
 
@@ -1240,25 +1285,15 @@ jobs:
     needs: [build-16, build-x86-16, build-arm-16]
     runs-on: ubuntu-latest
     steps:
-      - name: Download package
-        uses: actions/download-artifact@v4
-        with:
-          name: chromium
-      - name: Download x86 package
-        uses: actions/download-artifact@v4
-        with:
-          name: chromium-x86
-      - name: Download arm package
-        uses: actions/download-artifact@v4
-        with:
-          name: chromium-arm
       - name: Publish release
         id: publish
-        uses: softprops/action-gh-release@v1
-        with:
-          fail_on_unmatched_files: true
-          files: |
-            ungoogled-chromium*
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release edit ${{ github.ref_name }} --draft=false
+          assets=$(gh release view ${{ github.ref_name }} --json assets --jq '.assets')
+          echo "assets=$assets" >> $GITHUB_OUTPUT
     outputs:
       assets: ${{ steps.publish.outputs.assets }}
   publish-winget:
