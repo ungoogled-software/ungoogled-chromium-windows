@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -5181,7 +5181,6 @@ std::wstring ChromeContentBrowserClient:
+@@ -5111,7 +5111,6 @@ std::wstring ChromeContentBrowserClient:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
      case sandbox::mojom::Sandbox::kAudio:
@@ -25,7 +25,7 @@
      case sandbox::mojom::Sandbox::kSpeechRecognition:
      case sandbox::mojom::Sandbox::kPdfConversion:
      case sandbox::mojom::Sandbox::kService:
-@@ -5277,7 +5276,6 @@ bool ChromeContentBrowserClient::PreSpaw
+@@ -5207,7 +5206,6 @@ bool ChromeContentBrowserClient::PreSpaw
      case sandbox::mojom::Sandbox::kPrintBackend:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
@@ -64,6 +64,25 @@
    std::wstring cred_provider_gaia_id;
    std::wstring cred_provider_email;
  
+--- a/chrome/browser/ui/safety_hub/abusive_notification_permissions_manager.cc
++++ b/chrome/browser/ui/safety_hub/abusive_notification_permissions_manager.cc
+@@ -113,15 +113,7 @@ bool HasShowOriginalSuspiciousNotificati
+   base::Value stored_value(hcsm->GetWebsiteSetting(
+       url, url, ContentSettingsType::SUSPICIOUS_NOTIFICATION_SHOW_ORIGINAL));
+ 
+-  if (stored_value.is_none()) {
+-    return false;
+-  }
+-  DCHECK(stored_value.is_dict());
+-  DCHECK(stored_value.GetDict().contains(
+-      safe_browsing::kSuspiciousNotificationShowOriginalKey));
+-  return stored_value.GetDict()
+-      .FindBool(safe_browsing::kSuspiciousNotificationShowOriginalKey)
+-      .value_or(false);
++  return false;
+ }
+ 
+ // Return true if the url should be considered for suspicious content
 --- a/components/safe_browsing/buildflags.gni
 +++ b/components/safe_browsing/buildflags.gni
 @@ -20,6 +20,7 @@ declare_args() {
