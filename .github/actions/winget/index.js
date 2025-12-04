@@ -29,7 +29,7 @@ async function run() {
     for (const data of assets) {
         const type = data.name.split('_').pop();
         typeToUrl.set(type, {
-            url: data.browser_download_url,
+            url: data.url,
             digest: data.digest,
         });
     }
