@@ -11,7 +11,7 @@
    ]
    sources = [
      "chrome_content_client.cc",
-@@ -372,7 +371,6 @@ static_library("common_lib") {
+@@ -370,7 +369,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.cc",
        "conflicts/remote_module_watcher_win.h",
      ]

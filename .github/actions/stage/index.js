@@ -55,7 +55,7 @@ async function run() {
             }
             try {
                 await artifact.uploadArtifact(finalArtifactName, packageList,
-                    'C:\\ungoogled-chromium-windows\\build', {retentionDays: 1, compressionLevel: 0});
+                    'C:\\ungoogled-chromium-windows\\build', {retentionDays: 3, compressionLevel: 0});
                 break;
             } catch (e) {
                 console.error(`Upload artifact failed: ${e}`);
