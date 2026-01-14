@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -125,7 +125,6 @@ source_set("request_code_constants") {
+@@ -120,7 +120,6 @@ source_set("request_code_constants") {
  static_library("common_lib") {
    visibility = [
      ":*",
@@ -11,7 +11,7 @@
    ]
    sources = [
      "chrome_content_client.cc",
-@@ -370,7 +369,6 @@ static_library("common_lib") {
+@@ -367,7 +366,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.cc",
        "conflicts/remote_module_watcher_win.h",
      ]
@@ -21,7 +21,7 @@
        "//components/dom_distiller/core",  # Needed by chrome_content_client.cc.
 --- a/chrome/common/logging_chrome.cc
 +++ b/chrome/common/logging_chrome.cc
-@@ -50,7 +50,6 @@
+@@ -51,7 +51,6 @@
  #include "base/syslog_logging.h"
  #include "base/win/scoped_handle.h"
  #include "base/win/windows_handle_util.h"
@@ -29,7 +29,7 @@
  #include "chrome/install_static/install_details.h"
  #include "sandbox/policy/switches.h"
  #endif
-@@ -510,11 +509,6 @@ void InitChromeLogging(const base::Comma
+@@ -511,11 +510,6 @@ void InitChromeLogging(const base::Comma
  #if BUILDFLAG(IS_WIN)
    // Enable trace control and transport through event tracing for Windows.
    LogEventProvider::Initialize(kChromeTraceProviderName);

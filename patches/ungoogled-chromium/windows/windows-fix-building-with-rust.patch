@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -248,8 +248,6 @@ clang_lib("compiler_builtins") {
+@@ -257,8 +257,6 @@ clang_lib("compiler_builtins") {
      } else {
        assert(false, "unsupported target_platform=$target_platform")
      }
@@ -11,24 +11,41 @@
  
 --- a/build/config/rust.gni
 +++ b/build/config/rust.gni
-@@ -52,7 +52,7 @@ declare_args() {
-   # To use a custom toolchain instead, specify an absolute path to the root of
-   # a Rust sysroot, which will have a 'bin' directory and others. Commonly
-   # <home dir>/.rustup/toolchains/nightly-<something>-<something>
+@@ -57,7 +57,7 @@ declare_args() {
+   # build may depend on using a *nightly* version of Rust toolchain (see
+   # `tools/rust/unstable_rust_feature_usage.md`) although other projects (e.g. V8)
+   # may be compatible with the stable version of Rust toolchain.
 -  rust_sysroot_absolute = ""
 +  rust_sysroot_absolute = "//third_party/rust-toolchain"
  
    # Directory under which to find `bin/bindgen` (a `bin` directory containing
    # the bindgen exectuable).
-@@ -62,7 +62,7 @@ declare_args() {
+@@ -67,7 +67,7 @@ declare_args() {
    # set this to the output of `rustc -V`. Changing this string will cause all
    # Rust targets to be rebuilt, which allows you to update your toolchain and
    # not break incremental builds.
 -  rustc_version = ""
-+  rustc_version = "rustc 1.92.0-nightly (975e6c8fe 2025-09-23)"
++  rustc_version = "rustc 1.93.0-nightly (29a69716f 2025-11-10)"
  
    # Whether artifacts produced by the Rust compiler can participate in ThinLTO.
    #
+--- a/build/rust/allocator/lib.rs
++++ b/build/rust/allocator/lib.rs
+@@ -107,14 +107,4 @@ mod both_allocators {
+     fn __rust_alloc_error_handler_should_panic() -> u8 {
+         0
+     }
+-
+-    // Mangle the symbol name as rustc expects.
+-    #[rustc_std_internal_symbol]
+-    #[allow(non_upper_case_globals)]
+-    #[linkage = "weak"]
+-    fn __rust_alloc_error_handler(_size: usize, _align: usize) {
+-        // TODO(lukasza): Investigate if we can just call `std::process::abort()` here.
+-        // (Not really _needed_, but it could simplify code a little bit.)
+-        unsafe { ffi::alloc_error_handler_impl() }
+-    }
+ }
 --- a/third_party/rust/windows_aarch64_msvc/v0_52/BUILD.gn
 +++ b/third_party/rust/windows_aarch64_msvc/v0_52/BUILD.gn
 @@ -13,8 +13,8 @@ cargo_crate("lib") {

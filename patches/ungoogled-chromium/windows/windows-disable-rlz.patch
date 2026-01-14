@@ -10,7 +10,7 @@
  
 --- a/chrome/installer/setup/uninstall.cc
 +++ b/chrome/installer/setup/uninstall.cc
-@@ -69,8 +69,6 @@
+@@ -65,8 +65,6 @@
  #include "chrome/installer/util/work_item.h"
  #include "chrome/windows_services/elevated_tracing_service/service_integration.h"
  #include "content/public/common/result_codes.h"
@@ -19,7 +19,7 @@
  
  using base::win::RegKey;
  
-@@ -113,22 +111,6 @@ void ProcessChromeWorkItems(const Instal
+@@ -109,22 +107,6 @@ void ProcessChromeWorkItems(const Instal
    work_item_list->Do();
  }
  
@@ -42,7 +42,7 @@
  // Removes all files from the installer directory. Returns false in case of an
  // error.
  bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
-@@ -908,11 +890,6 @@ InstallStatus UninstallProduct(const Mod
+@@ -909,11 +891,6 @@ InstallStatus UninstallProduct(const Mod
      }
    }
  
@@ -51,6 +51,6 @@
 -  // in case of errors.
 -  ClearRlzProductState();
 -
-   auto_launch_util::DisableBackgroundStartAtLogin();
+   auto_launch_util::DisableStartAtLogin();
  
    base::FilePath chrome_proxy_exe(
