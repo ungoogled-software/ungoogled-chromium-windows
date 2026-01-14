@@ -1,6 +1,6 @@
 --- a/components/download/internal/common/download_item_impl.cc
 +++ b/components/download/internal/common/download_item_impl.cc
-@@ -2498,7 +2498,7 @@ void DownloadItemImpl::SetDangerType(Dow
+@@ -2502,7 +2502,7 @@ void DownloadItemImpl::SetDangerType(Dow
                           TRACE_EVENT_SCOPE_THREAD, "danger_type",
                           GetDownloadDangerNames(danger_type).c_str());
    }

@@ -12,7 +12,7 @@
    gn_build_dir = os.path.join(out_dir, 'gn_build')
    ninja_binary = os.environ.get('NINJA', 'ninja')
  
-@@ -122,11 +122,11 @@ def main(argv):
+@@ -126,11 +126,11 @@ def main(argv):
  
    shutil.copy2(
        os.path.join(BOOTSTRAP_DIR, 'last_commit_position.h'), gn_build_dir)
