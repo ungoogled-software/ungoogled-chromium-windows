@@ -1,4 +1,4 @@
-chrome_pgo_phase=0
+chrome_pgo_phase=2
 enable_swiftshader=false
 ffmpeg_branding="Chrome"
 is_clang=true
