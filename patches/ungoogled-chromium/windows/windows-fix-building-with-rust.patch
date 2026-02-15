@@ -34,7 +34,7 @@
  # Rust nightly features. There are no bots that test this and there is no
  # guarantee it will work, but we accept patches for this configuration.
 -rustc_nightly_capability = use_chromium_rust_toolchain
-+rustc_nightly_capability = true
++rustc_nightly_capability = use_chromium_rust_toolchain || build_with_chromium
  
  # Platform support for the Rust toolchain.
  chromium_toolchain_supports_platform = !is_wasm
