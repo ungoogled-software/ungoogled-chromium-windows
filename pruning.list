@@ -8071,7 +8071,6 @@ third_party/flatbuffers/src/tests/unicode_test.mon
 third_party/fontconfig/src/test/4x6.pcf
 third_party/fontconfig/src/test/8x16.pcf
 third_party/fontconfig/src/test/broken_cff_major.otf
-third_party/gperf/bin/gperf.exe
 third_party/harfbuzz-ng/src/perf/fonts/NotoSansDuployan-Regular.otf
 third_party/hunspell/fuzz/bdict_corpus/02a25363e79f11115132055fb880773b325f6aef
 third_party/hunspell/fuzz/bdict_corpus/0883e336027e9e21911a277a9d8fa4c1b9490edd
