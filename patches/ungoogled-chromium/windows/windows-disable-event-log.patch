@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -122,7 +122,6 @@ source_set("request_code_constants") {
+@@ -121,7 +121,6 @@ source_set("request_code_constants") {
  static_library("common_lib") {
    visibility = [
      ":*",
@@ -11,7 +11,7 @@
    ]
    sources = [
      "actor/action_result.cc",
-@@ -366,7 +365,6 @@ static_library("common_lib") {
+@@ -367,7 +366,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.cc",
        "conflicts/remote_module_watcher_win.h",
      ]
