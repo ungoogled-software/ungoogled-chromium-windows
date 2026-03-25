@@ -1,0 +1,28 @@
+﻿name: Prepare Build Environment
+description: Checkout sources, set up Python, copy workspace, and install stage dependencies
+inputs:
+  python-version:
+    description: Python version
+    required: false
+    default: '3.12'
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Init
+      shell: pwsh
+      run: Copy-Item -Path . -Destination 'C:\ungoogled-chromium-windows' -Recurse
+
+    - name: Setup Stage
+      shell: pwsh
+      run: npm install
+      working-directory: ./.github/actions/stage
