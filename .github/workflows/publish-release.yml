@@ -226,6 +226,8 @@ jobs:
       - name: Rebase onto upstream master
         working-directory: ungoogled-chromium-binaries
         run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git remote add upstream https://github.com/ungoogled-software/ungoogled-chromium-binaries.git
           git fetch upstream
           git rebase upstream/master
