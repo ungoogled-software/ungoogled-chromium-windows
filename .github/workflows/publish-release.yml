@@ -1,0 +1,261 @@
+name: publish-release
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - build-x64
+      - build-x86
+      - build-arm
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: publish-release-${{ github.event.workflow_run.head_sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  resolve-release-context:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') }}
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.context.outputs.ready }}
+      publishable: ${{ steps.runs.outputs.publishable }}
+      target_tag: ${{ steps.context.outputs.target_tag }}
+      target_sha: ${{ steps.context.outputs.target_sha }}
+      x64_run_id: ${{ steps.runs.outputs.x64_run_id }}
+      x86_run_id: ${{ steps.runs.outputs.x86_run_id }}
+      arm_run_id: ${{ steps.runs.outputs.arm_run_id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch tags
+        run: git fetch --force --tags origin
+
+      - name: Resolve target tag
+        id: context
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_REF_TYPE: ${{ github.ref_type }}
+          DISPATCH_REF_NAME: ${{ github.ref_name }}
+          DISPATCH_SHA: ${{ github.sha }}
+          WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          WORKFLOW_RUN_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_RUN_HEAD_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            if [ "$DISPATCH_REF_TYPE" != "tag" ]; then
+              echo "Manual publish only runs on a tag ref. Current ref type: $DISPATCH_REF_TYPE"
+              echo "ready=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            target_tag="$DISPATCH_REF_NAME"
+            target_sha="$DISPATCH_SHA"
+          else
+            if [ "$WORKFLOW_RUN_HEAD_REPOSITORY" != "$GITHUB_REPOSITORY" ]; then
+              echo "Triggered by a fork run; skipping publish."
+              echo "ready=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            target_sha="$WORKFLOW_RUN_HEAD_SHA"
+            candidate_tag="$WORKFLOW_RUN_HEAD_BRANCH"
+
+            if [ -z "$candidate_tag" ] || ! git rev-parse -q --verify "refs/tags/$candidate_tag" >/dev/null; then
+              echo "Upstream run was not triggered from a tag ref; skipping publish."
+              echo "ready=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            tag_sha="$(git rev-list -n 1 "$candidate_tag")"
+            if [ "$tag_sha" != "$target_sha" ]; then
+              echo "Tag $candidate_tag does not point to $target_sha; skipping publish."
+              echo "ready=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            target_tag="$candidate_tag"
+          fi
+
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+          echo "target_tag=$target_tag" >> "$GITHUB_OUTPUT"
+          echo "target_sha=$target_sha" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: $target_tag"
+          echo "Resolved sha: $target_sha"
+
+      - name: Locate latest successful builds
+        id: runs
+        if: ${{ steps.context.outputs.ready == 'true' }}
+        uses: actions/github-script@v8
+        env:
+          TARGET_SHA: ${{ steps.context.outputs.target_sha }}
+        with:
+          script: |
+            const workflows = [
+              { key: 'x64', file: 'build-x64.yml' },
+              { key: 'x86', file: 'build-x86.yml' },
+              { key: 'arm', file: 'build-arm.yml' },
+            ];
+            const targetSha = process.env.TARGET_SHA;
+            const outputs = { publishable: 'true' };
+
+            for (const workflow of workflows) {
+              const matches = [];
+              for (let page = 1; page <= 10; page++) {
+                const { data } = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: workflow.file,
+                  per_page: 100,
+                  page,
+                  status: 'completed',
+                });
+
+                matches.push(...data.workflow_runs.filter((run) =>
+                  run.head_sha === targetSha &&
+                  run.conclusion === 'success' &&
+                  run.event === 'push'
+                ));
+
+                if (data.workflow_runs.length < 100) {
+                  break;
+                }
+              }
+
+              matches.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
+              const latest = matches[0];
+              if (!latest) {
+                core.info(`No successful run found for ${workflow.file} at ${targetSha}`);
+                outputs.publishable = 'false';
+                continue;
+              }
+
+              core.info(`Using ${workflow.file} run ${latest.id} from ${latest.created_at}`);
+              outputs[`${workflow.key}_run_id`] = String(latest.id);
+            }
+
+            for (const [name, value] of Object.entries(outputs)) {
+              core.setOutput(name, value);
+            }
+
+  publish-release:
+    needs: resolve-release-context
+    if: ${{ needs.resolve-release-context.outputs.ready == 'true' && needs.resolve-release-context.outputs.publishable == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download x64 package
+        uses: actions/download-artifact@v7
+        with:
+          name: chromium
+          path: artifacts/x64
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.resolve-release-context.outputs.x64_run_id }}
+
+      - name: Download x86 package
+        uses: actions/download-artifact@v7
+        with:
+          name: chromium-x86
+          path: artifacts/x86
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.resolve-release-context.outputs.x86_run_id }}
+
+      - name: Download arm package
+        uses: actions/download-artifact@v7
+        with:
+          name: chromium-arm
+          path: artifacts/arm
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.resolve-release-context.outputs.arm_run_id }}
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.resolve-release-context.outputs.target_tag }}
+          fail_on_unmatched_files: true
+          overwrite_files: true
+          files: |
+            artifacts/**/ungoogled-chromium*
+
+  publish-winget:
+    needs:
+      - resolve-release-context
+      - publish-release
+    if: ${{ needs.resolve-release-context.outputs.ready == 'true' && needs.resolve-release-context.outputs.publishable == 'true' }}
+    runs-on: ubuntu-slim
+    steps:
+      - name: Get version
+        id: version
+        run: echo "version=$(echo '${{ needs.resolve-release-context.outputs.target_tag }}' | cut -d'-' -f1)" >> $GITHUB_OUTPUT
+      - uses: vedantmgoyal9/winget-releaser@main
+        with:
+          identifier: eloston.ungoogled-chromium
+          token: ${{ secrets.PAT }}
+          installers-regex: .(exe|zip)$
+          version: ${{ steps.version.outputs.version }}
+          fork-user: Nifury
+
+  update-binaries:
+    needs:
+      - resolve-release-context
+      - publish-release
+    if: ${{ needs.resolve-release-context.outputs.ready == 'true' && needs.resolve-release-context.outputs.publishable == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ungoogled-chromium-windows
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-release-context.outputs.target_tag }}
+          path: ungoogled-chromium-windows
+      - name: Checkout ungoogled-chromium-binaries
+        uses: actions/checkout@v4
+        with:
+          repository: Nifury/ungoogled-chromium-binaries
+          token: ${{ secrets.PAT }}
+          path: ungoogled-chromium-binaries
+      - name: Rebase onto upstream master
+        working-directory: ungoogled-chromium-binaries
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote add upstream https://github.com/ungoogled-software/ungoogled-chromium-binaries.git
+          git fetch upstream
+          git rebase upstream/master
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Run gen.py
+        working-directory: ungoogled-chromium-binaries
+        run: python ../ungoogled-chromium-windows/.github/scripts/gen.py
+      - name: Commit and push
+        working-directory: ungoogled-chromium-binaries
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add config/platforms/windows/
+          git commit -m "Update Windows binaries for ${{ needs.resolve-release-context.outputs.target_tag }}"
+          git push --force-with-lease
+      - name: Create pull request
+        working-directory: ungoogled-chromium-binaries
+        run: |
+          gh pr create \
+            --repo ungoogled-software/ungoogled-chromium-binaries \
+            --head Nifury:master \
+            --base master \
+            --title "Update Windows binaries for ${{ needs.resolve-release-context.outputs.target_tag }}" \
+            --body "Automated update of Windows binary hashes for release ${{ needs.resolve-release-context.outputs.target_tag }}."
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
