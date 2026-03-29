@@ -4,7 +4,7 @@ import os
 
 import requests
 
-tag = os.environ['GITHUB_REF_NAME']
+tag = os.environ.get('RELEASE_TAG') or os.environ['GITHUB_REF_NAME']
 config = [
     ('32bit', 'x86'),
     ('64bit', 'x64'),
