@@ -203,6 +203,7 @@ jobs:
           token: ${{ secrets.PAT }}
           installers-regex: .(exe|zip)$
           version: ${{ steps.version.outputs.version }}
+          release-tag: ${{ needs.resolve-release-context.outputs.target_tag }}
           fork-user: Nifury
 
   update-binaries:
@@ -239,6 +240,8 @@ jobs:
         run: pip install requests
       - name: Run gen.py
         working-directory: ungoogled-chromium-binaries
+        env:
+          RELEASE_TAG: ${{ needs.resolve-release-context.outputs.target_tag }}
         run: python ../ungoogled-chromium-windows/.github/scripts/gen.py
       - name: Commit and push
         working-directory: ungoogled-chromium-binaries
