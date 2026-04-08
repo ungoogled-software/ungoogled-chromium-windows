@@ -3,7 +3,7 @@
 
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -121,7 +121,6 @@ source_set("request_code_constants") {
+@@ -120,7 +120,6 @@ source_set("request_code_constants") {
  static_library("common_lib") {
    visibility = [
      ":*",
@@ -11,7 +11,7 @@
    ]
    sources = [
      "actor/action_result.cc",
-@@ -367,7 +366,6 @@ static_library("common_lib") {
+@@ -366,7 +365,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.cc",
        "conflicts/remote_module_watcher_win.h",
      ]
@@ -43,7 +43,7 @@
    base::StatisticsRecorder::InitLogOnShutdown();
 --- a/chrome/elevation_service/BUILD.gn
 +++ b/chrome/elevation_service/BUILD.gn
-@@ -95,7 +95,6 @@ source_set("service_lib") {
+@@ -98,7 +98,6 @@ source_set("service_lib") {
    deps = [
      ":lib",
      "//base",

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1854,18 +1854,6 @@ config("sanitize_c_array_bounds") {
+@@ -1879,18 +1879,6 @@ config("sanitize_c_array_bounds") {
      cflags = [
        "-fsanitize=array-bounds",
        "-fsanitize-trap=array-bounds",
