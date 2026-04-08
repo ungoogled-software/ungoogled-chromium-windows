@@ -1,6 +1,6 @@
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -1856,9 +1856,6 @@ const PolicyToPreferenceMapEntry kSimple
+@@ -1852,9 +1852,6 @@ const PolicyToPreferenceMapEntry kSimple
    { key::kRendererAppContainerEnabled,
      prefs::kRendererAppContainerEnabled,
      base::Value::Type::BOOLEAN },
