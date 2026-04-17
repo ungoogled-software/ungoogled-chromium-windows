@@ -1,0 +1,13 @@
+--- a/chrome/browser/actor/actor_keyed_service_factory.cc
++++ b/chrome/browser/actor/actor_keyed_service_factory.cc
+@@ -15,7 +15,9 @@ namespace actor {
+ // static
+ ActorKeyedService* ActorKeyedServiceFactory::GetActorKeyedService(
+     content::BrowserContext* browser_context) {
+-   return nullptr;
++  return static_cast<ActorKeyedService*>(
++      GetInstance()->GetServiceForBrowserContext(browser_context,
++                                                 /*create=*/true));
+ }
+ 
+ // static
