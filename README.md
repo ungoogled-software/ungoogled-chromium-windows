@@ -33,11 +33,11 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 
 #### Other build requirements
 
-**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (v1607 or newer) with the official installer for Python 3.6 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for older Windows versions.
+**IMPORTANT**: Currently, the `MAX_PATH` path length restriction (which is 260 characters by default) must be lifted in for our Python build scripts. This can be lifted in Windows 10 (v1607 or newer) with the official installer for Python 3.11 or newer (you will see a button at the end of installation to do this). See [Issue #345](https://github.com/Eloston/ungoogled-chromium/issues/345) for other methods for older Windows versions.
 
 1. Setup the following:
     * 7-Zip
-    * Python 3.8 or above
+    * Python 3.11 or above
 		* Can be installed using WinGet or the Microsoft Store.
 		* If you don't plan on using the Microsoft Store version of Python:
 			* Check "Add python.exe to PATH" before install.
