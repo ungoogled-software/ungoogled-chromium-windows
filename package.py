@@ -53,7 +53,7 @@ def main():
         '--cpu-arch',
         metavar='ARCH',
         default=platform.architecture()[0],
-        choices=('64bit', '32bit'),
+        choices=('64bit', '32bit', 'arm'),
         help=('Filter build outputs by a target CPU. '
               'This is the same as the "arch" key in FILES.cfg. '
               'Default (from platform.architecture()): %(default)s'))
