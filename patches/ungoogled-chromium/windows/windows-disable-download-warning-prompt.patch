@@ -1,8 +1,8 @@
 --- a/components/download/internal/common/download_item_impl.cc
 +++ b/components/download/internal/common/download_item_impl.cc
-@@ -2500,7 +2500,7 @@ void DownloadItemImpl::SetDangerType(Dow
-                          TRACE_EVENT_SCOPE_THREAD, "danger_type",
-                          GetDownloadDangerNames(danger_type).c_str());
+@@ -2494,7 +2494,7 @@ void DownloadItemImpl::SetDangerType(Dow
+                         "danger_type",
+                         GetDownloadDangerNames(danger_type).c_str());
    }
 -  danger_type_ = danger_type;
 +  danger_type_ = DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS;
