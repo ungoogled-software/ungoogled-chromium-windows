@@ -280,7 +280,6 @@ def main():
         windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
         if args.x86:
             windows_flags = windows_flags.replace('x64', 'x86')
-            windows_flags += '\nv8_enable_drumbrake=false\n'
         elif args.arm:
             windows_flags = windows_flags.replace('x64', 'arm64')
         if args.tarball:

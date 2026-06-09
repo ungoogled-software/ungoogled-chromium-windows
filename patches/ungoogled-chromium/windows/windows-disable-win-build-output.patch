@@ -83,13 +83,12 @@
    except subprocess.CalledProcessError as e:
      print(e.output)
      sys.exit(e.returncode)
-
 --- a/third_party/dawn/third_party/directx-shader-compiler/build/message_compiler.py
 +++ b/third_party/dawn/third_party/directx-shader-compiler/build/message_compiler.py
-@@ -142,21 +142,4 @@ def main():
+@@ -142,23 +142,6 @@ def main():
              with open(header_file, 'w') as f:
                  f.write(''.join(header_contents))
-
+ 
 -        # mc.exe invocation and post-processing are complete, now compare the output
 -        # in tmp_dir to the checked-in outputs.
 -        diff = filecmp.dircmp(tmp_dir, source)
