@@ -31,7 +31,7 @@ jobs:
       arm_run_id: ${{ steps.runs.outputs.arm_run_id }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -94,7 +94,7 @@ jobs:
       - name: Locate latest successful builds
         id: runs
         if: ${{ steps.context.outputs.ready == 'true' }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           TARGET_SHA: ${{ steps.context.outputs.target_sha }}
         with:
@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download x64 package
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: chromium
           path: artifacts/x64
@@ -161,7 +161,7 @@ jobs:
           run-id: ${{ needs.resolve-release-context.outputs.x64_run_id }}
 
       - name: Download x86 package
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: chromium-x86
           path: artifacts/x86
@@ -170,7 +170,7 @@ jobs:
           run-id: ${{ needs.resolve-release-context.outputs.x86_run_id }}
 
       - name: Download arm package
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: chromium-arm
           path: artifacts/arm
@@ -179,7 +179,7 @@ jobs:
           run-id: ${{ needs.resolve-release-context.outputs.arm_run_id }}
 
       - name: Publish release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.resolve-release-context.outputs.target_tag }}
           fail_on_unmatched_files: true
@@ -214,12 +214,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ungoogled-chromium-windows
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ needs.resolve-release-context.outputs.target_tag }}
           path: ungoogled-chromium-windows
       - name: Checkout ungoogled-chromium-binaries
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Nifury/ungoogled-chromium-binaries
           token: ${{ secrets.PAT }}

@@ -1,8 +1,8 @@
-const core = require('@actions/core');
-const io = require('@actions/io');
-const exec = require('@actions/exec');
-const {DefaultArtifactClient} = require('@actions/artifact');
-const glob = require('@actions/glob');
+import * as core from '@actions/core';
+import * as io from '@actions/io';
+import * as exec from '@actions/exec';
+import { DefaultArtifactClient } from '@actions/artifact';
+import * as glob from '@actions/glob';
 
 async function run() {
     process.on('SIGINT', function() {
