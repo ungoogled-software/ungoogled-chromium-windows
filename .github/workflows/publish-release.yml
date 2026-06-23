@@ -31,7 +31,7 @@ jobs:
       arm_run_id: ${{ steps.runs.outputs.arm_run_id }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -214,12 +214,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ungoogled-chromium-windows
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ needs.resolve-release-context.outputs.target_tag }}
           path: ungoogled-chromium-windows
       - name: Checkout ungoogled-chromium-binaries
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Nifury/ungoogled-chromium-binaries
           token: ${{ secrets.PAT }}
