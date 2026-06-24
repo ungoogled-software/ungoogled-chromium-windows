@@ -19,7 +19,7 @@ jobs:
   build-1:
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -40,7 +40,7 @@ jobs:
     needs: build-1
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -61,7 +61,7 @@ jobs:
     needs: build-2
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -82,7 +82,7 @@ jobs:
     needs: build-3
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -103,7 +103,7 @@ jobs:
     needs: build-4
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -124,7 +124,7 @@ jobs:
     needs: build-5
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -145,7 +145,7 @@ jobs:
     needs: build-6
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -166,7 +166,7 @@ jobs:
     needs: build-7
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -187,7 +187,7 @@ jobs:
     needs: build-8
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -208,7 +208,7 @@ jobs:
     needs: build-9
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -229,7 +229,7 @@ jobs:
     needs: build-10
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -250,7 +250,7 @@ jobs:
     needs: build-11
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -271,7 +271,7 @@ jobs:
     needs: build-12
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -292,7 +292,7 @@ jobs:
     needs: build-13
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -313,7 +313,7 @@ jobs:
     needs: build-14
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
@@ -334,7 +334,7 @@ jobs:
     needs: build-15
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: 'recursive'
       - name: Prepare
