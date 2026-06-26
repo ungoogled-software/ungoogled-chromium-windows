@@ -2,7 +2,7 @@
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -79,32 +79,6 @@ if (is_win && enable_resource_allowlist_
+@@ -78,32 +78,6 @@ if (is_win && enable_resource_allowlist_
    _chrome_resource_allowlist = "$target_gen_dir/chrome_resource_allowlist.txt"
  }
  
@@ -35,7 +35,7 @@
  # This does not currently work. See crbug.com/40220356.
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
-@@ -133,26 +107,9 @@ if (!is_android && !is_mac) {
+@@ -132,26 +106,9 @@ if (!is_android && !is_mac) {
    group("chrome") {
      public_deps = [ ":chrome_initial" ]
      data_deps = [ ":chrome_initial" ]
@@ -65,7 +65,7 @@
      configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -508,11 +508,6 @@ python_library("chromedriver_py_tests")
+@@ -509,11 +509,6 @@ python_library("chromedriver_py_tests")
    if (is_component_build && is_mac) {
      data_deps += [ "//chrome:chrome_framework" ]
    }

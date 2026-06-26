@@ -19,7 +19,7 @@
  
  using base::win::RegKey;
  
-@@ -110,22 +108,6 @@ void ProcessChromeWorkItems(const Instal
+@@ -104,22 +102,6 @@ void ProcessChromeWorkItems(const Instal
    work_item_list->Do();
  }
  
@@ -42,7 +42,7 @@
  // Removes all files from the installer directory. Returns false in case of an
  // error.
  bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
-@@ -929,11 +911,6 @@ InstallStatus UninstallProduct(const Mod
+@@ -923,11 +905,6 @@ InstallStatus UninstallProduct(const Mod
      }
    }
  
