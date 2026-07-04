@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1910,7 +1910,7 @@ config("clang_warning_suppression") {
+@@ -1571,7 +1571,7 @@ config("clang_warning_suppression") {
  # See also: https://crbug.com/40891132#comment10
  ubsan_hardening("c_array_bounds") {
    sanitizer = "array-bounds"
@@ -9,7 +9,7 @@
  
    # Because we've enabled array-bounds sanitizing we also want to suppress
    # the related warning about "unsafe-buffer-usage-in-static-sized-array",
-@@ -1923,6 +1923,7 @@ ubsan_hardening("c_array_bounds") {
+@@ -1584,6 +1584,7 @@ ubsan_hardening("c_array_bounds") {
  # functions (https://crbug.com/489565636). This is equivalent to inserting
  # `NOTREACHED()` at the end of such functions.
  ubsan_hardening("return") {
