@@ -233,7 +233,7 @@ jobs:
           git fetch upstream
           git rebase upstream/master
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Install dependencies
