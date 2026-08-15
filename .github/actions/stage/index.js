@@ -4,6 +4,8 @@ import * as exec from '@actions/exec';
 import { DefaultArtifactClient } from '@actions/artifact';
 import * as glob from '@actions/glob';
 
+const BUILD_TIMEOUT_EXIT_CODE = 124;
+
 async function run() {
     process.on('SIGINT', function() {
     })
@@ -63,10 +65,11 @@ async function run() {
                 await new Promise(r => setTimeout(r, 10000));
             }
         }
-    } else {
+    } else if (retCode === BUILD_TIMEOUT_EXIT_CODE) {
         await new Promise(r => setTimeout(r, 5000));
         await exec.exec('7z', ['a', '-tzip', 'C:\\ungoogled-chromium-windows\\artifacts.zip',
-            'C:\\ungoogled-chromium-windows\\build\\src', '-mx=3', '-mtc=on'], {ignoreReturnCode: true});
+            'C:\\ungoogled-chromium-windows\\build\\src', '-mx=3', '-mtc=on']);
+        let uploaded = false;
         for (let i = 0; i < 5; ++i) {
             try {
                 await artifact.deleteArtifact(artifactName);
@@ -76,6 +79,7 @@ async function run() {
             try {
                 await artifact.uploadArtifact(artifactName, ['C:\\ungoogled-chromium-windows\\artifacts.zip'],
                     'C:\\ungoogled-chromium-windows', {retentionDays: 4, compressionLevel: 0});
+                uploaded = true;
                 break;
             } catch (e) {
                 console.error(`Upload artifact failed: ${e}`);
@@ -83,7 +87,12 @@ async function run() {
                 await new Promise(r => setTimeout(r, 10000));
             }
         }
+        if (!uploaded) {
+            throw new Error(`Failed to upload ${artifactName} after 5 attempts`);
+        }
         core.setOutput('finished', false);
+    } else {
+        throw new Error(`Build failed with exit code ${retCode}`);
     }
 }
 
