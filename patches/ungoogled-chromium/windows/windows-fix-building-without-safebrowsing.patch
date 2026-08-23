@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -5380,7 +5380,6 @@ std::wstring ChromeContentBrowserClient:
+@@ -5330,7 +5330,6 @@ std::wstring ChromeContentBrowserClient:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
      case sandbox::mojom::Sandbox::kAudio:
@@ -25,7 +25,7 @@
      case sandbox::mojom::Sandbox::kSpeechRecognition:
      case sandbox::mojom::Sandbox::kPdfConversion:
      case sandbox::mojom::Sandbox::kService:
-@@ -5488,7 +5487,6 @@ bool ChromeContentBrowserClient::PreSpaw
+@@ -5438,7 +5437,6 @@ bool ChromeContentBrowserClient::PreSpaw
      case sandbox::mojom::Sandbox::kPrintBackend:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
@@ -66,7 +66,7 @@
  
 --- a/components/safe_browsing/buildflags.gni
 +++ b/components/safe_browsing/buildflags.gni
-@@ -20,6 +20,7 @@ declare_args() {
+@@ -26,6 +26,7 @@ declare_args() {
    } else {
      safe_browsing_mode = 1
    }
