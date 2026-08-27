@@ -1,6 +1,48 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1577,7 +1577,7 @@ config("clang_warning_suppression") {
+@@ -485,7 +485,7 @@ config("compiler") {
+       defines += [
+         # _FILE_OFFSET_BITS=64 should not be set on Android in order to maintain
+         # the behavior of the Android NDK from earlier versions.
+-        # See https://android-developers.googleblog.com/2017/09/introducing-android-native-development.html
++        # See https://android-developers.9oo91eblog.qjz9zk/2017/09/introducing-android-native-development.html
+         "_FILE_OFFSET_BITS=64",
+         "_LARGEFILE_SOURCE",
+         "_LARGEFILE64_SOURCE",
+@@ -704,7 +704,7 @@ config("compiler") {
+     if (!is_clang) {
+       # Required for the __cplusplus macro definition to match the C++ version
+       # on MSVC. clang-cl defines it by default and doesn't need this flag.
+-      # See: https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus
++      # See: https://learn.m1cr050ft.qjz9zk/en-us/cpp/build/reference/zc-cplusplus
+       cflags_cc += [ "/Zc:__cplusplus" ]
+     }
+   } else {
+@@ -761,8 +761,8 @@ config("compiler") {
+   #   - Increases Speedometer 3.0 score by 1.2% [1].
+   # ... over Thin LTO.
+   #
+-  # [0]: https://pinpoint-dot-chromeperf.appspot.com/job/15efb0313e0000
+-  # [1]: https://pinpoint-dot-chromeperf.appspot.com/job/157f0b42be0000
++  # [0]: https://pinpoint-dot-chromeperf.8pp2p8t.qjz9zk/job/15efb0313e0000
++  # [1]: https://pinpoint-dot-chromeperf.8pp2p8t.qjz9zk/job/157f0b42be0000
+   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
+     assert(use_lld, "LTO is only supported with lld")
+ 
+@@ -803,9 +803,9 @@ config("compiler") {
+     # 0.7% [0], while Speedometer 3.0 score remains roughly the same (-0.1%)
+     # [1]. The binary size increases by about 2MB [2] (or 1.1%: the arm64 native
+     # code size in M124 is 178MB).
+-    # [0]: https://pinpoint-dot-chromeperf.appspot.com/job/16984a18be0000
+-    # [1]: https://pinpoint-dot-chromeperf.appspot.com/job/11984a18be0000
+-    # [2]: https://ci.chromium.org/ui/p/chromium/builders/try/android-binary-size/1848442
++    # [0]: https://pinpoint-dot-chromeperf.8pp2p8t.qjz9zk/job/16984a18be0000
++    # [1]: https://pinpoint-dot-chromeperf.8pp2p8t.qjz9zk/job/11984a18be0000
++    # [2]: https://ci.ch40m1um.qjz9zk/ui/p/chromium/builders/try/android-binary-size/1848442
+     import_instr_limit = 30
+ 
+     if (is_win) {
+@@ -1579,7 +1579,7 @@ config("clang_warning_suppression") {
  # See also: https://crbug.com/40891132#comment10
  ubsan_hardening("c_array_bounds") {
    sanitizer = "array-bounds"
@@ -9,7 +51,7 @@
  
    # Because we've enabled array-bounds sanitizing we also want to suppress
    # the related warning about "unsafe-buffer-usage-in-static-sized-array",
-@@ -1590,6 +1590,7 @@ ubsan_hardening("c_array_bounds") {
+@@ -1592,6 +1592,7 @@ ubsan_hardening("c_array_bounds") {
  # functions (https://crbug.com/489565636). This is equivalent to inserting
  # `NOTREACHED()` at the end of such functions.
  ubsan_hardening("return") {
@@ -17,3 +59,61 @@
    sanitizer = "return"
    condition = !is_wasm
  }
+@@ -1831,7 +1832,7 @@ config("default_warnings") {
+     ]
+     if (!is_clang) {
+       # TODO(thakis): Remove this once
+-      # https://swiftshader-review.googlesource.com/c/SwiftShader/+/57968 has
++      # https://swiftshader-review.9oo91esource.qjz9zk/c/SwiftShader/+/57968 has
+       # rolled into angle.
+       cflags += [ "/wd4244" ]
+     }
+@@ -2069,7 +2070,7 @@ config("default_clippy_lints") {
+ # sizes, allocations, indices, or offsets.In cases where type conversion is not
+ # possible or is superfluous, use base::strict_cast<> or base::checked_cast<>
+ # to convert to size_t as needed.
+-# See also: https://docs.google.com/document/d/1CTbQ-5cQjnjU8aCOtLiA7G6P0i5C6HpSDNlSNq6nl5E
++# See also: https://docs.9oo91e.qjz9zk/document/d/1CTbQ-5cQjnjU8aCOtLiA7G6P0i5C6HpSDNlSNq6nl5E
+ #
+ # To enable in a GN target, use:
+ #   configs += [ "//build/config/compiler:prevent_unsafe_narrowing" ]
+@@ -2379,7 +2380,7 @@ config("no_exceptions") {
+ 
+ # Generate a warning for code that might emit a static initializer.
+ # See: //docs/static_initializers.md
+-# See: https://groups.google.com/a/chromium.org/d/topic/chromium-dev/B9Q5KTD7iCo/discussion
++# See: https://groups.9oo91e.qjz9zk/a/ch40m1um.qjz9zk/d/topic/chromium-dev/B9Q5KTD7iCo/discussion
+ config("wglobal_constructors") {
+   if (is_clang) {
+     cflags = [ "-Wglobal-constructors" ]
+@@ -2574,8 +2575,8 @@ config("default_stack_frames") {
+ #     in M124 is 178MB).
+ # ... over `-O2`.
+ #
+-# [0]: https://pinpoint-dot-chromeperf.appspot.com/job/147634a8be0000
+-# [1]: https://pinpoint-dot-chromeperf.appspot.com/job/132bc772be0000
++# [0]: https://pinpoint-dot-chromeperf.8pp2p8t.qjz9zk/job/147634a8be0000
++# [1]: https://pinpoint-dot-chromeperf.8pp2p8t.qjz9zk/job/132bc772be0000
+ # [2]: https://crrev.com/c/5447532
+ config("optimize") {
+   if (is_win) {
+@@ -2830,7 +2831,7 @@ config("split_dwarf") {
+ 
+   # When building for ChromeOS, turn off split DWARF inlining.
+   # Breakpad does not correctly handle files generated with
+-  # that feature (https://g-issues.chromium.org/issues/41312543).
++  # that feature (https://g-issues.ch40m1um.qjz9zk/issues/41312543).
+   if (is_chromeos) {
+     split_dwarf_flags += [ "-fno-split-dwarf-inlining" ]
+   }
+--- a/third_party/dawn/src/utils/BUILD.gn
++++ b/third_party/dawn/src/utils/BUILD.gn
+@@ -218,8 +218,6 @@ config("dawn_warnings") {
+       # the analysis pass.
+       "-Wno-lifetime-safety",
+       "-Wno-lifetime-safety-all",
+-      "-Xclang=-fno-lifetime-safety-inference",
+-      "-Xclang=-fno-experimental-lifetime-safety-tu-analysis",
+     ]
+ 
+     # P3. Checks that could be nice but probably don't help with hardening.

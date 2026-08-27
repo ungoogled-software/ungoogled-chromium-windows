@@ -11,14 +11,14 @@
    ]
    sources = [
      "actor/action_result.cc",
-@@ -364,7 +363,6 @@ static_library("common_lib") {
-       "conflicts/remote_module_watcher_win.cc",
+@@ -367,7 +366,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.h",
      ]
--    deps += [ "//chrome/common/win:eventlog_messages" ]
+     deps += [
+-      "//chrome/common/win:eventlog_messages",
+       "//chrome/installer/util:isolation_support",
+     ]
  
-     public_deps += [
-       "//components/dom_distiller/core",  # Needed by chrome_content_client.cc.
 --- a/chrome/common/logging_chrome.cc
 +++ b/chrome/common/logging_chrome.cc
 @@ -51,7 +51,6 @@

@@ -31,7 +31,7 @@
    #
 --- a/build/rust/allocator/lib.rs
 +++ b/build/rust/allocator/lib.rs
-@@ -107,14 +107,4 @@ mod both_allocators {
+@@ -110,14 +110,4 @@ mod both_allocators {
      fn __rust_alloc_error_handler_should_panic() -> u8 {
          0
      }
