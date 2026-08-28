@@ -28,6 +28,11 @@ sys.path.pop(0)
 
 _ROOT_DIR = Path(__file__).resolve().parent
 _PATCH_BIN_RELPATH = Path('third_party/git/usr/bin/patch.exe')
+_BUILD_TIMEOUT_EXIT_CODE = 124
+
+
+class _BuildTimeout(Exception):
+    """Raised when the CI build time limit is reached."""
 
 
 def _get_vcvars_path(name='64'):
@@ -91,7 +96,7 @@ def _run_build_process_timeout(*args, timeout):
                 proc.wait(10)
             except:
                 proc.kill()
-            raise KeyboardInterrupt
+            raise _BuildTimeout
 
 
 def _make_tmp_paths():
@@ -327,4 +332,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except _BuildTimeout:
+        sys.exit(_BUILD_TIMEOUT_EXIT_CODE)

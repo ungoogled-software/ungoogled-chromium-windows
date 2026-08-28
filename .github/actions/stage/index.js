@@ -4,6 +4,8 @@ import * as exec from '@actions/exec';
 import { DefaultArtifactClient } from '@actions/artifact';
 import * as glob from '@actions/glob';
 
+const BUILD_TIMEOUT_EXIT_CODE = 124;
+
 async function run() {
     process.on('SIGINT', function() {
     })
@@ -63,7 +65,7 @@ async function run() {
                 await new Promise(r => setTimeout(r, 10000));
             }
         }
-    } else {
+    } else if (retCode === BUILD_TIMEOUT_EXIT_CODE) {
         await new Promise(r => setTimeout(r, 5000));
         await exec.exec('7z', ['a', '-tzip', 'C:\\ungoogled-chromium-windows\\artifacts.zip',
             'C:\\ungoogled-chromium-windows\\build\\src', '-mx=3', '-mtc=on'], {ignoreReturnCode: true});
@@ -84,6 +86,8 @@ async function run() {
             }
         }
         core.setOutput('finished', false);
+    } else {
+        throw new Error(`Build failed with exit code ${retCode}`);
     }
 }
 
