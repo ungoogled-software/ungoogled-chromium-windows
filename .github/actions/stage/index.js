@@ -68,8 +68,7 @@ async function run() {
     } else if (retCode === BUILD_TIMEOUT_EXIT_CODE) {
         await new Promise(r => setTimeout(r, 5000));
         await exec.exec('7z', ['a', '-tzip', 'C:\\ungoogled-chromium-windows\\artifacts.zip',
-            'C:\\ungoogled-chromium-windows\\build\\src', '-mx=3', '-mtc=on']);
-        let uploaded = false;
+            'C:\\ungoogled-chromium-windows\\build\\src', '-mx=3', '-mtc=on'], {ignoreReturnCode: true});
         for (let i = 0; i < 5; ++i) {
             try {
                 await artifact.deleteArtifact(artifactName);
@@ -79,16 +78,12 @@ async function run() {
             try {
                 await artifact.uploadArtifact(artifactName, ['C:\\ungoogled-chromium-windows\\artifacts.zip'],
                     'C:\\ungoogled-chromium-windows', {retentionDays: 4, compressionLevel: 0});
-                uploaded = true;
                 break;
             } catch (e) {
                 console.error(`Upload artifact failed: ${e}`);
                 // Wait 10 seconds between the attempts
                 await new Promise(r => setTimeout(r, 10000));
             }
-        }
-        if (!uploaded) {
-            throw new Error(`Failed to upload ${artifactName} after 5 attempts`);
         }
         core.setOutput('finished', false);
     } else {
