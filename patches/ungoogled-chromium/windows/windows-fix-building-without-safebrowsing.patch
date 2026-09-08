@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -5330,7 +5330,6 @@ std::wstring ChromeContentBrowserClient:
+@@ -5279,7 +5279,6 @@ std::wstring ChromeContentBrowserClient:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
      case sandbox::mojom::Sandbox::kAudio:
@@ -25,7 +25,7 @@
      case sandbox::mojom::Sandbox::kSpeechRecognition:
      case sandbox::mojom::Sandbox::kPdfConversion:
      case sandbox::mojom::Sandbox::kService:
-@@ -5438,7 +5437,6 @@ bool ChromeContentBrowserClient::PreSpaw
+@@ -5387,7 +5386,6 @@ bool ChromeContentBrowserClient::PreSpaw
      case sandbox::mojom::Sandbox::kPrintBackend:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
@@ -51,7 +51,7 @@
 +#endif
 --- a/chrome/browser/signin/signin_util_win.cc
 +++ b/chrome/browser/signin/signin_util_win.cc
-@@ -347,12 +347,6 @@ bool IsGCPWUsedInOtherProfile(Profile* p
+@@ -346,12 +346,6 @@ bool IsGCPWUsedInOtherProfile(Profile* p
  }
  
  void SigninWithCredentialProviderIfPossible(Profile* profile) {
@@ -63,6 +63,24 @@
 -
    std::wstring cred_provider_gaia_id;
    std::wstring cred_provider_email;
+ 
+--- a/chrome/browser/ui/views/page_info/BUILD.gn
++++ b/chrome/browser/ui/views/page_info/BUILD.gn
+@@ -27,7 +27,6 @@ source_set("page_info") {
+     "safety_tip_page_info_bubble_view.h",
+     "security_information_view.h",
+     "star_rating_view.h",
+-    "suspicious_site_bubble_view.h",
+     "web_view_side_panel_view.h",
+   ]
+ 
+@@ -75,7 +74,6 @@ source_set("impl") {
+     "safety_tip_page_info_bubble_view.cc",
+     "security_information_view.cc",
+     "star_rating_view.cc",
+-    "suspicious_site_bubble_view.cc",
+     "web_view_side_panel_view.cc",
+   ]
  
 --- a/components/safe_browsing/buildflags.gni
 +++ b/components/safe_browsing/buildflags.gni

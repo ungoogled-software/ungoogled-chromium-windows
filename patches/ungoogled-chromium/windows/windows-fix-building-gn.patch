@@ -3,7 +3,7 @@
 
 --- a/tools/gn/bootstrap/bootstrap.py
 +++ b/tools/gn/bootstrap/bootstrap.py
-@@ -69,7 +69,7 @@ def main(argv):
+@@ -74,7 +74,7 @@ def main(argv):
    else:
      build_rel = os.path.join('out', 'Release')
    out_dir = os.path.join(SRC_ROOT, build_rel)
@@ -12,10 +12,10 @@
    gn_build_dir = os.path.join(out_dir, 'gn_build')
    ninja_binary = os.environ.get('NINJA', 'ninja')
  
-@@ -126,11 +126,11 @@ def main(argv):
- 
+@@ -151,11 +151,11 @@ def main(argv):
    shutil.copy2(
-       os.path.join(BOOTSTRAP_DIR, 'last_commit_position.h'), gn_build_dir)
+     os.path.join(BOOTSTRAP_DIR, 'last_commit_position.h'), gn_build_dir
+   )
 -  cmd = [ninja_binary, '-C', gn_build_dir, 'gn']
 +  cmd = [ninja_binary, '-C', gn_build_dir, 'gn.exe']
    if options.jobs:
@@ -37,7 +37,7 @@
  
 --- a/tools/gn/build/gen.py
 +++ b/tools/gn/build/gen.py
-@@ -618,6 +618,7 @@ def WriteGNNinja(path, platform, host, o
+@@ -673,6 +673,7 @@ def WriteGNNinja(path, platform, host, o
          '/D_SCL_SECURE_NO_DEPRECATE',
          '/D_UNICODE',
          '/D_WIN32_WINNT=0x0A00',
