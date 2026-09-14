@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -267,8 +267,6 @@ clang_lib("compiler_builtins") {
+@@ -270,8 +270,6 @@ clang_lib("compiler_builtins") {
      } else {
        assert(false, "unsupported target_platform=$target_platform")
      }
@@ -141,35 +141,39 @@
    # //third_party/rust/chromium_crates_io/Cargo.toml to use
 --- a/tools/rust/build_bindgen.py
 +++ b/tools/rust/build_bindgen.py
-@@ -30,8 +30,7 @@ from update import (RmTree)
+@@ -42,10 +42,7 @@ from update import RmTree
  # The git hash to use.  See https://github.com/rust-lang/rust-bindgen/tags.
  # The current hash below corresponds to 0.72.1
  BINDGEN_GIT_VERSION = 'd874de8d646d9b8a3e7ba2db2bcd52f2fba8f1f5'
--BINDGEN_GIT_REPO = ('https://chromium.googlesource.com/external/' +
--                    'github.com/rust-lang/rust-bindgen')
+-BINDGEN_GIT_REPO = (
+-    'https://chromium.googlesource.com/external/'
+-    + 'github.com/rust-lang/rust-bindgen'
+-)
 +BINDGEN_GIT_REPO = ('https://github.com/rust-lang/rust-bindgen')
  
- BINDGEN_SRC_DIR = os.path.join(THIRD_PARTY_DIR, 'rust-toolchain-intermediate',
-                                'bindgen-src')
-@@ -97,15 +96,8 @@ def RunCargo(cargo_args):
-               f'the build_rust.py script builds rustc that is needed here.')
+ BINDGEN_SRC_DIR = os.path.join(
+     THIRD_PARTY_DIR, 'rust-toolchain-intermediate', 'bindgen-src'
+@@ -119,17 +116,8 @@ def RunCargo(cargo_args):
+         )
          sys.exit(1)
  
 -    clang_bins_dir = os.path.join(RUST_HOST_LLVM_INSTALL_DIR, 'bin')
 -    llvm_dir = RUST_HOST_LLVM_INSTALL_DIR
 -
 -    if not os.path.exists(os.path.join(llvm_dir, 'bin', f'llvm-config{EXE}')):
--        print(f'Missing llvm-config in {llvm_dir}. This '
--              f'script expects to be run after build_rust.py is run as '
--              f'the build_rust.py script produces the LLVM libraries that '
--              f'are needed here.')
+-        print(
+-            f'Missing llvm-config in {llvm_dir}. This '
+-            f'script expects to be run after build_rust.py is run as '
+-            f'the build_rust.py script produces the LLVM libraries that '
+-            f'are needed here.'
+-        )
 -        sys.exit(1)
 +    clang_bins_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts', 'bin')
 +    llvm_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts')
  
      env = collections.defaultdict(str, os.environ)
      # Cargo normally stores files in $HOME. Override this.
-@@ -115,7 +107,6 @@ def RunCargo(cargo_args):
+@@ -139,7 +127,6 @@ def RunCargo(cargo_args):
      env['RUSTC'] = rustc_bin
  
      # Use the LLVM libs and clang compiler from the rustc build.
@@ -177,12 +181,12 @@
      if sys.platform == 'win32':
          env['LIBCLANG_PATH'] = os.path.join(llvm_dir, 'bin')
      else:
-@@ -220,7 +211,7 @@ def main():
+@@ -254,7 +241,7 @@ def main():
      install_dir = os.path.join(RUST_TOOLCHAIN_OUT_DIR)
      print(f'Installing bindgen to {install_dir} ...')
  
 -    llvm_dir = RUST_HOST_LLVM_INSTALL_DIR
 +    llvm_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts')
      shutil.copy(
-         os.path.join(build_dir, RustTargetTriple(), 'release',
-                      f'bindgen{EXE}'), os.path.join(install_dir, 'bin'))
+         os.path.join(build_dir, RustTargetTriple(), 'release', f'bindgen{EXE}'),
+         os.path.join(install_dir, 'bin'),

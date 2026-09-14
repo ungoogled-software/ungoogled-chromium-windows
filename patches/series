@@ -14,7 +14,6 @@ ungoogled-chromium/windows/windows-fix-command-ids.patch
 ungoogled-chromium/windows/windows-disable-download-warning-prompt.patch
 ungoogled-chromium/windows/windows-fix-rc-terminating-error.patch
 ungoogled-chromium/windows/windows-fix-building-without-safebrowsing.patch
-ungoogled-chromium/windows/windows-fix-generate-resource-allowed-list.patch
 ungoogled-chromium/windows/windows-disable-clang-version-check.patch
 ungoogled-chromium/windows/windows-fix-licenses-gn-path.patch
 ungoogled-chromium/windows/windows-fix-building-with-rust.patch
@@ -22,3 +21,5 @@ ungoogled-chromium/windows/windows-fix-remove-unused-preferences-fields.patch
 ungoogled-chromium/windows/windows-fix-missing-includes.patch
 ungoogled-chromium/windows/windows-fix-unsupported-llvm-flags.patch
 ungoogled-chromium/windows/windows-fix-building-without-crubit.patch
+ungoogled-chromium/windows/windows-fix-python.patch
+ungoogled-chromium/windows/windows-fix-typescript-lib-dom.patch

@@ -1,6 +1,6 @@
 --- a/components/download/internal/common/download_item_impl.cc
 +++ b/components/download/internal/common/download_item_impl.cc
-@@ -2541,7 +2541,7 @@ void DownloadItemImpl::SetDangerType(Dow
+@@ -2551,7 +2551,7 @@ void DownloadItemImpl::SetDangerType(Dow
                          "danger_type",
                          GetDownloadDangerNames(danger_type).c_str());
    }
