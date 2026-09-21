@@ -11,7 +11,7 @@
    ]
    sources = [
      "actor/action_result.cc",
-@@ -379,7 +378,6 @@ static_library("common_lib") {
+@@ -383,7 +382,6 @@ static_library("common_lib") {
        "conflicts/remote_module_watcher_win.h",
      ]
      deps += [
