@@ -74,14 +74,6 @@
      "web_view_side_panel_view.h",
    ]
  
-@@ -75,7 +74,6 @@ source_set("impl") {
-     "safety_tip_page_info_bubble_view.cc",
-     "security_information_view.cc",
-     "star_rating_view.cc",
--    "suspicious_site_bubble_view.cc",
-     "web_view_side_panel_view.cc",
-   ]
- 
 --- a/components/safe_browsing/buildflags.gni
 +++ b/components/safe_browsing/buildflags.gni
 @@ -26,6 +26,7 @@ declare_args() {
