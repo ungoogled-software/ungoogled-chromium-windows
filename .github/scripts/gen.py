@@ -14,7 +14,7 @@ endings = [
     ('installer', 'exe'),
     ('windows', 'zip'),
 ]
-hashes = (('md5', hashlib.md5), ('sha1', hashlib.sha1), ('sha256', hashlib.sha256))
+hashes = (('sha256', hashlib.sha256),)
 for c_path, c_name in config:
     lines = []
     lines.append('[_metadata]')
