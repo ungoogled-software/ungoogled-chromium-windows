@@ -35,7 +35,7 @@ async function run() {
         args.push('--x86')
     if (arm)
         args.push('--arm')
-    await exec.exec('python', ['-m', 'pip', 'install', 'httplib2==0.22.0'], {
+    await exec.exec('python', ['-m', 'pip', 'install', 'httplib2==0.22.0', 'clang==21.1.7'], {
         cwd: 'C:\\ungoogled-chromium-windows',
         ignoreReturnCode: true
     });

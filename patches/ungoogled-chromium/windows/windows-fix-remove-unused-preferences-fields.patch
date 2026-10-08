@@ -1,3 +1,28 @@
+--- a/chrome/browser/enterprise/signin/profile_management_disclaimer_service.cc
++++ b/chrome/browser/enterprise/signin/profile_management_disclaimer_service.cc
+@@ -512,22 +512,6 @@ void ProfileManagementDisclaimerService:
+     return;
+   }
+ 
+-  if (profile_separation_policies_for_testing_.has_value() ||
+-      user_choice_for_testing_.has_value()) {
+-    CHECK_IS_TEST();
+-    state_->profile_creation_controller =
+-        ManagedProfileCreationController::CreateManagedProfileForTesting(
+-            &profile_.get(), GetExtendedAccountInfo(state_->account_id),
+-            // The access point always has a value if the account_id is set.
+-            *state_->access_point,
+-            base::BindOnce(&ProfileManagementDisclaimerService::
+-                               OnManagedProfileCreationResult,
+-                           weak_ptr_factory_.GetWeakPtr()),
+-            profile_separation_policies_for_testing_,
+-            user_choice_for_testing_);
+-    return;
+-  }
+-
+   state_->user_cloud_signin_restriction_policy_fetcher =
+       std::make_unique<policy::UserCloudSigninRestrictionPolicyFetcher>(
+           g_browser_process->browser_policy_connector(),
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 @@ -1911,9 +1911,6 @@ const PolicyToPreferenceMapEntry kSimple

@@ -2,6 +2,7 @@ chrome_pgo_phase=2
 enable_swiftshader=false
 ffmpeg_branding="Chrome"
 is_clang=true
+clang_version="23"
 is_component_build=false
 is_debug=false
 is_official_build=true

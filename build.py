@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import ctypes
+import importlib.util
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'ungoogled-chromium' / 'utils'))
@@ -285,10 +286,20 @@ def main():
         windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
         if args.x86:
             windows_flags = windows_flags.replace('x64', 'x86')
+            windows_flags += '\nv8_enable_drumbrake=false\n'
         elif args.arm:
             windows_flags = windows_flags.replace('x64', 'arm64')
         if args.tarball:
             windows_flags += '\nchrome_pgo_phase=0\n'
+        # Point V8 metagen at the local libclang and Python cindex bindings
+        clang_spec = importlib.util.find_spec('clang')
+        if clang_spec is None or not clang_spec.submodule_search_locations:
+            get_logger().error('Python clang bindings not found. Install them with: pip install clang')
+            sys.exit(1)
+        libclang_so = source_tree / 'third_party' / 'llvm-build' / 'Release+Asserts' / 'bin' / 'libclang.dll'
+        libclang_bindings_dir = Path(list(clang_spec.submodule_search_locations)[0]).parent
+        windows_flags += f'\nv8_metagen_libclang_so="{libclang_so.resolve().as_posix()}"\n'
+        windows_flags += f'v8_metagen_libclang_bindings_dir="{libclang_bindings_dir.resolve().as_posix()}"\n'
         gn_flags += windows_flags
         (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
 
