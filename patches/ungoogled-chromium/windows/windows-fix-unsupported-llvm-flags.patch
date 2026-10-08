@@ -50,7 +50,7 @@
    sanitizer = "return"
  }
  
-@@ -1848,7 +1849,7 @@ config("default_warnings") {
+@@ -1860,7 +1861,7 @@ config("default_warnings") {
      ]
      if (!is_clang) {
        # TODO(thakis): Remove this once
@@ -59,7 +59,7 @@
        # rolled into angle.
        cflags += [ "/wd4244" ]
      }
-@@ -2096,7 +2097,7 @@ config("default_clippy_lints") {
+@@ -2106,7 +2107,7 @@ config("default_clippy_lints") {
  # sizes, allocations, indices, or offsets.In cases where type conversion is not
  # possible or is superfluous, use base::strict_cast<> or base::checked_cast<>
  # to convert to size_t as needed.
@@ -68,7 +68,7 @@
  #
  # To enable in a GN target, use:
  #   configs += [ "//build/config/compiler:prevent_unsafe_narrowing" ]
-@@ -2406,7 +2407,7 @@ config("no_exceptions") {
+@@ -2416,7 +2417,7 @@ config("no_exceptions") {
  
  # Generate a warning for code that might emit a static initializer.
  # See: //docs/static_initializers.md
@@ -77,7 +77,7 @@
  config("wglobal_constructors") {
    if (is_clang) {
      cflags = [ "-Wglobal-constructors" ]
-@@ -2601,8 +2602,8 @@ config("default_stack_frames") {
+@@ -2611,8 +2612,8 @@ config("default_stack_frames") {
  #     in M124 is 178MB).
  # ... over `-O2`.
  #
@@ -88,7 +88,7 @@
  # [2]: https://crrev.com/c/5447532
  config("optimize") {
    if (is_win) {
-@@ -2857,7 +2858,7 @@ config("split_dwarf") {
+@@ -2867,7 +2868,7 @@ config("split_dwarf") {
  
    # When building for ChromeOS, turn off split DWARF inlining.
    # Breakpad does not correctly handle files generated with

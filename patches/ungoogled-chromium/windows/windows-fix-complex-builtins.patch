@@ -1,0 +1,42 @@
+--- a/build/config/BUILD.gn
++++ b/build/config/BUILD.gn
+@@ -293,6 +293,10 @@ group("common_deps") {
+     # crbug.com/402171653 for context.
+     public_deps += [ "//third_party/compiler-rt:atomic" ]
+   }
++
++  if (is_win && is_clang) {
++    public_deps += [ "//third_party/compiler-rt:complex" ]
++  }
+ }
+ 
+ # Only the executable template in BUILDCONFIG.gn should reference this.
+--- a/third_party/compiler-rt/BUILD.gn
++++ b/third_party/compiler-rt/BUILD.gn
+@@ -44,3 +44,26 @@ target(_target_type, "atomic") {
+     "//build/config/coverage:default_coverage",
+   ]
+ }
++
++# Complex multiplication and division helpers that clang emits calls to.
++# clang_rt.builtins is not linked on Windows, and Rust's compiler_builtins no
++# longer provides these symbols either.
++source_set("complex") {
++  sources = [
++    "src/lib/builtins/divdc3.c",
++    "src/lib/builtins/divsc3.c",
++    "src/lib/builtins/fp_lib.h",
++    "src/lib/builtins/int_lib.h",
++    "src/lib/builtins/int_math.h",
++    "src/lib/builtins/int_types.h",
++    "src/lib/builtins/muldc3.c",
++    "src/lib/builtins/mulsc3.c",
++  ]
++
++  configs += [ "//build/config/compiler:no_chromium_code" ]
++
++  configs -= [
++    "//build/config/compiler:chromium_code",
++    "//build/config/coverage:default_coverage",
++  ]
++}

@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1022,7 +1022,6 @@ source_set("core") {
+@@ -1015,7 +1015,6 @@ source_set("core") {
      "//chrome/browser/preloading/search_preload:feature",
      "//chrome/browser/privacy_sandbox:headers",
      "//chrome/browser/private_ai",
@@ -8,7 +8,7 @@
      "//chrome/browser/profiles:misc",
      "//chrome/browser/profiles:profile_io_data",
      "//chrome/browser/profiles:profiles_extra_parts",
-@@ -2216,7 +2215,6 @@ source_set("browser") {
+@@ -2220,7 +2219,6 @@ source_set("browser") {
      "//chrome/browser/preloading/search_preload",
      "//chrome/browser/privacy",
      "//chrome/browser/privacy_sandbox:impl",
@@ -83,7 +83,7 @@
  }
 --- a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
 +++ b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
-@@ -720,29 +720,6 @@ void ChromeBrowsingDataRemoverDelegate::
+@@ -721,29 +721,6 @@ void ChromeBrowsingDataRemoverDelegate::
  #endif  // BUILDFLAG(IS_CHROMEOS)
    }
  
@@ -115,7 +115,7 @@
    // DATA_TYPE_CONTENT_SETTINGS
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -6008,21 +6008,6 @@ ChromeContentBrowserClient::CreateURLLoa
+@@ -6088,21 +6088,6 @@ ChromeContentBrowserClient::CreateURLLoa
      result.push_back(std::move(signin_throttle));
    }
  
@@ -128,7 +128,7 @@
 -                                    ->GetURLLoaderFactoryForBrowserProcess();
 -      if (auto pvt_throttle =
 -              PrivateVerificationTokensURLLoaderThrottle::Create(
--                  pvt_service, profile->IsOffTheRecord(),
+-                  pvt_service, profile->GetWeakPtr(),
 -                  std::move(url_loader_factory))) {
 -        result.push_back(std::move(pvt_throttle));
 -      }
@@ -139,7 +139,7 @@
            contextual_tasks::ContextualTasksURLLoaderThrottle::MaybeCreate(
 --- a/chrome/browser/component_updater/BUILD.gn
 +++ b/chrome/browser/component_updater/BUILD.gn
-@@ -147,7 +147,6 @@ source_set("impl") {
+@@ -152,7 +152,6 @@ source_set("impl") {
      "//chrome/browser/net",
      "//chrome/browser/page_load_metrics",
      "//chrome/browser/permissions",
@@ -147,7 +147,7 @@
      "//chrome/browser/profiles:profile",
      "//chrome/browser/update_client",
      "//chrome/common",
-@@ -163,7 +162,6 @@ source_set("impl") {
+@@ -168,7 +167,6 @@ source_set("impl") {
      "//components/permissions",
      "//components/privacy_sandbox:features",
      "//components/privacy_sandbox/privacy_sandbox_attestations",
@@ -204,31 +204,32 @@
      "//content/public/browser",
      "//net",
      "//services/network/public/cpp",
-@@ -49,9 +44,6 @@ source_set("browser_tests") {
+@@ -49,10 +44,6 @@ source_set("browser_tests") {
      "//chrome/browser/content_settings:content_settings_factory",
      "//chrome/test:test_support",
      "//components/content_settings/core/common",
--    "//components/private_verification_tokens/common:athm_test_issuer",
 -    "//components/private_verification_tokens/common:private_verification_tokens_database",
 -    "//components/private_verification_tokens/common:private_verification_tokens_issuer_config",
+-    "//components/private_verification_tokens/common:test_support",
+-    "//components/private_verification_tokens/common/athm_ffi:athm_ffi_bindings",
      "//net:test_support",
      "//services/network:test_support",
      "//url",
-@@ -72,11 +64,6 @@ source_set("unit_tests") {
+@@ -73,11 +64,6 @@ source_set("unit_tests") {
      "//chrome/test:test_support",
      "//components/content_settings/core/browser",
      "//components/content_settings/core/common",
--    "//components/private_verification_tokens/common:athm_test_issuer",
 -    "//components/private_verification_tokens/common:private_verification_tokens_database",
 -    "//components/private_verification_tokens/common:private_verification_tokens_issuer_config",
 -    "//components/private_verification_tokens/common:private_verification_tokens_parameters",
 -    "//components/private_verification_tokens/common:test_support",
+-    "//components/private_verification_tokens/common/athm_ffi:athm_ffi_bindings",
      "//content/test:test_support",
      "//net",
      "//services/network:test_support",
 --- a/chrome/browser/profiles/BUILD.gn
 +++ b/chrome/browser/profiles/BUILD.gn
-@@ -809,7 +809,6 @@ source_set("profiles_extra_parts_impl")
+@@ -808,7 +808,6 @@ source_set("profiles_extra_parts_impl")
      "//chrome/browser/privacy_sandbox:headers",
      "//chrome/browser/private_ai",
      "//chrome/browser/private_insights",
@@ -238,7 +239,7 @@
      "//chrome/browser/reduce_accept_language",
 --- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 +++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
-@@ -1362,7 +1362,6 @@ void ChromeBrowserMainExtraPartsProfiles
+@@ -1357,7 +1357,6 @@ void ChromeBrowserMainExtraPartsProfiles
    PrivacyMetricsServiceFactory::GetInstance();
    PrivacySandboxServiceFactory::GetInstance();
    PrivacySandboxSettingsFactory::GetInstance();
@@ -248,7 +249,7 @@
    ProfilePasswordStoreFactory::GetInstance();
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2137,7 +2137,6 @@ if (!is_android) {
+@@ -1884,7 +1884,6 @@ if (!is_android) {
        "//chrome/browser/privacy_sandbox:headers",
        "//chrome/browser/privacy_sandbox:test_support",
        "//chrome/browser/private_ai",
@@ -256,7 +257,7 @@
        "//chrome/browser/profile_resetter",
        "//chrome/browser/profile_resetter:browser_tests",
        "//chrome/browser/profiles",
-@@ -5393,7 +5392,6 @@ test("unit_tests") {
+@@ -5024,7 +5023,6 @@ test("unit_tests") {
      "//chrome/browser/preloading/prerender:unit_tests",
      "//chrome/browser/privacy_sandbox:unit_tests",
      "//chrome/browser/private_ai:unit_tests",

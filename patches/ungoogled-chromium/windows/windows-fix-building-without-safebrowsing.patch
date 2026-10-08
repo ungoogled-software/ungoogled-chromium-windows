@@ -17,7 +17,7 @@
        "//build:branding_buildflags",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -5220,7 +5220,6 @@ std::wstring ChromeContentBrowserClient:
+@@ -5262,7 +5262,6 @@ std::wstring ChromeContentBrowserClient:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
      case sandbox::mojom::Sandbox::kAudio:
@@ -25,7 +25,7 @@
      case sandbox::mojom::Sandbox::kSpeechRecognition:
      case sandbox::mojom::Sandbox::kPdfConversion:
      case sandbox::mojom::Sandbox::kService:
-@@ -5328,7 +5327,6 @@ bool ChromeContentBrowserClient::PreSpaw
+@@ -5370,7 +5369,6 @@ bool ChromeContentBrowserClient::PreSpaw
      case sandbox::mojom::Sandbox::kPrintBackend:
  #endif
      case sandbox::mojom::Sandbox::kPrintCompositor:
@@ -84,3 +84,22 @@
  
    # Allows building without //third_party/unrar included, for license reasons
    safe_browsing_use_unrar = true
+--- a/components/safe_browsing/core/browser/ping_manager.cc
++++ b/components/safe_browsing/core/browser/ping_manager.cc
+@@ -28,7 +28,6 @@
+ #include "base/time/time.h"
+ #include "components/safe_browsing/core/browser/db/v4_protocol_manager_util.h"
+ #include "components/safe_browsing/core/browser/safe_browsing_hats_delegate.h"
+-#include "components/safe_browsing/core/browser/user_population.h"
+ #include "components/safe_browsing/core/common/features.h"
+ #include "components/safe_browsing/core/common/proto/csd.pb.h"
+ #include "components/safe_browsing/core/common/safebrowsing_constants.h"
+@@ -610,8 +609,6 @@ PingManager::ReportThreatDetailsResult P
+   SanitizeThreatDetailsReport(report);
+   if (!get_user_population_callback_.is_null()) {
+     *report->mutable_population() = get_user_population_callback_.Run();
+-    // TODO(crbug.com/372395685): Remove this post feature launch.
+-    GetExperimentStatus({&kLocalListsUseSBv5}, report->mutable_population());
+   }
+   if (!get_page_load_token_callback_.is_null()) {
+     ChromeUserPopulation::PageLoadToken token =
