@@ -1,5 +1,5 @@
 ﻿name: Prepare Build Environment
-description: Checkout sources, set up Python, copy workspace, and install stage dependencies
+description: Set up Python, copy workspace, and install stage dependencies
 inputs:
   python-version:
     description: Python version
@@ -8,11 +8,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-      with:
-        submodules: recursive
-
     - name: Set up Python ${{ inputs.python-version }}
       uses: actions/setup-python@v6
       with:
