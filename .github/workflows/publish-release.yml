@@ -193,18 +193,28 @@ jobs:
       - publish-release
     if: ${{ needs.resolve-release-context.outputs.ready == 'true' && needs.resolve-release-context.outputs.publishable == 'true' }}
     runs-on: ubuntu-slim
+    env:
+      # Pinned: komac 2.17.x drops the previous manifest's installer settings
+      KOMAC_VERSION: 2.16.0
+      TAG: ${{ needs.resolve-release-context.outputs.target_tag }}
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+      KOMAC_FORK_OWNER: Nifury
+      FORCE_HYPERLINK: 0
     steps:
-      - name: Get version
-        id: version
-        run: echo "version=$(echo '${{ needs.resolve-release-context.outputs.target_tag }}' | cut -d'-' -f1)" >> $GITHUB_OUTPUT
-      - uses: vedantmgoyal9/winget-releaser@main
-        with:
-          identifier: eloston.ungoogled-chromium
-          token: ${{ secrets.PAT }}
-          installers-regex: .(exe|zip)$
-          version: ${{ steps.version.outputs.version }}
-          release-tag: ${{ needs.resolve-release-context.outputs.target_tag }}
-          fork-user: Nifury
+      - name: Install komac
+        run: |
+          curl -fsSL "https://github.com/russellbanks/Komac/releases/download/v${KOMAC_VERSION}/komac-${KOMAC_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C "$RUNNER_TEMP" komac
+          echo "$RUNNER_TEMP" >> $GITHUB_PATH
+      - name: Submit to winget-pkgs
+        run: |
+          base="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}"
+          urls=()
+          for arch in x86 x64 arm64; do
+            urls+=("${base}/ungoogled-chromium_${TAG}_installer_${arch}.exe" "${base}/ungoogled-chromium_${TAG}_windows_${arch}.zip")
+          done
+          komac sync-fork
+          komac update eloston.ungoogled-chromium --version "${TAG%%-*}" --urls "${urls[@]}" --submit
+          komac cleanup --only-merged
 
   update-binaries:
     needs:
