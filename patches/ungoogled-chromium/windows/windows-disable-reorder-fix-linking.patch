@@ -35,9 +35,9 @@
  # This does not currently work. See crbug.com/40220356.
  # This target exists above chrome and it's main components in the dependency
  # tree as a central place to put assert_no_deps annotations. Since this depends
-@@ -134,26 +108,9 @@ if (!is_android && !is_mac) {
-   group("chrome") {
-     public_deps = [ ":chrome_initial" ]
+@@ -139,26 +113,9 @@ if (!is_android && !is_mac) {
+       ":packed_resources",
+     ]
      data_deps = [ ":chrome_initial" ]
 -
 -    # Do not add any more deps or data_deps to group("chrome").
