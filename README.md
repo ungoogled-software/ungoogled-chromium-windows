@@ -142,6 +142,10 @@ ln -s /usr/bin/vim /usr/bin/vi
 	1. Get the SHA-256 checksum for `PortableGit-<version>-64-bit.7z.exe`.
 1. Check for commit hash changes of `src` submodule in `third_party/microsoft_dxheaders` (e.g. using GitHub `https://github.com/chromium/chromium/tree/<version>/third_party/microsoft_dxheaders`).
 	1. Replace `version` with the Chromium version in `ungoogled-chromium/chromium_version.txt`.
+1. Check for commit hash changes of `src` submodule in `third_party/microsoft_multimedia_redirection` (e.g. using GitHub `https://github.com/chromium/chromium/tree/<version>/third_party/microsoft_multimedia_redirection`).
+	1. Replace `version` with the Chromium version in `ungoogled-chromium/chromium_version.txt`.
+1. Check for commit hash changes of `src` submodule in `third_party/microsoft_webauthn` (e.g. using GitHub `https://github.com/chromium/chromium/tree/<version>/third_party/microsoft_webauthn`).
+	1. Replace `version` with the Chromium version in `ungoogled-chromium/chromium_version.txt`.
 1. Check the node version changes in `third_party/node/update_node_binaries` (e.g. using GitHub `https://github.com/chromium/chromium/tree/<version>/third_party/node/update_node_binaries`).
 	1. Download the "Standalone Binary" version from the [NodeJS website](https://nodejs.org/en/download).
 	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
