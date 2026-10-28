@@ -1,29 +1,3 @@
---- a/chrome/browser/enterprise/signin/profile_management_disclaimer_service.cc
-+++ b/chrome/browser/enterprise/signin/profile_management_disclaimer_service.cc
-@@ -653,23 +653,6 @@ void ProfileManagementDisclaimerService:
-     return;
-   }
-   CHECK(state_->access_point.has_value());
--
--  if (profile_separation_policies_for_testing_.has_value() ||
--      user_choice_for_testing_.has_value()) {
--    CHECK_IS_TEST();
--    state_->profile_creation_controller =
--        ManagedProfileCreationController::CreateManagedProfileForTesting(
--            &profile_.get(), GetExtendedAccountInfo(state_->account_id),
--            *state_->access_point,
--            base::BindOnce(&ProfileManagementDisclaimerService::
--                               OnManagedProfileCreationResult,
--                           weak_ptr_factory_.GetWeakPtr()),
--            profile_separation_policies_for_testing_.value_or(
--                std::move(profile_separation_policies)),
--            user_choice_for_testing_);
--    return;
--  }
--
- }
- 
- void ProfileManagementDisclaimerService::OnManagedProfileCreationResult(
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 @@ -1903,9 +1903,6 @@ const PolicyToPreferenceMapEntry kSimple

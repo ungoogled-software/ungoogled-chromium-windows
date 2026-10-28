@@ -8,7 +8,7 @@
      "//chrome/browser/profiles:misc",
      "//chrome/browser/profiles:profile_io_data",
      "//chrome/browser/profiles:profiles_extra_parts",
-@@ -2249,7 +2248,6 @@ source_set("browser") {
+@@ -2250,7 +2249,6 @@ source_set("browser") {
      "//chrome/browser/preloading/search_preload",
      "//chrome/browser/privacy",
      "//chrome/browser/privacy_sandbox:impl",
@@ -115,7 +115,7 @@
    // DATA_TYPE_CONTENT_SETTINGS
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -6192,21 +6192,6 @@ ChromeContentBrowserClient::CreateURLLoa
+@@ -6198,21 +6198,6 @@ ChromeContentBrowserClient::CreateURLLoa
      result.push_back(std::move(signin_throttle));
    }
  
