@@ -186,6 +186,9 @@ def main():
         else:
             # Clone sources
             subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win-arm64' if args.arm else 'win64'], check=True)
+            # Generate MINIBRANCH (the 'minibranch' DEPS hook, which clone.py does not run)
+            subprocess.run([sys.executable, str(source_tree / 'build' / 'util' / 'lastchange.py'),
+                            '--minibranch-out', str(source_tree / 'build' / 'util' / 'MINIBRANCH')], check=True)
 
         # Retrieve windows downloads
         get_logger().info('Downloading required files...')
@@ -248,6 +251,7 @@ def main():
     RUST_DIR_SRC64 = source_tree / 'third_party' / 'rust-toolchain-x64'
     RUST_DIR_SRC86 = source_tree / 'third_party' / 'rust-toolchain-x86'
     RUST_DIR_SRCARM = source_tree / 'third_party' / 'rust-toolchain-arm'
+    RUST_DIR_SRC64_DEV = source_tree / 'third_party' / 'rust-toolchain-x64-dev'
     RUST_FLAG_FILE = RUST_DIR_DST / 'INSTALLED_VERSION'
     if not args.ci or not RUST_FLAG_FILE.exists():
         # Directories to copy from source to target folder
@@ -273,6 +277,10 @@ def main():
                         shutil.copytree(cp_src, cp_dst, dirs_exist_ok=True)
                     else:
                         shutil.copy2(cp_src, cp_dst)
+
+        # Add rustc-dev (rustc_private crates for the x64 host, needed by Crubit)
+        for cp_src in RUST_DIR_SRC64_DEV.glob('*/lib/*'):
+            shutil.copytree(cp_src, RUST_DIR_DST / 'lib' / cp_src.name, dirs_exist_ok=True)
 
         # Generate version file
         with open(RUST_FLAG_FILE, 'w') as f:
@@ -320,6 +328,30 @@ def main():
         _run_build_process(
             sys.executable,
             'tools\\rust\\build_bindgen.py', '--skip-test')
+
+    # Build Crubit's cc_bindings_from_rs (rust_crubit_root in flags.windows.gn)
+    CRUBIT_ROOT = Path('third_party', 'rust-toolchain', 'crubit')
+    CRUBIT_EXE = CRUBIT_ROOT / 'bin' / 'cc_bindings_from_rs.exe'
+    if not args.ci or not CRUBIT_EXE.exists():
+        rust_bin = Path('third_party', 'rust-toolchain', 'bin').resolve()
+        crubit_target = Path('out', 'crubit').resolve()
+        crubit_env = dict(os.environ)
+        crubit_env['RUSTC'] = str(rust_bin / 'rustc.exe')
+        crubit_env['CARGO_HOME'] = str(crubit_target / 'cargo_home')
+        # Link the C runtime statically like rustc.exe, so no VCRUNTIME140.dll is needed
+        crubit_env['RUSTFLAGS'] = '-Ctarget-feature=+crt-static'
+        _run_build_process(
+            str(rust_bin / 'cargo.exe'), 'build', '--release', '--locked',
+            '-p', 'cc_bindings_from_rs', '--bin', 'cc_bindings_from_rs',
+            '--manifest-path', str((CRUBIT_ROOT / 'lib' / 'third_party' / 'crubit' / 'Cargo.toml').resolve()),
+            '--target-dir', str(crubit_target),
+            env=crubit_env)
+        CRUBIT_EXE.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(crubit_target / 'release' / 'cc_bindings_from_rs.exe', CRUBIT_EXE)
+        # Windows has no rpath: put rustc_driver-*.dll (and its deps) next to the exe
+        for dll in rust_bin.glob('*.dll'):
+            shutil.copy2(dll, CRUBIT_EXE.parent / dll.name)
+        subprocess.run([str(CRUBIT_EXE), '--help'], stdout=subprocess.DEVNULL, check=True)
 
     # Ninja commandline
     ninja_commandline = ['third_party\\ninja\\ninja.exe']

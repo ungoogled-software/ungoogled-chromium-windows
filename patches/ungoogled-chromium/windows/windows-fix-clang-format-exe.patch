@@ -11,7 +11,7 @@
  
  def parse_output_reldirs(reldirs):
      required = ['core', 'modules']
-@@ -80,6 +84,11 @@ def parse_options(valid_tasks):
+@@ -92,6 +96,11 @@ def parse_options(valid_tasks):
  
  
  def main():

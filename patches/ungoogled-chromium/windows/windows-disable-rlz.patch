@@ -42,7 +42,7 @@
  // Removes all files from the installer directory. Returns false in case of an
  // error.
  bool RemoveInstallerFiles(const base::FilePath& installer_directory) {
-@@ -920,11 +902,6 @@ InstallStatus UninstallProduct(const Mod
+@@ -933,11 +915,6 @@ InstallStatus UninstallProduct(const Mod
      }
    }
  
