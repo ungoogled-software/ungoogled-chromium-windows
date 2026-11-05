@@ -1,1291 +1,865 @@
---- a/chrome/browser/devtools/chrome_devtools_session.cc
-+++ b/chrome/browser/devtools/chrome_devtools_session.cc
-@@ -78,11 +78,6 @@ ChromeDevToolsSession::ChromeDevToolsSes
-       cast_handler_ = std::make_unique<CastHandler>(
-           agent_host->GetWebContents(), dispatcher());
+# Squash of:
+# https://chromium-review.googlesource.com/c/chromium/src/+/8559360
+# https://chromium-review.googlesource.com/c/chromium/src/+/8560244
+# https://chromium-review.googlesource.com/c/chromium/src/+/8563940
+# https://chromium-review.googlesource.com/c/chromium/src/+/8561424
+# https://chromium-review.googlesource.com/c/chromium/src/+/8564239
+# https://chromium-review.googlesource.com/c/chromium/src/+/8268230
+--- a/build/config/rust.gni
++++ b/build/config/rust.gni
+@@ -63,6 +63,21 @@ declare_args() {
+   # the bindgen exectuable).
+   rust_bindgen_root = "//third_party/rust-toolchain"
+ 
++  # Directory under which to find Crubit tools and support libraries:
++  # * `bin/cc_bindings_from_rs` and `bin/rs_bindings_from_cc`
++  # * `lib/third_party/crubit` (support libraries and their `BUILD.gn` files)
++  #
++  # Unlike `rust_bindgen_root` we don't set `rust_crubit_root` to
++  # `"//third_party/rust-toolchain"` by default, because `cc_bindings_from_rs`
++  # has to be built from the same Rust compiler sources as `rustc` (see
++  # https://github.com/google/crubit/blob/89417b58802e20a6a11db7fea7c31692fef25276/docs/design/design.md?plain=1#L599-L602).
++  # Because of the above `rust_crubit_root` has to be explicitly set when using
++  # a custom toolchain via `rust_sysroot_absolute`.  OTOH, when
++  # `use_chromium_rust_toolchain` is set then defaulting to
++  # `"//third_party/rust-toolchain"` is ok (see the `if (rust_crubit_root...
++  # use_chromium_rust_toolchain` code below).
++  rust_crubit_root = ""
++
+   # If you're using a Rust toolchain as specified by rust_sysroot_absolute,
+   # set this to the output of `rustc -V`. Changing this string will cause all
+   # Rust targets to be rebuilt, which allows you to update your toolchain and
+@@ -150,18 +165,6 @@ if (enable_rust) {
+       _version_lines =
+           read_file("//third_party/rust-toolchain/VERSION", "list lines")
+       rustc_revision = _version_lines[0]
+-
+-      # Example:
+-      # rustc 1.88.0 c8f94230282a8e8c1148f3e657f0199aad909228 (c8f94230282a8e8c1148f3e657f0199aad909228-1-llvmorg-21-init-9266-g09006611 chromium)
+-      # Trim it down as much as we can using GN.
+-      rustc_revision = string_replace(rustc_revision, "rustc ", "")
+-      rustc_revision = string_replace(rustc_revision, " chromium", "")
+-      rustc_revision = string_replace(rustc_revision, "init-", "")
+-      rustc_revision = string_replace(rustc_revision, "llvmorg-", "")
+-      rustc_revision = string_replace(rustc_revision, " ", "")
+-      rustc_revision = string_replace(rustc_revision, ".", "")
+-      rustc_revision = string_replace(rustc_revision, "(", "-")
+-      rustc_revision = string_replace(rustc_revision, ")", "")
      }
--    if (IsDomainAvailableToUntrustedClient<StorageHandler>() ||
--        channel->GetClient()->IsTrusted()) {
--      storage_handler_ = std::make_unique<StorageHandler>(
--          agent_host->GetWebContents(), dispatcher());
--    }
+ 
+     # The same as written in `config.toml.template`.
+@@ -170,6 +173,19 @@ if (enable_rust) {
+     toolchain_has_rust = custom_toolchain_supports_platform
+     rustc_revision = rustc_version
    }
-   if (agent_host->GetWebContents() &&
-       (agent_host->GetType() == content::DevToolsAgentHost::kTypePage ||
---- a/components/cbor/BUILD.gn
-+++ b/components/cbor/BUILD.gn
-@@ -12,7 +12,7 @@ buildflag_header("buildflags") {
-   # TODO(crbug.com/535682335): Remove `USE_CBOR_RUST` buildflag entirely,
-   # unconditionally enable Rust CBOR parser, and drop `is_cronet_build` check
-   # once Cronet supports Crubit dependencies.
--  flags = [ "USE_CBOR_RUST=!$is_cronet_build" ]
-+  flags = [ "USE_CBOR_RUST=$enable_cpp_api_from_rust" ]
++
++  # Trim down `rustc_revision`.  This is partially done for aesthetics and
++  # brevity.  But more importantly, removing spaces avoids errors that would
++  # otherwise happen when passing `--cfg cr_rustc_revision=...` in `rustflags`.
++  # See also the `build/config/compiler:rustc_revision` config.
++  rustc_revision = string_replace(rustc_revision, "rustc ", "")
++  rustc_revision = string_replace(rustc_revision, " chromium", "")
++  rustc_revision = string_replace(rustc_revision, "init-", "")
++  rustc_revision = string_replace(rustc_revision, "llvmorg-", "")
++  rustc_revision = string_replace(rustc_revision, " ", "")
++  rustc_revision = string_replace(rustc_revision, ".", "")
++  rustc_revision = string_replace(rustc_revision, "(", "-")
++  rustc_revision = string_replace(rustc_revision, ")", "")
  }
  
- source_set("cbor_headers") {
-@@ -48,7 +48,7 @@ source_set("cbor_rust_impl") {
-     "//base",
-   ]
- 
--  if (!is_cronet_build) {
-+  if (enable_cpp_api_from_rust) {
-     deps += [
-       "//build/rust/crubit",
-       "//components/cbor/rust:cbor_rust_bindings",
-@@ -91,7 +91,7 @@ source_set("unit_tests") {
-     "//testing/gtest",
-     "//third_party/fuzztest",
-   ]
--  if (!is_cronet_build) {
-+  if (enable_cpp_api_from_rust) {
-     deps += [
-       "//components/cbor/rust:cbor_rust_bindings",
-       "//components/cbor/rust:cbor_rust_unittests",
---- a/components/web_package/BUILD.gn
-+++ b/components/web_package/BUILD.gn
-@@ -51,8 +51,6 @@ source_set("web_package_rust_impl") {
-     "//components/base32",
-     "//components/cbor",
-     "//components/web_package/mojom",
--    "//components/web_package/rust:web_package_rust_bindings",
--    "//components/web_package/signed_web_bundles/rust:signed_web_bundles_rust_bindings",
-     "//mojo/public/cpp/bindings",
-     "//net",
-     "//services/network/public/mojom",
-@@ -67,12 +65,10 @@ static_library("web_package") {
-     "signed_web_bundles/signed_web_bundle_signature_stack.cc",
-     "signed_web_bundles/signed_web_bundle_signature_stack_entry.cc",
-     "web_bundle_builder.cc",
--    "web_bundle_parser_factory.cc",
-     "web_bundle_utils.cc",
-   ]
- 
-   deps = [
--    ":web_package_rust_impl",
-     "//base",
-     "//components/base32",
-     "//components/cbor",
-@@ -115,7 +111,6 @@ source_set("mojom_mapped_types_rust_impl
-   deps = [
-     ":mojom_mapped_types_headers",
-     "//base",
--    "//components/web_package/signed_web_bundles/rust:signed_web_bundles_rust_bindings",
-     "//crypto",
-     "//mojo/public/cpp/bindings",
-   ]
-@@ -159,8 +154,6 @@ source_set("unit_tests") {
-     ":web_package",
-     "//base/test:test_support",
-     "//components/cbor",
--    "//components/web_package/rust:web_package_rust_unittests",
--    "//components/web_package/signed_web_bundles/rust:signed_web_bundles_rust_unittests",
-     "//components/web_package/test_support",
-     "//mojo/public/cpp/bindings",
-     "//mojo/public/cpp/test_support:test_utils",
---- a/components/web_package/signed_web_bundles/ecdsa_p256_sha256_signature.cc
-+++ b/components/web_package/signed_web_bundles/ecdsa_p256_sha256_signature.cc
-@@ -9,7 +9,8 @@
- #include "base/strings/stringprintf.h"
- #include "base/types/expected.h"
- #include "components/web_package/signed_web_bundles/ecdsa_p256_public_key.h"
--#include "components/web_package/signed_web_bundles/rust/signed_web_bundles_rust.h"
-+#include "crypto/keypair.h"
-+#include "crypto/sign.h"
- 
- namespace web_package {
- 
-@@ -50,8 +51,9 @@ EcdsaP256SHA256Signature::EcdsaP256SHA25
- [[nodiscard]] bool EcdsaP256SHA256Signature::Verify(
-     base::span<const uint8_t> message,
-     const EcdsaP256PublicKey& public_key) const {
--  return signed_web_bundles::rust::verify_ecdsa_p256_signature(
--      public_key.bytes(), bytes(), message);
-+  auto key = crypto::keypair::PublicKey::FromEcP256Point(public_key.bytes());
-+  return crypto::sign::Verify(crypto::sign::ECDSA_SHA256, *key, message,
-+                              bytes());
+ # TODO(crbug.com/40809974): To build unit tests for Android we need to build
+@@ -188,6 +204,18 @@ if (enable_rust) {
+   }
  }
  
- }  // namespace web_package
---- a/components/web_package/signed_web_bundles/ed25519_signature.cc
-+++ b/components/web_package/signed_web_bundles/ed25519_signature.cc
-@@ -7,7 +7,6 @@
- #include <algorithm>
++if (rust_crubit_root == "" && use_chromium_rust_toolchain) {
++  rust_crubit_root = "//third_party/rust-toolchain"
++}
++
++# Message for `assert(rust_crubit_root != "", rust_crubit_root_missing_message)`
++# in places that need Crubit.
++rust_crubit_root_missing_message =
++    "Crubit is required, but `rust_crubit_root` GN arg is not set.  It has " +
++    "to be set when using a custom Rust toolchain via " +
++    "`rust_sysroot_absolute`.  See `rust_crubit_root` in " +
++    "//build/config/rust.gni for more details."
++
+ # Figure out the Rust target triple (aka 'rust_abi_target')
+ #
+ # This is here rather than in the toolchain files because it's used also by
+@@ -415,6 +443,10 @@ if (toolchain_for_rust_host_build_tools)
+ rust_prebuilt_stdlib =
+     !use_chromium_rust_toolchain || toolchain_for_rust_host_build_tools
  
- #include "base/strings/stringprintf.h"
--#include "components/web_package/signed_web_bundles/rust/signed_web_bundles_rust.h"
- #include "third_party/boringssl/src/include/openssl/curve25519.h"
++# `rust_sysroot` is the toolchain root (and the default sysroot of rustc),
++# but the locally built stdlib uses a different sysroot.
++local_rustc_sysroot = "$root_out_dir/local_rustc_sysroot"
++
+ # `cpp_api_from_rust` (aka `cc_bindings_from_rs`) is available when building
+ # Chromium, but may be missing or can't be used in some other cases.
+ # `enable_cpp_api_from_rust` is checked under `//build/rust/*.gni` (and may be
+@@ -422,8 +454,7 @@ rust_prebuilt_stdlib =
+ #
+ # See the `assert` comments in `cpp_api_from_rust.gni` for explanation of
+ # the conditions used here.
+-enable_cpp_api_from_rust = enable_rust && use_chromium_rust_toolchain &&
+-                           !rust_prebuilt_stdlib && build_with_chromium
++enable_cpp_api_from_rust = enable_rust && build_with_chromium
  
- namespace web_package {
-@@ -43,8 +42,11 @@ Ed25519Signature::Ed25519Signature(std::
- [[nodiscard]] bool Ed25519Signature::Verify(
-     base::span<const uint8_t> message,
-     const Ed25519PublicKey& public_key) const {
--  return signed_web_bundles::rust::verify_ed25519_signature(public_key.bytes(),
--                                                            bytes(), message);
-+  const std::array<uint8_t, ED25519_PUBLIC_KEY_LEN>& public_key_bytes =
-+      public_key.bytes();
-+  const std::array<uint8_t, ED25519_SIGNATURE_LEN>& signature_bytes = bytes();
-+  return ED25519_verify(message.data(), message.size(), signature_bytes.data(),
-+                        public_key_bytes.data());
+ declare_args() {
+   # Whether it is okay to use `rust_api_from_cpp.gni`.  The default is `false`,
+@@ -432,9 +463,8 @@ declare_args() {
+   # `true` in `args.gn` for local experimentation.
+   #
+   # TODO(crbug.com/40226863): After officially supporting `rust_api_from_cpp`:
+-  # * Introduce `_enable_crubit = enable_rust && use_chromium_rust_toolchain &&
+-  #   build_with_chromium`
+-  # * Set `enable_cpp_api_from_rust = _enable_crubit && !rust_prebuilt_stdlib`
++  # * Introduce `_enable_crubit = enable_rust && build_with_chromium`
++  # * Set `enable_cpp_api_from_rust = _enable_crubit`
+   # * Set `enable_rust_api_from_cpp = _enable_crubit`
+   #   (and it should just be a variable, not an `args.gn` setting / not in
+   #   `declare_args`)
+@@ -452,8 +482,13 @@ rustc_wrapper_inputs = [
+   "//build/rust/gni_impl/rustc_wrapper.py",
+ ]
+ 
+-if (host_os == "win") {
+-  rustc_wrapper_inputs += [ "//third_party/rust-toolchain/bin/rustc.exe" ]
+-} else {
+-  rustc_wrapper_inputs += [ "//third_party/rust-toolchain/bin/rustc" ]
++if (enable_rust) {
++  # Path to the `rustc` executable (from either the Chromium toolchain or
++  # from a custom toolchain specified via `rust_sysroot_absolute`).
++  rustc_exe_path = "$rust_sysroot/bin/rustc"
++  if (host_os == "win") {
++    rustc_exe_path += ".exe"
++  }
++
++  rustc_wrapper_inputs += [ rustc_exe_path ]
+ }
+--- a/build/rust/cargo_crate.gni
++++ b/build/rust/cargo_crate.gni
+@@ -479,14 +479,9 @@ template("cargo_crate") {
+         "//build/gn_helpers.py",
+         _rustflags_txt,
+         rustc_print_cfg_path,
++        rustc_exe_path,
+       ]
+ 
+-      if (host_os == "win") {
+-        inputs += [ "//third_party/rust-toolchain/bin/rustc.exe" ]
+-      } else {
+-        inputs += [ "//third_party/rust-toolchain/bin/rustc" ]
+-      }
+-
+       build_script_target = ":${_build_script_name}($rust_macro_toolchain)"
+       deps = [
+         ":${_build_script_name}_write_rustflags",
+--- a/build/rust/crubit/BUILD.gn
++++ b/build/rust/crubit/BUILD.gn
+@@ -10,9 +10,7 @@ group("crubit") {
+   public_deps = [
+     "$crubit_src_dir/support:support_cpp",
+     "$crubit_src_dir/support/rs_std:rs_std_cpp",
+-    "//build/rust/std/rules:alloc_bindings",
+-    "//build/rust/std/rules:core_bindings",
+-    "//build/rust/std/rules:std_bindings",
++    "//build/rust/std:std_bindings",
+   ]
  }
  
- }  // namespace web_package
---- a/components/web_package/signed_web_bundles/integrity_block_parser.cc
-+++ b/components/web_package/signed_web_bundles/integrity_block_parser.cc
-@@ -4,17 +4,19 @@
+@@ -22,7 +20,7 @@ config("public_config") {
+   # `include_dirs` below help ensure that Chromium can use the same
+   # `#include` paths as other Crubit clients like google3 - e.g.
+   # `#include "third_party/crubit/support/rs_std/slice_ref.h"`.
+-  include_dirs = [ "//third_party/rust-toolchain/lib" ]
++  include_dirs = [ "${rust_crubit_root}/lib" ]
+ }
  
- #include "components/web_package/signed_web_bundles/integrity_block_parser.h"
+ # The `cref` crate provides `CRef<T>` and `CMut<T>` - Rust types that represent
+--- a/build/rust/gni_impl/cpp_api_from_rust.gni
++++ b/build/rust/gni_impl/cpp_api_from_rust.gni
+@@ -27,15 +27,22 @@ _globally_enabled_crubit_features = [
+ #   rust_target
+ #     Label of the Rust library to generate the bindings for.
+ #
+-#   rustc_env_and_flags
++#   rustc_env_and_flags (optional)
+ #     Path to the `.rustflags.json` file generated by an earlier invocation
+ #     of `rustc`.  (`cpp_api_from_rust` needs to be invoked with the same
+-#     arguments, target platform, etc. as `rust_target`.)
++#     `-L` and `--extern` flags as `rust_target`.)  Omitted for crates that
++#     `rustc` can find on its own (e.g. crates from a prebuilt Rust standard
++#     library in the sysroot).
+ #
+ #   crate_name
+ #     Name (potentially mangled/auto-generated) of the crate that `rust_target`
+ #     is built into.
+ #
++#   rmeta_path (optional)
++#     Path to the `.rmeta` file produced by `rust_target`.  Omitted for crates
++#     that `rustc` can find on its own (e.g. crates from a prebuilt Rust
++#     standard library in the sysroot).
++#
+ #   h_out
+ #     Path where the generated `.h` file should be written.
+ #
+@@ -46,24 +53,15 @@ _globally_enabled_crubit_features = [
+ #
+ #   sources
+ #   deps
+-#     Dependencies for compiling `rust_target`.
++#     Dependencies for compiling `rust_target`, or files that change together
++#     with the `.rmeta` files read by Crubit (and the targets that generate
++#     these files).  This makes sure that the bindings are re-generated when the
++#     `.rmeta` files change (e.g. when the Rust toolchain changes).
+ #
+ #
+ template("cpp_api_from_rust") {
+-  # `enable_rust` and `use_chromium_rust_toolchain` enforce that `rustc` and
+-  # `cpp_api_from_rust` use the same version of Rust compiler sources - this is
+-  # required (e.g. to see the same memory layout of repr-Rusts structs) as
+-  # explained in
+-  # https://github.com/google/crubit/blob/89417b58802e20a6a11db7fea7c31692fef25276/docs/design/design.md?plain=1#L599-L602
+-  assert(enable_rust && use_chromium_rust_toolchain)
+-
+-  # TODO(https://crbug.com/549864599): `cpp_api_from_rust`-generated bindings
+-  # may depend on C++ bindings of Rust standard library. Currently Chromium is
+-  # only able to invoke Crubit in `.rs`-consuming mode (rather than
+-  # `.rlib`-consuming mode). Together, these two constraints mean that
+-  # `cpp_api_from_rust` only works for the target platform and doesn't yet work
+-  # for the host platform.
+-  assert(!rust_prebuilt_stdlib)
++  assert(enable_rust)
++  assert(rust_crubit_root != "", rust_crubit_root_missing_message)
  
-+#include <algorithm>
- #include <string>
--#include <string_view>
- #include <vector>
+   # PDFium, V8 and other "2nd-party" Chromium projects don't yet have their own
+   # `//build_overrides/crubit.gni` build file.  Until this is fixed, we assert
+@@ -76,16 +74,15 @@ template("cpp_api_from_rust") {
+   _h_target_name = target_name
+   _metadata_target_name = "${target_name}_crubit_metadata"
  
--#include "base/check.h"
--#include "base/containers/span.h"
-+#include "base/containers/map_util.h"
- #include "base/functional/bind.h"
- #include "base/strings/stringprintf.h"
-+#include "base/strings/to_string.h"
- #include "base/types/expected.h"
- #include "base/types/expected_macros.h"
- #include "components/cbor/reader.h"
-+#include "components/cbor/writer.h"
-+#include "components/web_package/mojom/web_bundle_parser.mojom-forward.h"
- #include "components/web_package/mojom/web_bundle_parser.mojom.h"
- #include "components/web_package/signed_web_bundles/constants.h"
- #include "components/web_package/signed_web_bundles/ecdsa_p256_public_key.h"
-@@ -22,56 +24,11 @@
- #include "components/web_package/signed_web_bundles/ed25519_public_key.h"
- #include "components/web_package/signed_web_bundles/ed25519_signature.h"
- #include "components/web_package/signed_web_bundles/integrity_block_attributes.h"
--#include "components/web_package/signed_web_bundles/rust/signed_web_bundles_rust.h"
- #include "components/web_package/signed_web_bundles/signed_web_bundle_id.h"
- #include "components/web_package/signed_web_bundles/types.h"
- 
- namespace web_package {
- 
--namespace {
--
--using SignatureType = signed_web_bundles::rust::SignatureType::Tag;
--using signed_web_bundles::rust::parse_integrity_block;
--
--base::expected<mojom::BundleIntegrityBlockSignatureStackEntryPtr, std::string>
--CreateSignatureStackEntry(
--    const signed_web_bundles::rust::SignatureStackEntry& entry) {
--  auto parsed_sig = mojom::BundleIntegrityBlockSignatureStackEntry::New();
--
--  switch (entry.signature_type.tag) {
--    case SignatureType::Ed25519: {
--      ASSIGN_OR_RETURN(auto public_key,
--                       Ed25519PublicKey::Create(entry.public_key.to_span()));
--      ASSIGN_OR_RETURN(auto signature,
--                       Ed25519Signature::Create(entry.signature.to_span()));
--      parsed_sig->signature_info = mojom::SignatureInfo::NewEd25519(
--          mojom::SignatureInfoEd25519::New(public_key, signature));
--      break;
--    }
--    case SignatureType::EcdsaP256SHA256: {
--      ASSIGN_OR_RETURN(auto public_key,
--                       EcdsaP256PublicKey::Create(entry.public_key.to_span()));
--      ASSIGN_OR_RETURN(auto signature, EcdsaP256SHA256Signature::Create(
--                                           entry.signature.to_span()));
--      parsed_sig->signature_info = mojom::SignatureInfo::NewEcdsaP256Sha256(
--          mojom::SignatureInfoEcdsaP256SHA256::New(public_key, signature));
--      break;
--    }
--    case SignatureType::Unknown: {
--      parsed_sig->signature_info =
--          mojom::SignatureInfo::NewUnknown(mojom::SignatureInfoUnknown::New());
--      break;
--    }
--  }
--
--  parsed_sig->attributes_cbor =
--      BinaryData(entry.attributes_cbor.begin(), entry.attributes_cbor.end());
--
--  return parsed_sig;
--}
--
--}  // namespace
--
- IntegrityBlockParser::IntegrityBlockParser(
-     mojom::BundleDataSource& data_source,
-     WebBundleParser::ParseIntegrityBlockCallback callback)
-@@ -103,37 +60,103 @@ void IntegrityBlockParser::OnIntegrityBl
-     RunErrorCallback("Error reading the integrity block.");
-     return;
++  assert(defined(invoker.rustc_env_and_flags) == defined(invoker.rmeta_path))
+   assert(defined(invoker.deps))
+   assert(defined(invoker.sources))
+-  assert(defined(invoker.rustc_env_and_flags))
+   assert(defined(invoker.rust_target))
+   assert(defined(invoker.original_attributes))
+   assert(defined(invoker.crate_name))
+   assert(defined(invoker.h_out))
+   _crate_name = invoker.crate_name
+   _rust_target = invoker.rust_target
+-  _rust_target_name = get_label_info(_rust_target, "name")
+   _rust_target_dir = get_label_info(_rust_target, "dir")
+   _h_out = invoker.h_out
+   _rs_out = "${_h_out}.impl.rs"
+@@ -97,7 +94,8 @@ template("cpp_api_from_rust") {
+   if (!defined(_original_attributes.deps)) {
+     _original_attributes.deps = []
    }
-+  // This structure is built during parsing and returned by the final callback
-+  mojom::BundleIntegrityBlockPtr integrity_block =
-+      mojom::BundleIntegrityBlock::New();
-+
-+  size_t consumed_bytes = 0;
-+  cbor::Reader::DecoderError error;
-+  cbor::Reader::Config config;
-+  config.num_bytes_consumed = &consumed_bytes;
-+  config.error_code_out = &error;
-+
-+  // When config `bytes_consumed` are assigned the CBOR parser reads only to the
-+  // end of a structure. It parses only Integrity Block even if Web Bundle part
-+  // starts just after.
-+  std::optional<cbor::Value> value = cbor::Reader::Read(*data, config);
-+  if (!value) {
-+    RunErrorCallback("Error parsing integrity block as CBOR: " +
-+                     std::string(cbor::Reader::ErrorCodeToString(error)));
-+    return;
-+  }
-+  integrity_block->size = consumed_bytes;
-+
-+  if (!value->is_array()) {
-+    RunErrorCallback("Integrity block is not a CBOR array.");
-+    return;
-+  }
- 
--  const auto parse_res = parse_integrity_block(*data);
--  if (!parse_res.has_value()) {
--    const auto& error = parse_res.error();
--    RunErrorCallback(std::string(error.message.as_str()),
--                     error.is_version_error
--                         ? mojom::BundleParseErrorType::kVersionError
--                         : mojom::BundleParseErrorType::kFormatError);
-+  const cbor::Value::ArrayValue& top_array = value->GetArray();
-+  if (top_array.size() != kIntegrityBlockV2TopLevelArrayLength) {
-+    RunErrorCallback(base::StringPrintf(
-+        "Invalid integrity block array length: expected %u, got %zu.",
-+        kIntegrityBlockV2TopLevelArrayLength, top_array.size()));
-     return;
+-  _is_rust_stdlib_target = _rust_target_dir == "//build/rust/std/rules"
++  _is_rust_stdlib_target = _rust_target_dir == "//build/rust/std/rules" ||
++                           _rust_target_dir == "//build/rust/std"
+   if (!_is_rust_stdlib_target) {
+     _original_attributes.deps += [ "//build/rust/std:std_bindings" ]
    }
- 
--  const auto& parsed_ib = *parse_res;
--  auto integrity_block = mojom::BundleIntegrityBlock::New();
--  integrity_block->size = parsed_ib.size;
--
--  const std::string_view web_bundle_id_str =
--      parsed_ib.web_bundle_id.to_string_view();
--  RETURN_IF_ERROR(
--      SignedWebBundleId::Create(web_bundle_id_str),
--      [&](std::string error) { RunErrorCallback(std::move(error)); });
--
--  integrity_block->attributes =
--      IntegrityBlockAttributes(std::string(web_bundle_id_str),
--                               BinaryData(parsed_ib.attributes_cbor.begin(),
--                                          parsed_ib.attributes_cbor.end()));
-+  // 1. Magic bytes
-+  if (!top_array[0].is_bytestring() ||
-+      !std::ranges::equal(top_array[0].GetBytestring(),
-+                          kIntegrityBlockMagicBytes)) {
-+    RunErrorCallback("Unexpected magic bytes.");
-+    return;
-+  }
-+
-+  // 2. Version
-+  if (!top_array[1].is_bytestring() ||
-+      !std::ranges::equal(top_array[1].GetBytestring(),
-+                          kIntegrityBlockV2VersionBytes)) {
-+    RunErrorCallback("Unexpected version bytes.",
-+                     mojom::BundleParseErrorType::kVersionError);
-+    return;
-+  }
- 
--  for (const auto& entry : parsed_ib.signature_stack) {
-+  // 3. Attributes
-+  if (!top_array[2].is_map()) {
-+    RunErrorCallback("Integrity block attributes must be a map.");
-+    return;
-+  }
-+  const cbor::Value::MapValue& attributes_map = top_array[2].GetMap();
-+  const cbor::Value* web_bundle_id =
-+      base::FindOrNull(attributes_map, cbor::Value(kWebBundleIdAttributeName));
-+  if (!web_bundle_id || !web_bundle_id->is_string()) {
-+    RunErrorCallback(
-+        "`webBundleId` integrity block attribute is missing or malformed.");
-+    return;
-+  }
-+
-+  // Check if web_bundle_id is correct
-+  RETURN_IF_ERROR(SignedWebBundleId::Create(web_bundle_id->GetString()),
-+                  [&](const std::string& error) { RunErrorCallback(error); });
-+
-+  BinaryData attributes_cbor = *cbor::Writer::Write(top_array[2]);
-+  integrity_block->attributes = IntegrityBlockAttributes(
-+      web_bundle_id->GetString(), std::move(attributes_cbor));
-+
-+  // 4. Signature Stack
-+  if (!top_array[3].is_array()) {
-+    RunErrorCallback("Signature stack must be an array.");
-+    return;
-+  }
-+  const cbor::Value::ArrayValue& signatures = top_array[3].GetArray();
-+  if (signatures.empty()) {
-+    RunErrorCallback(
-+        "The signature stack must contain at least one signature.");
-+    return;
-+  }
-+
-+  for (const auto& signature_info_raw : signatures) {
-     ASSIGN_OR_RETURN(
--        auto parsed_sig, CreateSignatureStackEntry(entry),
--        [&](std::string error) { RunErrorCallback(std::move(error)); });
--    integrity_block->signature_stack.push_back(std::move(parsed_sig));
-+        auto parsed_signature_info, ParseSignatureInfo(signature_info_raw),
-+        [&](const std::string& error) { this->RunErrorCallback(error); });
-+
-+    if (integrity_block->signature_stack.empty() &&
-+        parsed_signature_info->signature_info->is_unknown()) {
-+      RunErrorCallback("Unknown cipher type of the first signature.");
-+      return;
+@@ -154,6 +152,12 @@ template("cpp_api_from_rust") {
+                              "testonly",
+                            ])
+     deps += [ ":${_rspgen_target_name}" ]
++    if (_is_rust_stdlib_target && !rust_prebuilt_stdlib &&
++        _crate_name != "core") {
++      # The local sysroot must contain the stdlib crates that the synthetic
++      # crate (generated by Crubit) may load implicitly.
++      deps += [ "//build/rust/std/rules:std" ]
 +    }
-+    integrity_block->signature_stack.push_back(
-+        std::move(parsed_signature_info));
-   }
  
-   std::move(complete_callback_)
-@@ -141,13 +164,74 @@ void IntegrityBlockParser::OnIntegrityBl
-                           std::move(integrity_block), nullptr));
+     visibility = [
+       ":$_h_target_name",
+@@ -165,9 +169,10 @@ template("cpp_api_from_rust") {
+     inputs += [
+       _action_rsp_path,
+       cpp_api_from_rust_exe_path,
+-      rustfmt_exe_path,
+-      rustfmt_config_path,
+     ]
++    if (defined(invoker.rmeta_path)) {
++      inputs += [ invoker.rmeta_path ]
++    }
+     outputs = [
+       _h_out,
+       _rs_out,
+@@ -177,20 +182,35 @@ template("cpp_api_from_rust") {
+     args = [
+       "--cpp-api-from-rust-exe-path",
+       rebase_path(cpp_api_from_rust_exe_path, root_build_dir),
+-
+-      "--rustc-env-and-flags",
+-      rebase_path(invoker.rustc_env_and_flags, root_build_dir),
+-      "@" + rebase_path(_action_rsp_path, root_build_dir),
+     ]
++    if (defined(invoker.rustc_env_and_flags)) {
++      args += [
++        "--rustc-env-and-flags",
++        rebase_path(invoker.rustc_env_and_flags, root_build_dir),
++      ]
++    }
++    args += [ "@" + rebase_path(_action_rsp_path, root_build_dir) ]
++
++    if (rust_prebuilt_stdlib) {
++      _sysroot = rust_sysroot
++    } else {
++      _sysroot = local_rustc_sysroot
++    }
+ 
+     # `cpp_api_from_rust` flags:
+     args += [
+       "--",
+ 
+-      # TODO(https://gn.issues.chromium.org/490160737): Enable this interface
+-      # once we can get paths to rmeta files in GN.
+-      "--enable-rmeta-interface=false",
+-
++      "--enable-rmeta-interface=true",
++      "--source-crate-name=${_crate_name}",
++      "--target=${rust_abi_target}",
++      "--sysroot=" + rebase_path(_sysroot, root_build_dir),
++    ]
++    if (defined(invoker.rmeta_path)) {
++      args += [ "--extern=${_crate_name}=" +
++                rebase_path(invoker.rmeta_path, root_build_dir) ]
++    }
++    args += [
+       "--h-out",
+       rebase_path(_h_out, root_build_dir),
+ 
+@@ -204,13 +224,21 @@ template("cpp_api_from_rust") {
+ 
+       "--crubit-support-path-format",
+       crubit_support_path_format,
++    ]
++    if (defined(rustfmt_exe_path)) {
++      inputs += [
++        rustfmt_exe_path,
++        rustfmt_config_path,
++      ]
++      args += [
++        "--rustfmt-exe-path",
++        rebase_path(rustfmt_exe_path, root_build_dir),
+ 
+-      "--rustfmt-exe-path",
+-      rebase_path(rustfmt_exe_path, root_build_dir),
+-
+-      "--rustfmt-config-path",
+-      rebase_path(rustfmt_config_path, root_build_dir),
+-
++        "--rustfmt-config-path",
++        rebase_path(rustfmt_config_path, root_build_dir),
++      ]
++    }
++    args += [
+       "--crate-namespace",
+       "self=${_cpp_namespace}",
+     ]
+@@ -261,10 +289,15 @@ template("cpp_api_from_rust") {
+     # of this crate is `_h_target_name`, which only consumes C ABI top-level
+     # entrypoints - this means that the crate name isn't used / doesn't leak
+     # anywhere.  And therefore it doesn't matter what kind of mangling we do,
+-    # as long as we ensure that it is globally unique.
++    # as long as we ensure that it is globally unique.  (Note that
++    # `_rust_target` is not necessarily unique - e.g. with
++    # `use_rmeta_interface`, `//build/rust/std:std` is shared by all the
++    # crates of a prebuilt Rust standard library.  This is why
++    # `_h_target_name` is used as `_crate_name_base` below.)
++    _crate_name_base = _h_target_name
+     _crate_name_suffix =
+-        string_hash(get_label_info(_rust_target_name, "label_with_toolchain"))
+-    crate_name = "${_rust_target_name}_crubit_${_crate_name_suffix}"
++        string_hash(get_label_info(_crate_name_base, "label_with_toolchain"))
++    crate_name = "${_crate_name_base}_crubit_${_crate_name_suffix}"
+     output_name = crate_name
+ 
+     crate_root = _rs_out
+--- a/build/rust/gni_impl/cpp_api_from_rust_wrapper.py
++++ b/build/rust/gni_impl/cpp_api_from_rust_wrapper.py
+@@ -8,12 +8,12 @@ import argparse
+ import subprocess
+ import pathlib
+ import sys
+-import tempfile
+ 
+ from rustc_wrapper import (
+     PrepareRustEnvForExecution,
+     LoadRustEnvAndFlags,
+     HandleReturnCode,
++    ExpandNestedRustStyleRspFiles,
+ )
+ 
+ 
+@@ -22,27 +22,34 @@ def main():
+     parser.add_argument(
+         '--cpp-api-from-rust-exe-path', required=True, type=pathlib.Path
+     )
+-    parser.add_argument(
+-        '--rustc-env-and-flags', type=pathlib.Path, required=True
+-    )
++    # `--rustc-env-and-flags` is not used when generating bindings for a
++    # prebuilt stdlib in the sysroot.
++    parser.add_argument('--rustc-env-and-flags', type=pathlib.Path)
+     parser.add_argument('args', metavar='ARG', nargs='+')
+     args = parser.parse_args()
+ 
+-    (rustenv, rustflags) = LoadRustEnvAndFlags(args.rustc_env_and_flags)
+-    PrepareRustEnvForExecution(rustenv)
+-
+-    rustflags = [*args.args, "--", *rustflags]
++    rustenv = None
++    rustflags = []
++    if args.rustc_env_and_flags:
++        (rustenv, rustflags) = LoadRustEnvAndFlags(args.rustc_env_and_flags)
++        PrepareRustEnvForExecution(rustenv)
++
++    expanded_rustflags = ExpandNestedRustStyleRspFiles(rustflags)
++    flag_parser = argparse.ArgumentParser(add_help=False, allow_abbrev=False)
++    flag_parser.add_argument('-L', action='append', default=[])
++    flag_parser.add_argument('--extern', action='append', default=[])
++    known, _ = flag_parser.parse_known_args(expanded_rustflags)
++    crubit_extra_args = [f'-L{x}' for x in known.L]
++    # Crubit requires `CRATE=PATH`. Skip sysroot crates like
++    # `--extern proc_macro`.
++    crubit_extra_args += [f'--extern={x}' for x in known.extern if '=' in x]
+ 
+-    # `cpp_api_from_rust` should not write any files into the build directory
+-    # (e.g. into `out/`).
+-    assert not [x for x in rustflags if x.startswith("--emit")]
+-    assert not [x for x in rustflags if x.startswith("-o")]
+-    assert not [x for x in rustflags if x.startswith("--out-dir")]
+-    temp_dir = tempfile.TemporaryDirectory()
+-    rustflags += ["--out-dir", temp_dir.name]
++    crubit_args = [*args.args, *crubit_extra_args]
+ 
+     r = subprocess.run(
+-        [args.cpp_api_from_rust_exe_path, *rustflags], env=rustenv, check=False
++        [args.cpp_api_from_rust_exe_path, *crubit_args],
++        env=rustenv,
++        check=False,
+     )
+     HandleReturnCode(r)
+     return 0
+--- a/build/rust/gni_impl/crubit_shared_args.gni
++++ b/build/rust/gni_impl/crubit_shared_args.gni
+@@ -5,24 +5,36 @@
+ # This `.gni` file defines constants that are shared / reused across
+ # `cpp_api_from_rust.gni` and `rust_api_from_cpp.gni`.
+ 
++import("//build/config/rust.gni")
++
+ crubit_support_path_format = "\"third_party/crubit/support/{header}\""
+ rustfmt_config_path = "//.rustfmt.toml"
+ 
+-_toolchain_bin_path = "//third_party/rust-toolchain/bin"
+-cpp_api_from_rust_exe_path = "${_toolchain_bin_path}/cc_bindings_from_rs"
+-rust_api_from_cpp_exe_path = "${_toolchain_bin_path}/rs_bindings_from_cc"
+-rustfmt_exe_path = "${_toolchain_bin_path}/rustfmt"
++_crubit_bin_path = "${rust_crubit_root}/bin"
++cpp_api_from_rust_exe_path = "${_crubit_bin_path}/cc_bindings_from_rs"
++rust_api_from_cpp_exe_path = "${_crubit_bin_path}/rs_bindings_from_cc"
+ if (host_os == "win") {
+   cpp_api_from_rust_exe_path += ".exe"
+   rust_api_from_cpp_exe_path += ".exe"
+-  rustfmt_exe_path += ".exe"
  }
  
-+base::expected<mojom::BundleIntegrityBlockSignatureStackEntryPtr, std::string>
-+IntegrityBlockParser::ParseSignatureInfo(
-+    const cbor::Value& signature_info_raw) {
-+  if (!signature_info_raw.is_array() ||
-+      signature_info_raw.GetArray().size() != 2) {
-+    return base::unexpected(
-+        "Each signature stack entry must contain exactly two elements.");
+-# TODO(lukasza): Make this also work on other host platforms.  (Possibly
+-# hoisting this Crubit-agnostic functionality into some other, reusable
+-# location elsewhere.)
+-if (host_os == "linux") {
+-  clang_format_exe_path = "//buildtools/linux64-format/clang-format"
+-} else if (host_os == "win") {
+-  clang_format_exe_path = "//buildtools/win-format/clang-format.exe"
++# Code generated by Crubit is only formatted when using Crubit from
++# //third_party/rust-toolchain.  Formatting only makes the generated code easier
++# to read, and the formatting tools may not be available when using a
++# system-provided Crubit.  Therefore `rustfmt_exe_path` and
++# `clang_format_exe_path` may be undefined.
++if (rust_crubit_root == "//third_party/rust-toolchain") {
++  rustfmt_exe_path = "//third_party/rust-toolchain/bin/rustfmt"
++  if (host_os == "win") {
++    rustfmt_exe_path += ".exe"
 +  }
 +
-+  const cbor::Value::ArrayValue& signature_info_array =
-+      signature_info_raw.GetArray();
-+  if (!signature_info_array[0].is_map() ||
-+      !signature_info_array[1].is_bytestring()) {
-+    return base::unexpected("Malformed signature stack entry.");
++  # TODO(lukasza): Make this also work on other host platforms.  (Possibly
++  # hoisting this Crubit-agnostic functionality into some other, reusable
++  # location elsewhere.)
++  if (host_os == "linux") {
++    clang_format_exe_path = "//buildtools/linux64-format/clang-format"
++  } else if (host_os == "win") {
++    clang_format_exe_path = "//buildtools/win-format/clang-format.exe"
 +  }
-+
-+  mojom::BundleIntegrityBlockSignatureStackEntryPtr parsed_signature_info =
-+      mojom::BundleIntegrityBlockSignatureStackEntry::New();
-+  parsed_signature_info->attributes_cbor =
-+      *cbor::Writer::Write(signature_info_array[0]);
-+
-+  const cbor::Value::MapValue& signature_attributes =
-+      signature_info_array[0].GetMap();
-+  const BinaryData& signature_bytes = signature_info_array[1].GetBytestring();
-+
-+  const cbor::Value* ed25519_key = base::FindOrNull(
-+      signature_attributes, cbor::Value(kEd25519PublicKeyAttributeName));
-+  const cbor::Value* ecdsa_key = base::FindOrNull(
-+      signature_attributes, cbor::Value(kEcdsaP256PublicKeyAttributeName));
-+
-+  if (ed25519_key && ecdsa_key) {
-+    return base::unexpected("Multiple key types for one signature.");
-+  } else if (ed25519_key && !ed25519_key->is_bytestring()) {
-+    return base::unexpected("Invalid ED25519 key.");
-+  } else if (ecdsa_key && !ecdsa_key->is_bytestring()) {
-+    return base::unexpected("Invalid ECDSA key.");
-+
-+  } else if (ed25519_key && ed25519_key->is_bytestring()) {
-+    ASSIGN_OR_RETURN(auto public_key,
-+                     Ed25519PublicKey::Create(ed25519_key->GetBytestring()));
-+    ASSIGN_OR_RETURN(auto signature, Ed25519Signature::Create(signature_bytes));
-+    parsed_signature_info->signature_info = mojom::SignatureInfo::NewEd25519(
-+        mojom::SignatureInfoEd25519::New(public_key, signature));
-+
-+  } else if (ecdsa_key && ecdsa_key->is_bytestring()) {
-+    ASSIGN_OR_RETURN(auto public_key,
-+                     EcdsaP256PublicKey::Create(ecdsa_key->GetBytestring()));
-+    ASSIGN_OR_RETURN(auto signature,
-+                     EcdsaP256SHA256Signature::Create(signature_bytes));
-+    parsed_signature_info->signature_info =
-+        mojom::SignatureInfo::NewEcdsaP256Sha256(
-+            mojom::SignatureInfoEcdsaP256SHA256::New(public_key, signature));
-+
-+  } else {
-+    parsed_signature_info->signature_info =
-+        mojom::SignatureInfo::NewUnknown(mojom::SignatureInfoUnknown::New());
-+  }
-+
-+  return parsed_signature_info;
-+}
-+
- void IntegrityBlockParser::RunErrorCallback(
--    std::string message,
-+    const std::string& message,
-     mojom::BundleParseErrorType error_type) {
-   std::move(complete_callback_)
--      .Run(base::BindOnce(std::move(result_callback_), nullptr,
--                          mojom::BundleIntegrityBlockParseError::New(
--                              error_type, std::move(message))));
-+      .Run(base::BindOnce(
-+          std::move(result_callback_), nullptr,
-+          mojom::BundleIntegrityBlockParseError::New(error_type, message)));
  }
- 
- }  // namespace web_package
---- a/components/web_package/signed_web_bundles/integrity_block_parser.h
-+++ b/components/web_package/signed_web_bundles/integrity_block_parser.h
-@@ -5,13 +5,8 @@
- #ifndef COMPONENTS_WEB_PACKAGE_SIGNED_WEB_BUNDLES_INTEGRITY_BLOCK_PARSER_H_
- #define COMPONENTS_WEB_PACKAGE_SIGNED_WEB_BUNDLES_INTEGRITY_BLOCK_PARSER_H_
- 
--#include <optional>
--#include <string>
--
--#include "base/compiler_specific.h"
--#include "base/memory/raw_ref.h"
--#include "base/memory/weak_ptr.h"
- #include "components/web_package/mojom/web_bundle_parser.mojom-forward.h"
-+#include "components/web_package/signed_web_bundles/integrity_block_attributes.h"
- #include "components/web_package/signed_web_bundles/types.h"
- #include "components/web_package/web_bundle_parser.h"
- 
-@@ -20,7 +15,7 @@ namespace web_package {
- class IntegrityBlockParser : public WebBundleParser::WebBundleSectionParser {
-  public:
-   explicit IntegrityBlockParser(
--      mojom::BundleDataSource& data_source LIFETIME_BOUND,
-+      mojom::BundleDataSource& data_source,
-       WebBundleParser::ParseIntegrityBlockCallback callback);
- 
-   IntegrityBlockParser(const IntegrityBlockParser&) = delete;
-@@ -35,7 +30,10 @@ class IntegrityBlockParser : public WebB
-  private:
-   void OnIntegrityBlockRead(const std::optional<BinaryData>& data);
- 
--  void RunErrorCallback(std::string message,
-+  base::expected<mojom::BundleIntegrityBlockSignatureStackEntryPtr, std::string>
-+  ParseSignatureInfo(const cbor::Value& attributes_map);
-+
-+  void RunErrorCallback(const std::string& message,
-                         mojom::BundleParseErrorType error_type =
-                             mojom::BundleParseErrorType::kFormatError);
- 
---- a/components/web_package/signed_web_bundles/rust/BUILD.gn
-+++ b/components/web_package/signed_web_bundles/rust/BUILD.gn
-@@ -10,7 +10,6 @@ rust_static_library("signed_web_bundles_
-   sources = [
-     "constants.rs",
-     "integrity_block.rs",
--    "signature_verifier.rs",
-     "types.rs",
-     crate_root,
-   ]
---- a/components/web_package/signed_web_bundles/signed_web_bundle_signature_verifier.cc
-+++ b/components/web_package/signed_web_bundles/signed_web_bundle_signature_verifier.cc
-@@ -20,14 +20,17 @@
- #include "base/task/thread_pool.h"
- #include "base/types/expected.h"
- #include "base/types/expected_macros.h"
-+#include "components/cbor/values.h"
-+#include "components/cbor/writer.h"
-+#include "components/web_package/signed_web_bundles/constants.h"
- #include "components/web_package/signed_web_bundles/identity_validator.h"
- #include "components/web_package/signed_web_bundles/integrity_block_parser.h"
--#include "components/web_package/signed_web_bundles/rust/signed_web_bundles_rust.h"
- #include "components/web_package/signed_web_bundles/signed_web_bundle_id.h"
- #include "components/web_package/signed_web_bundles/signed_web_bundle_integrity_block.h"
- #include "components/web_package/signed_web_bundles/signed_web_bundle_signature_stack.h"
- #include "components/web_package/signed_web_bundles/signed_web_bundle_signature_stack_entry.h"
- #include "components/web_package/signed_web_bundles/signed_web_bundle_utils.h"
-+#include "crypto/hash.h"
- #include "third_party/abseil-cpp/absl/functional/overload.h"
- #include "third_party/boringssl/src/include/openssl/sha.h"
- 
-@@ -37,10 +40,32 @@ namespace {
- 
- std::vector<uint8_t> CreateIntegrityBlockCbor(
-     const SignedWebBundleIntegrityBlock& integrity_block) {
--  auto ib_cbor_rust =
--      signed_web_bundles::rust::create_empty_integrity_block_cbor(
--          integrity_block.attributes_cbor());
--  return std::vector<uint8_t>(ib_cbor_rust.begin(), ib_cbor_rust.end());
-+  // This function looks like it should use a cbor::Value::ArrayValue to build
-+  // the outer array, but it can't: one of the elements is a pre-encoded CBOR
-+  // value which we can't safely decode because it's untrusted input. This is
-+  // obviously undesirable, because there's no guarantee at all that the
-+  // pre-encoded value is actually valid CBOR.
-+  //
-+  // TODO(https://crbug.com/454485901): once there's a memory-safe CBOR parser,
-+  // re-parse the pre-encoded value, then re-encode it here instead of
-+  // constructing a CBOR array by hand so that we're guaranteed that the result
-+  // of this function is valid.
-+  std::vector<uint8_t> ib_cbor;
-+
-+  // 0x84 is the encoding byte for an array of length 4.
-+  ib_cbor.push_back(0x84);
-+  base::Extend(ib_cbor,
-+               *cbor::Writer::Write(cbor::Value(kIntegrityBlockMagicBytes)));
-+  base::Extend(ib_cbor, *cbor::Writer::Write(
-+                            cbor::Value(kIntegrityBlockV2VersionBytes)));
-+  // We cannot parse `attributes().cbor()` back to a cbor::Value as they
-+  // technically represent untrusted input.
-+  base::Extend(ib_cbor, integrity_block.attributes_cbor());
-+  // Encode an empty signature array.
-+  base::Extend(ib_cbor,
-+               *cbor::Writer::Write(cbor::Value(cbor::Value::ArrayValue())));
-+
-+  return ib_cbor;
- }
- 
- base::expected<void, SignedWebBundleSignatureVerifier::Error>
-@@ -104,7 +129,7 @@ SignedWebBundleSignatureVerifier::Calcul
-     return base::unexpected(base::File::ErrorToString(file.GetLastFileError()));
-   }
- 
--  signed_web_bundles::rust::Sha512Hasher hasher;
-+  crypto::hash::Hasher hash(crypto::hash::kSha512);
- 
-   // Calculate the hash of the Signed Web Bundle excluding its integrity block.
-   // The file might be too big to read it into memory all at once, which is why
-@@ -121,14 +146,15 @@ SignedWebBundleSignatureVerifier::Calcul
-           base::File::ErrorToString(file.GetLastFileError()));
-     }
-     data.resize(*bytes_read);
--    hasher.update(data);
-+    hash.Update(data);
- 
-     if (!base::CheckAdd(offset, *bytes_read).AssignIfValid(&offset)) {
-       return base::unexpected("The Signed Web Bundle is too large.");
-     }
-   }
- 
--  SHA512Digest digest = std::move(hasher).finish();
-+  SHA512Digest digest;
-+  hash.Finish(digest);
-   return digest;
- }
- 
---- a/components/web_package/signed_web_bundles/signed_web_bundle_utils.cc
-+++ b/components/web_package/signed_web_bundles/signed_web_bundle_utils.cc
-@@ -5,18 +5,37 @@
- #include "components/web_package/signed_web_bundles/signed_web_bundle_utils.h"
- 
- #include <cstdint>
--#include <vector>
- 
--#include "components/web_package/signed_web_bundles/rust/signed_web_bundles_rust.h"
-+#include "base/containers/extend.h"
-+#include "base/containers/span.h"
-+#include "base/containers/span_writer.h"
- 
- namespace web_package {
- 
-+namespace {
-+
-+void AddItemToPayload(std::vector<uint8_t>& payload,
-+                      base::span<const uint8_t> item) {
-+  // Each item that is part of the payload is prefixed with its length encoded
-+  // as a 64 bit unsigned integer.
-+  std::array<uint8_t, sizeof(uint64_t)> length;
-+  auto writer = base::SpanWriter(base::span(length));
-+  CHECK(writer.WriteU64BigEndian(item.size()));
-+
-+  base::Extend(payload, base::span(length));
-+  base::Extend(payload, item);
-+}
-+
-+}  // namespace
-+
- std::vector<uint8_t> CreateSignaturePayload(
-     const SignedWebBundleSignatureData& data) {
--  auto payload_rust = signed_web_bundles::rust::create_signature_payload(
--      data.unsigned_web_bundle_hash, data.integrity_block_cbor,
--      data.attributes_cbor);
--  return std::vector<uint8_t>(payload_rust.begin(), payload_rust.end());
-+  std::vector<uint8_t> payload;
-+  AddItemToPayload(payload, data.unsigned_web_bundle_hash);
-+  AddItemToPayload(payload, data.integrity_block_cbor);
-+  AddItemToPayload(payload, data.attributes_cbor);
-+
-+  return payload;
- }
- 
- }  // namespace web_package
---- a/components/webapps/isolated_web_apps/bundle_operations/bundle_operations.cc
-+++ b/components/webapps/isolated_web_apps/bundle_operations/bundle_operations.cc
-@@ -79,16 +79,7 @@ void ReadSignedWebBundleIdInsecurely(
-     const base::FilePath& path,
-     base::OnceCallback<void(base::expected<web_package::SignedWebBundleId,
-                                            std::string>)> callback) {
--  UnsecureSignedWebBundleIdReader::GetWebBundleId(
--      path,
--      base::BindOnce([](base::expected<web_package::SignedWebBundleId,
--                                       UnusableSwbnFileError> result) {
--        return result.transform_error([](const UnusableSwbnFileError& error) {
--          return "Failed to read the integrity block of the "
--                 "signed web bundle: " +
--                 error.message();
--        });
--      }).Then(std::move(callback)));
-+    std::move(callback);
- }
- 
- void ValidateSignedWebBundleSignatures(
-@@ -96,20 +87,6 @@ void ValidateSignedWebBundleSignatures(
-     const base::FilePath& path,
-     const web_package::SignedWebBundleId& expected_web_bundle_id,
-     base::OnceCallback<void(IntegrityBlockResult)> callback) {
--  auto create_reader = base::BindOnce(
--      &SignedWebBundleReader::Create, path,
--      IwaOrigin(expected_web_bundle_id).origin().GetURL(),
--      /*verify_signatures=*/true,
--      base::BindOnce(&OnTrustAndSignaturesOfBundleChecked,
--                     browser_context->GetWeakPtr(), expected_web_bundle_id,
--                     std::move(callback)));
--
--  if (auto* provider = IwaClient::GetInstance()->GetRuntimeDataProvider()) {
--    provider->OnBestEffortRuntimeDataReady().Post(FROM_HERE,
--                                                  std::move(create_reader));
--  } else {
--    std::move(create_reader).Run();
--  }
- }
- 
- void CloseBundle(content::BrowserContext* browser_context,
---- a/components/webapps/isolated_web_apps/reading/BUILD.gn
-+++ b/components/webapps/isolated_web_apps/reading/BUILD.gn
-@@ -14,8 +14,6 @@ source_set("reading") {
-     "response_reader_registry.h",
-     "response_reader_registry_factory.cc",
-     "response_reader_registry_factory.h",
--    "signed_web_bundle_reader.cc",
--    "signed_web_bundle_reader.h",
-     "validator.cc",
-     "validator.h",
-   ]
---- a/components/webapps/isolated_web_apps/reading/response_reader_factory.cc
-+++ b/components/webapps/isolated_web_apps/reading/response_reader_factory.cc
-@@ -45,19 +45,6 @@ void IsolatedWebAppResponseReaderFactory
-   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
-   DCHECK(!web_bundle_id.is_for_proxy_mode());
- 
--  auto create_reader = base::BindOnce(
--      &SignedWebBundleReader::Create, web_bundle_path,
--      IwaOrigin(web_bundle_id).origin().GetURL(), verify_signatures,
--      base::BindOnce(&IsolatedWebAppResponseReaderFactory::OnReaderCreated,
--                     weak_ptr_factory_.GetWeakPtr(), web_bundle_path,
--                     web_bundle_id, std::move(callback)));
--
--  if (auto* provider = IwaClient::GetInstance()->GetRuntimeDataProvider()) {
--    provider->OnBestEffortRuntimeDataReady().Post(FROM_HERE,
--                                                  std::move(create_reader));
--  } else {
--    std::move(create_reader).Run();
--  }
- }
- 
- void IsolatedWebAppResponseReaderFactory::OnReaderCreated(
---- a/services/data_decoder/data_decoder_service.cc
-+++ b/services/data_decoder/data_decoder_service.cc
-@@ -63,9 +63,6 @@ void DataDecoderService::BindXmlParser(
- void DataDecoderService::BindWebBundleParserFactory(
-     mojo::PendingReceiver<web_package::mojom::WebBundleParserFactory>
-         receiver) {
--  mojo::MakeSelfOwnedReceiver(
--      std::make_unique<web_package::WebBundleParserFactory>(),
--      std::move(receiver));
- }
- 
- void DataDecoderService::BindGzipper(
---- a/services/network/web_bundle/web_bundle_url_loader_factory.cc
-+++ b/services/network/web_bundle/web_bundle_url_loader_factory.cc
-@@ -586,25 +586,6 @@ bool WebBundleURLLoaderFactory::HasError
- 
- void WebBundleURLLoaderFactory::SetBundleStream(
-     mojo::ScopedDataPipeConsumerHandle body) {
--  if (HasError())
--    return;
--  mojo::PendingRemote<web_package::mojom::BundleDataSource> data_source;
--  source_ = std::make_unique<BundleDataSource>(
--      data_source.InitWithNewPipeAndPassReceiver(), std::move(body),
--      std::move(web_bundle_memory_quota_consumer_),
--      base::BindOnce(&WebBundleURLLoaderFactory::OnMemoryQuotaExceeded,
--                     weak_ptr_factory_.GetWeakPtr()),
--      base::BindOnce(&WebBundleURLLoaderFactory::OnDataCompleted,
--                     weak_ptr_factory_.GetWeakPtr()));
--
--  mojo::MakeSelfOwnedReceiver(std::make_unique<web_package::WebBundleParser>(
--                                  std::move(data_source), bundle_url_),
--                              parser_.BindNewPipeAndPassReceiver());
--
--  parser_->ParseMetadata(
--      /*offset=*/std::nullopt,
--      base::BindOnce(&WebBundleURLLoaderFactory::OnMetadataParsed,
--                     weak_ptr_factory_.GetWeakPtr()));
- }
- 
- mojo::PendingRemote<mojom::URLLoaderClient>
---- a/third_party/blink/renderer/core/loader/resource/font_resource.cc
-+++ b/third_party/blink/renderer/core/loader/resource/font_resource.cc
-@@ -44,7 +44,6 @@
- #include "third_party/blink/public/mojom/loader/request_context_frame_type.mojom-blink.h"
- #include "third_party/blink/renderer/platform/fonts/font_custom_platform_data.h"
- #include "third_party/blink/renderer/platform/fonts/font_platform_data.h"
--#include "third_party/blink/renderer/platform/fonts/ift/ift_patcher.h"
- #include "third_party/blink/renderer/platform/fonts/web_font_decoder.h"
- #include "third_party/blink/renderer/platform/heap/cross_thread_handle.h"
- #include "third_party/blink/renderer/platform/loader/fetch/fetch_parameters.h"
-@@ -85,7 +84,8 @@ base::expected<DecodedWebFont, String> D
-     return base::unexpected("");
-   }
-   auto decode_start_time = base::TimeTicks::Now();
--  base::expected<DecodedWebFont, String> result = DecodeWebFont(buffer);
-+  base::expected<DecodedWebFont, String> result =
-+      DecodedWebFont::Create(buffer);
-   base::UmaHistogramMicrosecondsTimes(
-       "Blink.Fonts.BackgroundDecodeTime",
-       base::TimeTicks::Now() - decode_start_time);
-@@ -316,22 +316,13 @@ const FontCustomPlatformData* FontResour
-         font_data_ = FontCustomPlatformData::Create(
-             std::move(background_decode_result_->sk_typeface),
-             background_decode_result_->decoded_size);
--        ift_patcher_ = std::move(background_decode_result_->ift_patcher);
-       } else {
-         auto decode_start_time = base::TimeTicks::Now();
--        base::expected<DecodedWebFont, String> decode_result =
--            DecodeWebFont(Data());
-+        font_data_ =
-+            FontCustomPlatformData::Create(Data(), ots_parsing_message_);
-         base::UmaHistogramMicrosecondsTimes(
-             "Blink.Fonts.DecodeTime",
-             base::TimeTicks::Now() - decode_start_time);
--        if (decode_result.has_value()) {
--          font_data_ = FontCustomPlatformData::Create(
--              std::move(decode_result->sk_typeface),
--              decode_result->decoded_size);
--          ift_patcher_ = std::move(decode_result->ift_patcher);
--        } else {
--          ots_parsing_message_ = std::move(decode_result).error();
--        }
+--- a/build/rust/gni_impl/rust_target.gni
++++ b/build/rust/gni_impl/rust_target.gni
+@@ -386,6 +386,34 @@ template("rust_target") {
        }
-     } else {
-       ots_parsing_message_ = background_decode_result_.error();
-@@ -340,7 +331,6 @@ const FontCustomPlatformData* FontResour
- 
-   if (!font_data_) {
-     SetStatus(ResourceStatus::kDecodeError);
--    ift_patcher_.reset();
-   } else {
-     // Call observers once and remove them.
-     HeapHashSet<WeakMember<FontResourceClearDataObserver>> observers;
-@@ -353,10 +343,6 @@ const FontCustomPlatformData* FontResour
-   return font_data_;
- }
- 
--std::unique_ptr<IftPatcher> FontResource::TakeIftPatcher() {
--  return std::move(ift_patcher_);
--}
--
- void FontResource::WillReloadAfterDiskCacheMiss() {
-   DCHECK(IsLoading());
-   DCHECK(Loader()->IsCacheAwareLoadingActivated());
---- a/third_party/blink/renderer/core/loader/resource/font_resource.h
-+++ b/third_party/blink/renderer/core/loader/resource/font_resource.h
-@@ -47,7 +47,6 @@ class FetchParameters;
- class ResourceFetcher;
- class FontCustomPlatformData;
- class FontResourceClient;
--class IftPatcher;
- 
- // An observer that will be notified when original data is cleared
- // from the resource. Inspector may collect this data and store it for
-@@ -78,7 +77,6 @@ class CORE_EXPORT FontResource final : p
-   String OtsParsingMessage() const { return ots_parsing_message_; }
- 
-   const FontCustomPlatformData* GetCustomFontData();
--  std::unique_ptr<IftPatcher> TakeIftPatcher();
- 
-   // Returns true if the loading priority of the remote font resource can be
-   // lowered. The loading priority of the font can be lowered only if the
-@@ -127,7 +125,6 @@ class CORE_EXPORT FontResource final : p
-   };
- 
-   Member<FontCustomPlatformData> font_data_;
--  std::unique_ptr<IftPatcher> ift_patcher_;
-   String ots_parsing_message_;
-   LoadLimitState load_limit_state_;
-   bool cors_failed_;
---- a/third_party/blink/renderer/platform/BUILD.gn
-+++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -186,6 +186,18 @@ group("make_platform_generated") {
-   ]
- }
- 
-+rust_static_library("font_format_check") {
-+  allow_unsafe = true  # Needed for FFI that underpins the `cxx` crate.
-+  crate_root = "fonts/opentype/format_check.rs"
-+  sources = [ crate_root ]
-+  cxx_bindings = [ crate_root ]
-+  deps = [
-+    "//third_party/rust/font_types/v0_12:lib",
-+    "//third_party/rust/read_fonts/v0_43:lib",
-+    "//third_party/rust/skrifa/v0_46:lib",
-+  ]
-+}
-+
- rust_static_library("rustfft_ffi") {
-   allow_unsafe = true  # Needed for FFI that underpins the `cxx` crate.
-   crate_root = "audio/rustfft_ffi.rs"
-@@ -253,7 +265,6 @@ group("blink_platform_public_deps") {
-     "//third_party/boringssl",
-     "//third_party/libwebp",
-     "//third_party/ots",
--    "//third_party/woff2:woff2_dec",
-     "//ui/gfx/animation/keyframe",
-     "//url",
-     "//v8",
-@@ -713,8 +724,6 @@ component("platform") {
-     "fonts/generic_font_family_settings.cc",
-     "fonts/generic_font_family_settings.h",
-     "fonts/glyph_metrics_map.h",
--    "fonts/ift/ift_patcher.cc",
--    "fonts/ift/ift_patcher.h",
-     "fonts/opentype/color_table_lookup.cc",
-     "fonts/opentype/color_table_lookup.h",
-     "fonts/opentype/font_format_check.cc",
-@@ -1797,7 +1806,6 @@ component("platform") {
-     ":allow_discouraged_type",
-     ":blink_platform_public_deps",
-     ":platform_export",
--    "//build/rust/crubit",
-     "//components/language_detection/core",
-     "//gpu/command_buffer/client:raster_interface",
-     "//media/capture:capture_lib",
-@@ -1824,9 +1832,8 @@ component("platform") {
-     "//ui/native_theme/features",
-   ]
-   deps = [
-+    ":font_format_check",
-     ":rustfft_ffi",
--    "fonts:font_format_bindings",
--    "fonts:ift_patcher_bindings",
-     "//base:base_static",
-     "//base/allocator:buildflags",
-     "//build:chromecast_buildflags",
---- a/third_party/blink/renderer/platform/fonts/font_custom_platform_data.cc
-+++ b/third_party/blink/renderer/platform/fonts/font_custom_platform_data.cc
-@@ -328,7 +328,8 @@ FontCustomPlatformData* FontCustomPlatfo
-     SharedBuffer* buffer,
-     String& ots_parse_message) {
-   DCHECK(buffer);
--  base::expected<DecodedWebFont, String> decode_result = DecodeWebFont(buffer);
-+  base::expected<DecodedWebFont, String> decode_result =
-+      DecodedWebFont::Create(buffer);
-   if (!decode_result.has_value()) {
-     ots_parse_message = std::move(decode_result).error();
-     return nullptr;
---- a/third_party/blink/renderer/platform/fonts/opentype/font_format_check.cc
-+++ b/third_party/blink/renderer/platform/fonts/opentype/font_format_check.cc
-@@ -7,6 +7,7 @@
- #include "base/containers/span.h"
- #include "base/containers/span_rust.h"
- #include "base/numerics/byte_conversions.h"
-+#include "third_party/blink/renderer/platform/fonts/opentype/format_check.rs.h"
- #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
- #include "third_party/blink/renderer/platform/wtf/vector.h"
- #include "third_party/skia/include/core/SkTypeface.h"
-@@ -14,37 +15,35 @@
- namespace blink {
- 
- FontFormatCheck::FontFormatCheck(sk_sp<SkData> sk_data)
--    : format_info_(font_format::get_font_format_info(
-+    : format_info_(font_format_check::get_font_format_info(
-           base::SpanToRustSlice(sk_data->byteSpan()))) {}
- 
--FontFormatCheck::~FontFormatCheck() = default;
--
- bool FontFormatCheck::IsVariableFont() const {
--  return font_format::is_variable(format_info_);
-+  return font_format_check::is_variable(*format_info_);
- }
- 
- bool FontFormatCheck::IsCbdtCblcColorFont() const {
--  return font_format::is_cbdt_cblc(format_info_);
-+  return font_format_check::is_cbdt_cblc(*format_info_);
- }
- 
- bool FontFormatCheck::IsEbdtEblcMonochromeFont() const {
--  return font_format::is_ebdt_eblc(format_info_);
-+  return font_format_check::is_ebdt_eblc(*format_info_);
- }
- 
- bool FontFormatCheck::IsColrCpalColorFontV0() const {
--  return font_format::is_colrv0(format_info_);
-+  return font_format_check::is_colrv0(*format_info_);
- }
- 
- bool FontFormatCheck::IsColrCpalColorFontV1() const {
--  return font_format::is_colrv1(format_info_);
-+  return font_format_check::is_colrv1(*format_info_);
- }
- 
- bool FontFormatCheck::IsSbixColorFont() const {
--  return font_format::is_sbix(format_info_);
-+  return font_format_check::is_sbix(*format_info_);
- }
- 
- bool FontFormatCheck::IsCff2OutlineFont() const {
--  return font_format::is_cff2(format_info_);
-+  return font_format_check::is_cff2(*format_info_);
- }
- 
- bool FontFormatCheck::IsVariableColrV0Font() const {
-@@ -58,7 +57,7 @@ bool FontFormatCheck::IsColorFont() cons
- 
- bool FontFormatCheck::IsAvar2Font() const {
-   return RuntimeEnabledFeatures::FontFormatAvar2Enabled() &&
--         font_format::is_avar2(format_info_);
-+         font_format_check::is_avar2(*format_info_);
- }
- 
- FontFormatCheck::VariableFontSubType FontFormatCheck::ProbeVariableFont(
---- a/third_party/blink/renderer/platform/fonts/opentype/font_format_check.h
-+++ b/third_party/blink/renderer/platform/fonts/opentype/font_format_check.h
-@@ -5,7 +5,7 @@
- #ifndef THIRD_PARTY_BLINK_RENDERER_PLATFORM_FONTS_OPENTYPE_FONT_FORMAT_CHECK_H_
- #define THIRD_PARTY_BLINK_RENDERER_PLATFORM_FONTS_OPENTYPE_FONT_FORMAT_CHECK_H_
- 
--#include "third_party/blink/renderer/platform/fonts/font_format.h"
-+#include "third_party/blink/renderer/platform/fonts/opentype/format_check.rs.h"
- #include "third_party/blink/renderer/platform/platform_export.h"
- #include "third_party/blink/renderer/platform/wtf/allocator/allocator.h"
- #include "third_party/skia/include/core/SkData.h"
-@@ -19,7 +19,7 @@ class PLATFORM_EXPORT FontFormatCheck {
- 
-  public:
-   explicit FontFormatCheck(sk_sp<SkData>);
--  virtual ~FontFormatCheck();
-+  virtual ~FontFormatCheck() = default;
-   virtual bool IsVariableFont() const;
-   virtual bool IsCbdtCblcColorFont() const;
-   virtual bool IsEbdtEblcMonochromeFont() const;
-@@ -46,7 +46,7 @@ class PLATFORM_EXPORT FontFormatCheck {
-   enum class COLRVersion { kCOLRV0, kCOLRV1, kNoCOLR };
- 
-  private:
--  font_format::FontFormatInfo format_info_;
-+  rust::Box<font_format_check::FontFormatInfo> format_info_;
- };
- 
- }  // namespace blink
---- a/third_party/blink/renderer/platform/fonts/opentype/format_check.rs
-+++ b/third_party/blink/renderer/platform/fonts/opentype/format_check.rs
-@@ -23,7 +23,7 @@ pub struct FontFormatInfo {
-     format_flags: Option<FontFormatFlags>,
- }
- 
--pub fn get_font_format_info(font_bytes: &[u8]) -> FontFormatInfo {
-+pub fn get_font_format_info(font_bytes: &[u8]) -> Box<FontFormatInfo> {
-     let file_ref = make_font_ref_internal(font_bytes, 0);
- 
-     match file_ref {
-@@ -32,11 +32,11 @@ pub fn get_font_format_info(font_bytes:
-                 font.table_directory().table_records().iter().map(|e| e.tag()).collect();
-             let color_version = get_colr_version(&font);
-             let avar_version = get_avar_version(&font);
--            FontFormatInfo {
-+            Box::new(FontFormatInfo {
-                 format_flags: Some(FontFormatFlags { table_tags, color_version, avar_version }),
--            }
-+            })
-         }
--        _ => FontFormatInfo::default(),
-+        _ => Box::new(FontFormatInfo::default()),
      }
- }
  
-@@ -44,10 +44,10 @@ fn get_colr_version(font_ref: &FontRef)
-     Some(font_ref.colr().ok()?.version())
- }
- 
--pub fn is_colrv1(format_info: &FontFormatInfo) -> bool {
-+fn is_colrv1(format_info: &FontFormatInfo) -> bool {
-     matches!(&format_info.format_flags, Some(FontFormatFlags { color_version: Some(1), .. }),)
- }
--pub fn is_colrv0(format_info: &FontFormatInfo) -> bool {
-+fn is_colrv0(format_info: &FontFormatInfo) -> bool {
-     matches!(&format_info.format_flags, Some(FontFormatFlags { color_version: Some(0), .. }),)
- }
- 
-@@ -58,7 +58,7 @@ fn get_avar_version(font_ref: &FontRef)
- 
- // https://crbug.com/513446410: For safety we want to pass unknown avar2
- // versions through fontations, too.
--pub fn is_avar2(format_info: &FontFormatInfo) -> bool {
-+fn is_avar2(format_info: &FontFormatInfo) -> bool {
-     matches!(
-         &format_info.format_flags,
-         Some(FontFormatFlags {
-@@ -77,22 +77,39 @@ fn has_tags(format_info: &FontFormatInfo
-     }
- }
- 
--pub fn is_variable(format_info: &FontFormatInfo) -> bool {
-+fn is_variable(format_info: &FontFormatInfo) -> bool {
-     has_tags(format_info, &[Tag::new(b"fvar")])
- }
- 
--pub fn is_sbix(format_info: &FontFormatInfo) -> bool {
-+fn is_sbix(format_info: &FontFormatInfo) -> bool {
-     has_tags(format_info, &[Tag::new(b"sbix")])
- }
- 
--pub fn is_cbdt_cblc(format_info: &FontFormatInfo) -> bool {
-+fn is_cbdt_cblc(format_info: &FontFormatInfo) -> bool {
-     has_tags(format_info, &[Tag::new(b"CBDT"), Tag::new(b"CBLC")])
- }
- 
--pub fn is_ebdt_eblc(format_info: &FontFormatInfo) -> bool {
-+fn is_ebdt_eblc(format_info: &FontFormatInfo) -> bool {
-     has_tags(format_info, &[Tag::new(b"EBDT"), Tag::new(b"EBLC")])
- }
- 
--pub fn is_cff2(format_info: &FontFormatInfo) -> bool {
-+fn is_cff2(format_info: &FontFormatInfo) -> bool {
-     has_tags(format_info, &[Tag::new(b"CFF2")])
- }
-+
-+#[cxx::bridge(namespace = "font_format_check")]
-+pub mod ffi {
-+    extern "Rust" {
-+        type FontFormatInfo;
-+
-+        fn get_font_format_info(font_bytes: &[u8]) -> Box<FontFormatInfo>;
-+        fn is_colrv1(format_info: &FontFormatInfo) -> bool;
-+        fn is_colrv0(format_info: &FontFormatInfo) -> bool;
-+        fn is_cbdt_cblc(format_info: &FontFormatInfo) -> bool;
-+        fn is_ebdt_eblc(format_info: &FontFormatInfo) -> bool;
-+        fn is_variable(format_info: &FontFormatInfo) -> bool;
-+        fn is_sbix(format_info: &FontFormatInfo) -> bool;
-+        fn is_cff2(format_info: &FontFormatInfo) -> bool;
-+        fn is_avar2(format_info: &FontFormatInfo) -> bool;
++    # `_output_dir` and `_output_name` are equivalents of `{{output_dir}}` and
++    # `{{target_output_name}}` in the toolchain.
++    _output_dir = target_out_dir
++    if (defined(invoker.output_dir) && invoker.output_dir != "") {
++      _output_dir = invoker.output_dir
 +    }
-+}
---- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-+++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-@@ -33,27 +33,19 @@
- #include <hb.h>
- #include <stdarg.h>
- 
--#include <string>
++    if (defined(invoker.output_name)) {
++      _output_name = invoker.output_name
++    } else {
++      # Note that file names of libraries must start with the crate name in
++      # order for the compiler to find transitive dependencies in the
++      # directory search paths (since they are not all explicitly specified).
++      #
++      # For bin targets, we expect the target name to be unique, and the name
++      # of the exe should not add magic stuff to it. And bin crates can not be
++      # transitive dependencies.
++      if (invoker.target_type == "executable") {
++        _output_name = _target_name
++      } else {
++        # TODO(danakj): Since the crate name includes the whole path for 1p
++        # libraries, we could move the output_dir to `root_out_dir` here for
++        # them, which would make for shorter file paths. But we need to not
++        # do the same for 3p crates or those with a `crate_name` set
++        # explicitly.
++        _output_name = _crate_name
++      }
++    }
++
+     if (_override_crate_type_as_dylib) {
+       # Building a `--crate-type=dylib` means that `rustc` generates a `.dll` /
+       # `.so` in target-specific subdirectories of the build directory.  This
+@@ -404,13 +432,6 @@ template("rust_target") {
+         # of replicating how `...toolchain.gni` calculates the `.so` path in the
+         # `outputs` of `tool("rust_dylib")` (which feels rather fragile).
+         #
+-        # `_source_dir` is an equivalent of `{{output_dir}}` in the toolchain.
+-        _source_dir = target_out_dir
+-        if (defined(invoker.output_dir)) {
+-          _source_dir = invoker.output_dir
+-        }
+-        _source_dir += "/"
 -
- #include "base/compiler_specific.h"
--#include "base/containers/span.h"
--#include "base/numerics/byte_conversions.h"
- #include "base/numerics/safe_conversions.h"
- #include "build/build_config.h"
- #include "third_party/blink/public/platform/platform.h"
- #include "third_party/blink/renderer/platform/fonts/font_cache.h"
--#include "third_party/blink/renderer/platform/fonts/ift/ift_patcher.h"
- #include "third_party/blink/renderer/platform/fonts/web_font_typeface_factory.h"
- #include "third_party/blink/renderer/platform/instrumentation/tracing/trace_event.h"
--#include "third_party/blink/renderer/platform/runtime_enabled_features.h"
- #include "third_party/blink/renderer/platform/wtf/shared_buffer.h"
- #include "third_party/blink/renderer/platform/wtf/text/format.h"
- #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
- #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
- #include "third_party/ots/src/include/ots-memory-stream.h"
- #include "third_party/skia/include/core/SkStream.h"
--#include "third_party/woff2/include/woff2/decode.h"
--#include "third_party/woff2/include/woff2/output.h"
+         # `_source_ext` is an equivalent of `{{output_extension}}`
+         _source_ext = shlib_extension
  
- namespace blink {
+@@ -425,13 +446,11 @@ template("rust_target") {
+         # `_source_prefix` is an equivalent of `output_prefix` in `tool`.
+         _source_prefix = shlib_prefix
  
-@@ -65,11 +57,6 @@ const size_t kMaxDecompressedSizeMb = 30
- const size_t kMaxDecompressedSizeMb = 128;
- #endif
+-        # `_source_name` is an equivalent of `{{target_output_name}}`.
+         assert(defined(invoker.output_name))  # Only tested with `cargo_crate`.
+-        _source_name = invoker.output_name
  
--constexpr size_t kMaxDecompressedSize = kMaxDecompressedSizeMb * 1024 * 1024;
+         # `_source_path` is the equivalent of `dllname` in the toolchain.
+-        _source_filename = "${_source_prefix}${_source_name}${_source_ext}"
+-        _source_path = "${_source_dir}${_source_filename}"
++        _source_filename = "${_source_prefix}${_output_name}${_source_ext}"
++        _source_path = "${_output_dir}/${_source_filename}"
+ 
+         # `_target_dir` is the equivalent of `default_output_dir` in toolchain.
+         if (defined(invoker.default_shlib_subdir)) {
+@@ -578,6 +597,7 @@ template("rust_target") {
+                                    "features",
+                                    "inputs",
+                                    "no_clippy",
++                                   "output_name",
+                                    "public_deps",
+                                    "rustenv",
+                                    "rustflags",
+@@ -627,26 +647,7 @@ template("rust_target") {
+ 
+       sources = _rust_sources
+       inputs = _rust_inputs
 -
--constexpr uint32_t kWoffTag = OTS_TAG('w', 'O', 'F', 'F');
--constexpr uint32_t kWoff2Tag = OTS_TAG('w', 'O', 'F', '2');
--
- class BlinkOTSContext final : public ots::OTSContext {
-   DISALLOW_NEW();
+-      if (!defined(output_name)) {
+-        # Note that file names of libraries must start with the crate name in
+-        # order for the compiler to find transitive dependencies in the
+-        # directory search paths (since they are not all explicitly specified).
+-        #
+-        # For bin targets, we expect the target name to be unique, and the name
+-        # of the exe should not add magic stuff to it. And bin crates can not be
+-        # transitive dependencies.
+-        if (invoker.target_type == "executable") {
+-          output_name = _target_name
+-        } else {
+-          # TODO(danakj): Since the crate name includes the whole path for 1p
+-          # libraries, we could move the output_dir to `root_out_dir` here for
+-          # them, which would make for shorter file paths. But we need to not
+-          # do the same for 3p crates or those with a `crate_name` set
+-          # explicitly.
+-          output_name = _crate_name
+-        }
+-      }
++      output_name = _output_name
  
-@@ -189,94 +176,17 @@ ots::TableAction BlinkOTSContext::GetTab
+       if (!_allow_unsafe) {
+         configs += [ "//build/rust:forbid_unsafe" ]
+@@ -755,6 +756,12 @@ template("rust_target") {
+       }
+ 
+       if (_enable_cpp_api_from_rust_for_this_target) {
++        # TODO(https://crbug.com/gn/490160737): If `get_target_outputs` can
++        # support binary targets (unclear) then it should be used here, instead
++        # of replicating how `...toolchain.gni` calculates `rmetaname` in the
++        # `outputs` of `tool("rust_rlib")` (which feels rather fragile).
++        _rmeta_path = "${_output_dir}/lib${_output_name}.rmeta"
++
+         cpp_api_from_rust(_cpp_api_from_rust_target_name) {
+           forward_variables_from(_secondary_rust_compiler_attrs,
+                                  _SECONDARY_RUST_COMPILER_ATTR_NAMES)
+@@ -762,6 +769,7 @@ template("rust_target") {
+           rustc_env_and_flags = _rustc_env_and_flags
+           original_attributes = _cpp_api_from_rust_attributes
+           crate_name = _crate_name
++          rmeta_path = _rmeta_path
+ 
+           if (defined(_cpp_api_from_rust_attributes.h_out)) {
+             h_out = _cpp_api_from_rust_attributes.h_out
+@@ -778,5 +786,9 @@ template("rust_target") {
+         }
+       }
+     }
++    if (!_override_crate_type_as_dylib &&
++        !_enable_cpp_api_from_rust_for_this_target) {
++      not_needed([ "_output_dir" ])
++    }
    }
  }
+--- a/build/rust/gni_impl/rustc_wrapper.py
++++ b/build/rust/gni_impl/rustc_wrapper.py
+@@ -334,7 +334,7 @@ def _RecommendApplyFixesScript(tool, rus
+     print(f" {os.path.basename(tool)} {rustc_env_and_flags}", file=sys.stderr)
  
--struct FontDecodeResult {
--  std::unique_ptr<IftPatcher> ift_patcher;
--};
--
--// Decompresses and sanitizes `font_data` into an output stream using
--// `ots_context`, and initializes `ift_patcher` if `font_data` is an IFT-enabled
--// font. Returns whether decoding succeeded. On failure, the error string can be
--// retrieved from `ots_context`.
--bool DecodeFontWithIft(BlinkOTSContext& ots_context,
--                       base::span<const uint8_t> font_data,
--                       ots::ExpandingMemoryStream* output,
--                       std::unique_ptr<IftPatcher>& ift_patcher) {
--  TRACE_EVENT("blink", "DecodeFont");
--
--  uint32_t magic = 0;
--  if (font_data.size() >= 4) {
--    magic = base::U32FromBigEndian(font_data.first<4u>());
--  }
--
--  switch (magic) {
--    case kWoff2Tag: {
--      size_t decompressed_size =
--          woff2::ComputeWOFF2FinalSize(font_data.data(), font_data.size());
--      if (decompressed_size == 0) {
--        ots_context.Message(0, "Size of decompressed WOFF 2.0 is set to 0");
--        return false;
--      }
--      if (decompressed_size < font_data.size()) {
--        ots_context.Message(
--            0, "Size of decompressed WOFF 2.0 is less than compressed size");
--        return false;
--      }
--      if (decompressed_size > kMaxDecompressedSize) {
--        ots_context.Message(0,
--                            "Size of decompressed WOFF 2.0 font exceeds %gMB",
--                            kMaxDecompressedSize / (1024.0 * 1024.0));
--        return false;
--      }
--
--      std::string buf(decompressed_size, 0);
--      woff2::WOFF2StringOut out(&buf);
--      if (!woff2::ConvertWOFF2ToTTF(font_data.data(), font_data.size(), &out)) {
--        ots_context.Message(0, "Failed to convert WOFF 2.0 font to SFNT");
--        return false;
--      }
--
--      base::span<const uint8_t> decompressed_span =
--          base::as_byte_span(buf).first(out.Size());
--      if (!ots_context.Process(output, decompressed_span.data(),
--                               decompressed_span.size())) {
--        return false;
--      }
--      ift_patcher = IftPatcher::Create(decompressed_span);
--      break;
--    }
--    case kWoffTag: {
--      // The IFT (Incremental Font Transfer) specification recommends using
--      // WOFF2. OTS handles WOFF decompression directly, so we do not extract
--      // unsanitized font data or create an IftPatcher for the WOFF format.
--      if (!ots_context.Process(output, font_data.data(), font_data.size())) {
--        return false;
--      }
--      break;
--    }
--    default: {
--      if (!ots_context.Process(output, font_data.data(), font_data.size())) {
--        return false;
--      }
--      ift_patcher = IftPatcher::Create(font_data);
--      break;
--    }
--  }
--
--  return true;
--}
--
- }  // namespace
  
--DecodedWebFont::DecodedWebFont() = default;
--DecodedWebFont::DecodedWebFont(DecodedWebFont&&) noexcept = default;
--DecodedWebFont& DecodedWebFont::operator=(DecodedWebFont&&) noexcept = default;
--DecodedWebFont::~DecodedWebFont() = default;
+-def _ExpandNestedRustStyleRspFiles(rsp_args):
++def ExpandNestedRustStyleRspFiles(rsp_args):
+     # `rustc` doesn't support using `@<file.rsp>` from **inside** `@another.rsp`.
+     # And things like `@cargo_flags.rs` (see build script handling inside
+     # `cargo_crate.gni`) may end up in `rustflags`.  And since `rustflags` are
+@@ -411,7 +411,7 @@ def main():
+             remove_lib_suffix_from_extern_args(arg) for arg in rustc_args
+         ]
+     rsp_args = [remove_gn_escaping_from_rsp_args(arg) for arg in rsp_args]
+-    rsp_args = _ExpandNestedRustStyleRspFiles(rsp_args)
++    rsp_args = ExpandNestedRustStyleRspFiles(rsp_args)
+     out_rsp = str(args.rsp) + ".rust"
+     with open(out_rsp, 'w') as rspfile:
+         # rustc needs the rsp file to be separated by newlines. Note that GN
+--- a/build/rust/rust_api_from_cpp.gni
++++ b/build/rust/rust_api_from_cpp.gni
+@@ -65,10 +65,8 @@ _globally_enabled_crubit_features = [
+ #     targets that generate bindings for types from these other targets.
+ template("rust_api_from_cpp") {
+   assert(enable_rust_api_from_cpp)
 -
--base::expected<DecodedWebFont, String> DecodeWebFont(SegmentedBuffer* buffer) {
-+base::expected<DecodedWebFont, String> DecodedWebFont::Create(
-+    SegmentedBuffer* buffer) {
-   if (!buffer) {
-     return base::unexpected("Empty Buffer");
+-  # At this point `rs_bindings_from_cc` is only distributed with the Chromium
+-  # Rust toolchain.
+-  assert(enable_rust && use_chromium_rust_toolchain)
++  assert(enable_rust)
++  assert(rust_crubit_root != "", rust_crubit_root_missing_message)
+ 
+   # PDFium, V8 and other "2nd-party" Chromium projects don't yet have their own
+   # `//build_overrides/crubit.gni` build file.  Until this is fixed, we assert
+@@ -254,8 +252,6 @@ template("rust_api_from_cpp") {
+       "//build/rust/gni_impl/filter_clang_args.py",
+       _metadata_path,
+       rust_api_from_cpp_exe_path,
+-      rustfmt_exe_path,
+-      rustfmt_config_path,
+     ]
+ 
+     # Public headers are inputs to this action rather than sources,
+@@ -301,10 +297,18 @@ template("rust_api_from_cpp") {
+       "--public_headers=" + string_join(",", _rebased_public_headers),
+       "--target=${_current_lib_target_full_label}",
+       "--crubit_support_path_format=${crubit_support_path_format}",
+-      "--rustfmt_exe_path=" + rebase_path(rustfmt_exe_path, root_build_dir),
+-      "--rustfmt_config_path=" +
+-          rebase_path(rustfmt_config_path, root_build_dir),
+     ]
++    if (defined(rustfmt_exe_path)) {
++      inputs += [
++        rustfmt_exe_path,
++        rustfmt_config_path,
++      ]
++      args += [
++        "--rustfmt_exe_path=" + rebase_path(rustfmt_exe_path, root_build_dir),
++        "--rustfmt_config_path=" +
++            rebase_path(rustfmt_config_path, root_build_dir),
++      ]
++    }
+ 
+     # TODO(https://crbug.com/40226863): Use
+     # `rust_enable_generated_code_formatting` (see https://crrev.com/c/8494684)
+--- a/build/rust/std/BUILD.gn
++++ b/build/rust/std/BUILD.gn
+@@ -19,6 +19,7 @@ import("//build/config/compiler/compiler
+ import("//build/config/coverage/coverage.gni")
+ import("//build/config/rust.gni")
+ import("//build/config/sanitizers/sanitizers.gni")
++import("//build/rust/gni_impl/cpp_api_from_rust.gni")
+ 
+ if (toolchain_has_rust) {
+   # List of Rust stdlib rlibs which are present in the official Rust toolchain
+@@ -180,8 +181,6 @@ if (toolchain_has_rust) {
+   sysroot_lib_subdir = "lib/rustlib/$rust_abi_target/lib"
+ 
+   if (!rust_prebuilt_stdlib) {
+-    local_rustc_sysroot = "$root_out_dir/local_rustc_sysroot"
+-
+     # All std targets starting with core build with our sysroot. It starts empty
+     # and is incrementally built. The directory must exist at the start.
+     generated_file("empty_sysroot_for_std_build") {
+@@ -309,11 +308,7 @@ if (toolchain_has_rust) {
+       out_libdir = rebase_path(target_out_dir, root_build_dir)
+       out_depfile = rebase_path(depfile, root_build_dir)
+ 
+-      if (host_os == "win") {
+-        inputs = [ "//third_party/rust-toolchain/bin/rustc.exe" ]
+-      } else {
+-        inputs = [ "//third_party/rust-toolchain/bin/rustc" ]
+-      }
++      inputs = [ rustc_exe_path ]
+ 
+       # For the rustc sysroot we must include even the rlibs we don't pass to
+       # the C++ linker.
+@@ -382,26 +377,19 @@ if (toolchain_has_rust) {
+       visibility = [ ":*" ]
+     }
+ 
+-    config("prebuilt_stdlib_libs") {
+-      ldflags = []
+-      lib_dir = rebase_path("$prebuilt_rustc_sysroot/$sysroot_lib_subdir",
+-                            root_build_dir)
+-
+-      # We're unable to make these files regular gn dependencies because
+-      # they're prebuilt. Instead, we'll pass them in the ldflags. This doesn't
+-      # work for all types of build because ldflags propagate differently from
+-      # actual dependencies and therefore can end up in different targets from
+-      # the remap_alloc.cc above. For example, in a component build, we might
+-      # apply the remap_alloc.cc file and these ldlags to shared object A,
+-      # while shared object B (that depends upon A) might get only the ldflags
+-      # but not remap_alloc.cc, and thus the build will fail. There is
+-      # currently no known solution to this for the prebuilt stdlib - this
+-      # problem does not apply with configurations where we build the stdlib
+-      # ourselves, which is what we'll use in production.
++    # The prebuilt rlibs are not built by GN, so they are passed to the linker
++    # via `libs`.  `libs` set on a target (rather than in a config) propagate
++    # to dependents only until the nearest shared library or executable - the
++    # same way as GN dependencies on `//build/rust/allocator` and on other Rust
++    # libraries.  This ensures that in a component build the rlibs are linked
++    # only into the shared libraries that contain Rust code (and therefore also
++    # the allocator shims that the rlibs depend on).
++    source_set("prebuilt_stdlib_libs") {
++      libs = []
+       foreach(lib, stdlib_files) {
+-        this_file = "$lib_dir/lib$lib.rlib"
+-        ldflags += [ this_file ]
++        libs += [ "$prebuilt_rustc_sysroot/$sysroot_lib_subdir/lib$lib.rlib" ]
+       }
++      deps = [ ":prebuilt_rustc_copy_to_sysroot" ]
+       visibility = [ ":*" ]
+     }
+ 
+@@ -413,11 +401,8 @@ if (toolchain_has_rust) {
+     }
+ 
+     group("std") {
+-      all_dependent_configs = [
+-        ":prebuilt_stdlib_libs",
+-        ":stdlib_public_dependent_libs",
+-      ]
+-      deps = [ ":prebuilt_rustc_copy_to_sysroot" ]
++      all_dependent_configs = [ ":stdlib_public_dependent_libs" ]
++      deps = [ ":prebuilt_stdlib_libs" ]
+     }
+ 
+     # `stdlib_test_files` are already included in `all_stdlibs_to_copy` and
+@@ -425,5 +410,65 @@ if (toolchain_has_rust) {
+     group("test_support") {
+       deps = [ ":std" ]
+     }
++
++    if (enable_cpp_api_from_rust) {
++      # C++ bindings of the prebuilt Rust standard library.  The in-tree stdlib
++      # build generates the bindings from the stdlib sources (see
++      # `//build/rust/std/rules`), but here Crubit reads the crate metadata
++      # from the `.rmeta` files in the sysroot.
++      _prebuilt_stdlib_bindings = [
++        {
++          crate_name = "core"
++          deps = []
++        },
++        {
++          crate_name = "alloc"
++          deps = [ ":prebuilt_core_bindings" ]
++        },
++        {
++          crate_name = "std"
++          deps = [
++            ":prebuilt_alloc_bindings",
++            ":prebuilt_core_bindings",
++          ]
++        },
++      ]
++      foreach(_bindings, _prebuilt_stdlib_bindings) {
++        cpp_api_from_rust("prebuilt_${_bindings.crate_name}_bindings") {
++          rust_target = ":std"
++          crate_name = _bindings.crate_name
++          h_out = "$root_gen_dir/third_party/crubit/support/rs_std/" +
++                  "rs_${_bindings.crate_name}.h"
++          original_attributes = {
++            cpp_namespace = "rs::${_bindings.crate_name}"
++            deps = _bindings.deps
++          }
++
++          # Crubit reads the `.rmeta` files from `rust_sysroot`.  The copies
++          # made by `:find_stdlib` change together with these files.
++          sources = get_target_outputs(":find_stdlib")
++          deps = [ ":find_stdlib" ]
++
++          visibility = [ ":*" ]
++        }
++      }
++
++      group("std_bindings") {
++        deps = [ ":std" ]
++        public_deps = [
++          ":prebuilt_alloc_bindings",
++          ":prebuilt_core_bindings",
++          ":prebuilt_std_bindings",
++        ]
++      }
++
++      group("std_bindings_crubit_metadata") {
++        public_deps = [
++          ":prebuilt_alloc_bindings_crubit_metadata",
++          ":prebuilt_core_bindings_crubit_metadata",
++          ":prebuilt_std_bindings_crubit_metadata",
++        ]
++      }
++    }
    }
+ }
+--- a/build_overrides/crubit.gni
++++ b/build_overrides/crubit.gni
+@@ -2,7 +2,11 @@
+ # Use of this source code is governed by a BSD-style license that can be
+ # found in the LICENSE file.
  
-+  // This is the largest web font size which we'll try to transcode.
-+  static const size_t kMaxDecompressedSize =
-+      kMaxDecompressedSizeMb * 1024 * 1024;
-   if (buffer->size() > kMaxDecompressedSize) {
-     return base::unexpected(
-         Format("Web font size more than {}MB", kMaxDecompressedSizeMb));
-@@ -291,11 +201,7 @@ base::expected<DecodedWebFont, String> D
-   SegmentedBuffer::DeprecatedFlatData flattened_buffer(buffer);
- 
-   bool ok;
--  std::unique_ptr<IftPatcher> ift_patcher;
--  if (RuntimeEnabledFeatures::IncrementalFontTransferEnabled()) {
--    ok = DecodeFontWithIft(ots_context, base::as_byte_span(flattened_buffer),
--                           output.get(), ift_patcher);
--  } else {
-+  {
-     TRACE_EVENT("blink", "DecodeFont");
-     ok = ots_context.Process(
-         output.get(), reinterpret_cast<const uint8_t*>(flattened_buffer.data()),
-@@ -307,9 +213,9 @@ base::expected<DecodedWebFont, String> D
-   }
- 
-   const void* decoded_data = output->get();
--  DecodedWebFont result;
--  result.ift_patcher = std::move(ift_patcher);
--  result.decoded_size = base::checked_cast<size_t>(output->Tell());
-+  DecodedWebFont result{
-+      .decoded_size = base::checked_cast<size_t>(output->Tell()),
-+  };
-   sk_sp<SkData> sk_data = SkData::MakeWithProc(
-       decoded_data, result.decoded_size,
-       [](const void*, void* output) {
---- a/third_party/blink/renderer/platform/fonts/web_font_decoder.h
-+++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.h
-@@ -31,8 +31,6 @@
- #ifndef THIRD_PARTY_BLINK_RENDERER_PLATFORM_FONTS_WEB_FONT_DECODER_H_
- #define THIRD_PARTY_BLINK_RENDERER_PLATFORM_FONTS_WEB_FONT_DECODER_H_
- 
--#include <memory>
--
- #include "base/types/expected.h"
- #include "third_party/blink/renderer/platform/platform_export.h"
- #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
-@@ -42,7 +40,6 @@ class SkTypeface;
- 
- namespace blink {
- 
--class IftPatcher;
- class SegmentedBuffer;
- 
- // Represents a font that has been successfully decoded and sanitized.
-@@ -56,32 +53,18 @@ struct PLATFORM_EXPORT DecodedWebFont {
-   // The size of the font after decoding and sanitizing.
-   size_t decoded_size = 0;
- 
--  // Used to discover and apply patches to fonts. `nullptr` if the font is not
--  // IFT-encoded or if Incremental Font Transfer is disabled.
--  std::unique_ptr<IftPatcher> ift_patcher;
--
--  // Defined out of line so that `IftPatcher` only needs to be forward declared
--  // here.
--  DecodedWebFont();
--  DecodedWebFont(DecodedWebFont&&) noexcept;
--  DecodedWebFont& operator=(DecodedWebFont&&) noexcept;
--  DecodedWebFont(const DecodedWebFont&) = delete;
--  DecodedWebFont& operator=(const DecodedWebFont&) = delete;
--  ~DecodedWebFont();
-+  // Decodes, decompresses, and sanitizes the raw font data from the provided
-+  // `buffer` (which typically contains WOFF, WOFF2, or TTF data).
-+  //
-+  // Returns:
-+  // - On success: A `DecodedWebFont` containing the successfully created
-+  //   font.
-+  // - On failure: A `String` containing a descriptive error message (e.g., if
-+  //   the buffer is empty, the decompressed size exceeds limits, or OTS
-+  //   validation fails).
-+  static base::expected<DecodedWebFont, String> Create(SegmentedBuffer*);
- };
- 
--// Decodes, decompresses, and sanitizes the raw font data from the provided
--// `buffer` (which typically contains WOFF, WOFF2, or TTF data).
--//
--// Returns:
--// - On success: A `DecodedWebFont` containing the successfully created
--//   font.
--// - On failure: A `String` containing a descriptive error message (e.g., if
--//   the buffer is empty, the decompressed size exceeds limits, or OTS
--//   validation fails).
--PLATFORM_EXPORT base::expected<DecodedWebFont, String> DecodeWebFont(
--    SegmentedBuffer* buffer);
--
- }  // namespace blink
- 
- #endif  // THIRD_PARTY_BLINK_RENDERER_PLATFORM_FONTS_WEB_FONT_DECODER_H_
+-crubit_src_dir = "//third_party/rust-toolchain/lib/third_party/crubit"
++import("//build/config/rust.gni")
++
++assert(rust_crubit_root != "", rust_crubit_root_missing_message)
++
++crubit_src_dir = "${rust_crubit_root}/lib/third_party/crubit"
+ crubit_absl_dep_target = "//third_party/abseil-cpp:absl"
+ crubit_gn_configs_to_remove = [
+   "//build/config/compiler:chromium_code",

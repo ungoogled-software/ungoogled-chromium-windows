@@ -1,6 +1,6 @@
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -282,8 +282,6 @@ clang_lib("compiler_builtins") {
+@@ -286,8 +286,6 @@ clang_lib("compiler_builtins") {
      } else {
        assert(false, "unsupported target_platform=$target_platform")
      }
@@ -31,7 +31,7 @@
    #
 --- a/build/rust/allocator/lib.rs
 +++ b/build/rust/allocator/lib.rs
-@@ -110,14 +110,4 @@ mod both_allocators {
+@@ -114,15 +114,4 @@ mod both_allocators {
      fn __rust_alloc_error_handler_should_panic() -> u8 {
          0
      }
@@ -41,8 +41,9 @@
 -    #[allow(non_upper_case_globals)]
 -    #[linkage = "weak"]
 -    fn __rust_alloc_error_handler(_size: usize, _align: usize) {
--        // TODO(lukasza): Investigate if we can just call `std::process::abort()` here.
--        // (Not really _needed_, but it could simplify code a little bit.)
+-        // TODO(lukasza): Investigate if we can just call
+-        // `std::process::abort()` here. (Not really _needed_, but it
+-        // could simplify code a little bit.)
 -        unsafe { ffi::alloc_error_handler_impl() }
 -    }
  }
@@ -153,11 +154,10 @@
  
  BINDGEN_SRC_DIR = os.path.join(
      THIRD_PARTY_DIR, 'rust-toolchain-intermediate', 'bindgen-src'
-@@ -117,17 +114,8 @@ def RunCargo(cargo_args):
-         )
-         sys.exit(1)
+@@ -93,21 +90,11 @@ def RunCargo(cargo_args):
+     if sys.platform.startswith('linux'):
+         ncursesw_dir = FetchNcurseswLibrary()
  
--    clang_bins_dir = os.path.join(RUST_HOST_LLVM_INSTALL_DIR, 'bin')
 -    llvm_dir = RUST_HOST_LLVM_INSTALL_DIR
 -
 -    if not os.path.exists(os.path.join(llvm_dir, 'bin', f'llvm-config{EXE}')):
@@ -168,20 +168,16 @@
 -            f'are needed here.'
 -        )
 -        sys.exit(1)
-+    clang_bins_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts', 'bin')
 +    llvm_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts')
  
-     env = collections.defaultdict(str, os.environ)
-     # Cargo normally stores files in $HOME. Override this.
-@@ -137,7 +125,6 @@ def RunCargo(cargo_args):
-     env['RUSTC'] = rustc_bin
+     env = GetHostCargoEnv()
  
-     # Use the LLVM libs and clang compiler from the rustc build.
+     # Use the LLVM libs from the rustc build.
 -    env['LLVM_CONFIG_PATH'] = os.path.join(llvm_dir, 'bin', 'llvm-config')
      if sys.platform == 'win32':
          env['LIBCLANG_PATH'] = os.path.join(llvm_dir, 'bin')
      else:
-@@ -252,7 +239,7 @@ def main():
+@@ -180,7 +167,7 @@ def main():
      install_dir = os.path.join(RUST_TOOLCHAIN_OUT_DIR)
      print(f'Installing bindgen to {install_dir} ...')
  
@@ -190,3 +186,32 @@
      shutil.copy(
          os.path.join(build_dir, RustTargetTriple(), 'release', f'bindgen{EXE}'),
          os.path.join(install_dir, 'bin'),
+--- a/tools/rust/host_tools.py
++++ b/tools/rust/host_tools.py
+@@ -26,7 +26,7 @@ from build_rust import (
+     RUST_HOST_LLVM_INSTALL_DIR,
+     RustTargetTriple,
+ )
+-from update_rust import RUST_TOOLCHAIN_OUT_DIR
++from update_rust import RUST_TOOLCHAIN_OUT_DIR, THIRD_PARTY_DIR
+ 
+ # Get variables and helpers from Clang update script
+ sys.path.append(
+@@ -65,7 +65,7 @@ def GetHostCcTools():
+     On Windows the MSVC-style `clang-cl` driver is both the C and the C++
+     compiler.
+     """
+-    bin_dir = os.path.join(RUST_HOST_LLVM_INSTALL_DIR, 'bin')
++    bin_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts', 'bin')
+     if sys.platform == 'win32':
+         clang_cl = os.path.join(bin_dir, 'clang-cl.exe')
+         return clang_cl, clang_cl, os.path.join(bin_dir, 'llvm-lib.exe')
+@@ -91,7 +91,7 @@ def GetHostLinker():
+     Windows uses `lld-link` for MSVC compat.  Otherwise, we use `lld` via
+     `clang` (see `GetHostLinkArgs`).
+     """
+-    bin_dir = os.path.join(RUST_HOST_LLVM_INSTALL_DIR, 'bin')
++    bin_dir = os.path.join(THIRD_PARTY_DIR, 'llvm-build', 'Release+Asserts', 'bin')
+     if sys.platform == 'win32':
+         return os.path.join(bin_dir, 'lld-link.exe')
+     return os.path.join(bin_dir, 'clang')

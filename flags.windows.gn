@@ -15,3 +15,4 @@ v8_symbol_level=0
 symbol_level=0
 enable_rust=true
 enable_mse_mpeg2ts_stream_parser=true
+rust_crubit_root="//third_party/rust-toolchain/crubit"
