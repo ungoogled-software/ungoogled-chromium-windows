@@ -1,6 +1,6 @@
 --- a/build/config/BUILD.gn
 +++ b/build/config/BUILD.gn
-@@ -293,6 +293,10 @@ group("common_deps") {
+@@ -302,6 +302,10 @@ group("common_deps") {
      # crbug.com/402171653 for context.
      public_deps += [ "//third_party/compiler-rt:atomic" ]
    }
